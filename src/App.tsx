@@ -1,9 +1,13 @@
 import React, { useEffect, useState } from 'react'
-import { Layout, List, Card, Button, Switch, Form, Input, Modal } from 'antd'
+import { Layout, List, Card, Button, Switch, Form, Input, Modal, Avatar } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
-import type { Rule, RuleGroup } from './types'
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import GroupItem from './components/GroupItem';
+import type { RuleGroup } from './types'
+import Logo from './logo.png';
+import './App.less';
 
-const { Header, Content } = Layout
+const { Sider, Content } = Layout
 
 const App: React.FC = () => {
   const [groups, setGroups] = useState<RuleGroup[]>([])
@@ -31,35 +35,92 @@ const App: React.FC = () => {
   }
 
   const handleToggleGroup = async (groupId: string, enabled: boolean) => {
-    const updatedGroups = groups.map(group => 
+    const updatedGroups = groups.map(group =>
       group.id === groupId ? { ...group, enabled } : group
     )
     await chrome.storage.local.set({ groups: updatedGroups })
     setGroups(updatedGroups)
   }
 
+  const reorder = (list, startIndex, endIndex) => {
+    const result = Array.from(list);
+    const [removed] = result.splice(startIndex, 1);
+    result.splice(endIndex, 0, removed);
+  
+    return result;
+  };
+  
+  const getItemStyle = (isDragging, draggableStyle) => ({
+    // some basic styles to make the items look a bit nicer
+    userSelect: "none",
+    padding: 8,
+  
+    // change background colour if dragging
+    background: isDragging ? "lightgreen" : "",
+    borderBottom: 'solid 1px #f0f0f0',
+  
+    // styles we need to apply on draggables
+    ...draggableStyle
+  });
+
   return (
-    <Layout className="min-h-screen">
-      <Header className="flex items-center justify-between bg-white px-4">
-        <h1 className="text-lg font-bold">Camora</h1>
-        <Button 
-          type="primary" 
-          icon={<PlusOutlined />}
-          onClick={() => setIsModalVisible(true)}
-        >
-          Add Group
-        </Button>
-      </Header>
+    <Layout className="app-layout">
+      <Sider width={150} theme="light">
+        <div className="app-sider">
+          <div className="app-header">
+            <Avatar size="small" src={Logo} alt="Camora" />
+            <Button
+              size="small"
+              shape="circle"
+              icon={<PlusOutlined />}
+              onClick={() => setIsModalVisible(true)}
+            />
+          </div>
+          <DragDropContext>
+            <Droppable droppableId="droppable">
+              {(provided, snapshot) => (
+                <div
+                  className="app-items-list"
+                  {...provided.droppableProps}
+                  ref={provided.innerRef}
+                >
+                  {groups.map((group, index) => (
+                    <Draggable key={group.name} draggableId={group.name} index={index}>
+                      {(provided, snapshot) => (
+                        <div
+                          ref={provided.innerRef}
+                          {...provided.draggableProps}
+                          {...provided.dragHandleProps}
+                          style={getItemStyle(
+                            snapshot.isDragging,
+                            provided.draggableProps.style
+                          )}
+                        >
+                          <GroupItem item={group} handleToggleGroup={handleToggleGroup} />
+                        </div>
+                      )}
+                    </Draggable>
+                  ))}
+                  {provided.placeholder}
+                </div>
+              )}
+            </Droppable>
+          </DragDropContext>
+          <div className="app-footer">
+            Settings
+          </div>
+        </div>
+      </Sider>
       <Content className="p-4">
         <List
           grid={{ gutter: 16, column: 1 }}
           dataSource={groups}
           renderItem={group => (
             <List.Item>
-              <Card 
+              <Card
                 title={group.name}
                 extra={
-                  <Switch 
+                  <Switch
                     checked={group.enabled}
                     onChange={(checked) => handleToggleGroup(group.id, checked)}
                   />

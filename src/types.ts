@@ -1,6 +1,5 @@
 export interface Rule {
   id: string
-  name: string
   source: string
   target: string
   enabled: boolean

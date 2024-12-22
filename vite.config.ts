@@ -8,4 +8,11 @@ export default defineConfig({
     react(),
     crx({ manifest }),
   ],
+  css: {
+    preprocessorOptions: {
+      less: {
+        javascriptEnabled: true,
+      },
+    },
+  },
 })
