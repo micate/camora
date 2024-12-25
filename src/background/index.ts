@@ -1,4 +1,4 @@
-import { Rule } from '../types'
+import { Rule, RuleGroup } from '../types'
 
 // 监听规则变化
 chrome.storage.onChanged.addListener((changes) => {
@@ -8,7 +8,20 @@ chrome.storage.onChanged.addListener((changes) => {
 })
 
 // 更新动态规则
-async function updateDynamicRules(rules: Rule[]) {
+async function updateDynamicRules(ruleGroups: RuleGroup[]) {
+  const rules: Rule[] = [];
+  for (const group of ruleGroups) {
+    if (group.enabled) {
+      for (const rule of group.rules) {
+        if (rule.enabled) {
+          rules.push(rule);
+        }
+      }
+    }
+  }
+
+  console.info('rules', rules);
+  
   // 移除所有现有规则
   const existingRules = await chrome.declarativeNetRequest.getDynamicRules()
   const existingRuleIds = existingRules.map(rule => rule.id)

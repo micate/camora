@@ -6,10 +6,12 @@ import './index.less';
 interface GroupItemProps {
   item: RuleGroup;
   handleToggleGroup: (groupId: string, enabled: boolean) => void;
+  active?: boolean;
+  onClick?: () => void;
 }
 
 export default function GroupItem(props: GroupItemProps) {
-  const { item, handleToggleGroup } = props;
+  const { item, handleToggleGroup, active, onClick } = props;
   const menuItems = [
     {
       key: 'edit',
@@ -26,8 +28,8 @@ export default function GroupItem(props: GroupItemProps) {
   ];
 
   return (
-    <div className="group-item">
-      <div className="group-name">
+    <div className={`group-item ${active ? 'group-item-active' : 'group-item-inactive'}`}>
+      <div className="group-name" onClick={onClick}>
         <Checkbox
           checked={item.enabled}
           onChange={(e) => handleToggleGroup(item.id, e.target.checked)}

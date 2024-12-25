@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react'
-import { Layout, List, Card, Button, Switch, Form, Input, Modal, Avatar } from 'antd'
+import { Layout, List, Button, Form, Input, Modal, Avatar } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import GroupItem from './components/GroupItem';
+import GroupView from './components/GroupView';
 import type { RuleGroup } from './types'
 import Logo from './logo.png';
 import './App.less';
@@ -12,11 +13,65 @@ const { Sider, Content } = Layout
 const App: React.FC = () => {
   const [groups, setGroups] = useState<RuleGroup[]>([])
   const [isModalVisible, setIsModalVisible] = useState(false)
+  const [activeGroup, setActiveGroup] = useState<RuleGroup | null>(null)
   const [form] = Form.useForm()
 
   useEffect(() => {
     chrome.storage.local.get('groups').then(({ groups = [] }) => {
-      setGroups(groups)
+      const mockGroups = [
+        {
+          id: '1',
+          name: 'Group 1',
+          rules: [
+            {
+              id: '1',
+              source: 'https://example.com',
+              target: 'https://example.com',
+              enabled: true
+            },
+            {
+              id: '2',
+              source: 'https://example.com',
+              target: 'https://example.com',
+              enabled: false
+            },
+            {
+              id: '3',
+              source: 'https://example.com',
+              target: 'https://example.com',
+              enabled: true
+            },
+            {
+              id: '4',
+              source: 'https://example.com',
+              target: 'https://example.com',
+              enabled: false
+            },
+            {
+              id: '5',
+              source: 'https://example.com',
+              target: 'https://example.com',
+              enabled: true
+            },
+            {
+              id: '6',
+              source: 'https://example.com',
+              target: 'https://example.com',
+              enabled: false
+            }
+          ],
+          enabled: true
+        },
+        {
+          id: '2',
+          name: 'Group 2',
+          rules: [],
+          enabled: true
+        }
+      ];
+      // setGroups(groups)
+      setGroups(mockGroups);
+      setActiveGroup(mockGroups[0]);
     })
   }, [])
 
@@ -53,7 +108,6 @@ const App: React.FC = () => {
   const getItemStyle = (isDragging, draggableStyle) => ({
     // some basic styles to make the items look a bit nicer
     userSelect: "none",
-    padding: 8,
   
     // change background colour if dragging
     background: isDragging ? "lightgreen" : "",
@@ -96,7 +150,12 @@ const App: React.FC = () => {
                             provided.draggableProps.style
                           )}
                         >
-                          <GroupItem item={group} handleToggleGroup={handleToggleGroup} />
+                          <GroupItem
+                            active={activeGroup?.id === group.id}
+                            item={group}
+                            handleToggleGroup={handleToggleGroup}
+                            onClick={() => setActiveGroup(group)}
+                          />
                         </div>
                       )}
                     </Draggable>
@@ -111,26 +170,10 @@ const App: React.FC = () => {
           </div>
         </div>
       </Sider>
-      <Content className="p-4">
-        <List
-          grid={{ gutter: 16, column: 1 }}
-          dataSource={groups}
-          renderItem={group => (
-            <List.Item>
-              <Card
-                title={group.name}
-                extra={
-                  <Switch
-                    checked={group.enabled}
-                    onChange={(checked) => handleToggleGroup(group.id, checked)}
-                  />
-                }
-              >
-                {/* Rule list will be implemented here */}
-              </Card>
-            </List.Item>
-          )}
-        />
+      <Content className="app-content">
+        {activeGroup ? (
+          <GroupView key={activeGroup?.id} group={activeGroup} />
+        ) : null}
       </Content>
 
       <Modal
