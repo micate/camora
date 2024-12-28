@@ -1,0 +1,30 @@
+{
+  "extension_name": {
+    "message": "Camora",
+    "description": "The name of the extension"
+  },
+  "group_name": {
+    "message": "Group Name",
+    "description": "Group name"
+  },
+  "group_name_required": {
+    "message": "Group name cannot be empty",
+    "description": "Group name cannot be empty"
+  },
+  "group_default_name": {
+    "message": "Unnamed Group",
+    "description": "Default group name"
+  },
+  "group_edit": {
+    "message": "Edit",
+    "description": "Edit group"
+  },
+  "group_copy": {
+    "message": "Copy",
+    "description": "Copy group"
+  },
+  "group_delete": {
+    "message": "Delete",
+    "description": "Delete group"
+  }
+}

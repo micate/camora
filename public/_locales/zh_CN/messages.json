@@ -1,0 +1,30 @@
+{
+  "extension_name": {
+    "message": "Camora",
+    "description": "扩展的名称"
+  },
+  "group_name": {
+    "message": "分组名称",
+    "description": "分组名称"
+  },
+  "group_name_required": {
+    "message": "分组名称不能为空",
+    "description": "分组名称不能为空"
+  },
+  "group_default_name": {
+    "message": "未命名分组",
+    "description": "默认分组名称"
+  },
+  "group_edit": {
+    "message": "编辑",
+    "description": "编辑分组"
+  },
+  "group_copy": {
+    "message": "复制",
+    "description": "复制分组"
+  },
+  "group_delete": {
+    "message": "删除",
+    "description": "删除分组"
+  }
+}

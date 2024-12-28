@@ -1,16 +1,28 @@
-import React, { useEffect } from 'react';
-import { Space, Input, Button, Divider, Checkbox, Switch } from 'antd';
-import { SearchOutlined, CopyOutlined, DeleteOutlined, EditOutlined, CheckSquareOutlined } from '@ant-design/icons';
+import { Space, Input, Button, Divider, Modal, Switch, Popconfirm } from 'antd';
+import { SearchOutlined, CopyOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
 import { Rule } from '../../types';
+import { uniqueId } from '../../utils/uniqueId';
 import './index.less';
 
 interface IRuleViewProps {
   rule: Rule;
+  onChange: (rule: Rule) => void;
+  onDelete: () => void;
 }
 
 export default function RuleView(props: IRuleViewProps) {
-  const { rule } = props;
+  const { rule, onChange, onDelete } = props;
   const { source, target } = rule || {};
+
+  const handleCopyRule = () => {
+    const newRule = { ...rule };
+    newRule.id = uniqueId();
+    onChange(newRule);
+  };
+
+  const handleToggleRule = (checked: boolean) => {
+    onChange({ ...rule, enabled: checked });
+  };
 
   return (
     <div className={`rule-view ${rule.enabled ? 'rule-view-enabled' : 'rule-view-disabled'}`}>
@@ -21,12 +33,17 @@ export default function RuleView(props: IRuleViewProps) {
         <div className="rule-view-target">
           <Input addonBefore={<EditOutlined />} size="small" value={target} />
           <Space className="rule-view-actions" size="small" direction="horizontal">
-            <Button size="small" icon={<CopyOutlined />} />
-            <Button size="small" icon={<DeleteOutlined />} />
+            <Button size="small" icon={<CopyOutlined />} onClick={handleCopyRule} />
+            <Popconfirm
+              title="Delete this rule?"
+              description="This action cannot be undone."
+              onConfirm={onDelete}
+              placement="bottomRight"
+            >
+              <Button size="small" icon={<DeleteOutlined />} />
+            </Popconfirm>
             <Divider type="vertical" />
-            {/* <Button size="small" icon={<CheckSquareOutlined />} style={{ backgroundColor: rule.enabled ? 'green' : 'gray' }} /> */}
-            {/* <Checkbox checked={rule.enabled} /> */}
-            <Switch checked={rule.enabled} />
+            <Switch checked={rule.enabled} onChange={handleToggleRule} />
           </Space>
         </div>
       </Space>

@@ -13,7 +13,7 @@ async function updateDynamicRules(ruleGroups: RuleGroup[]) {
   for (const group of ruleGroups) {
     if (group.enabled) {
       for (const rule of group.rules) {
-        if (rule.enabled) {
+        if (rule.enabled && rule.source && rule.target) {
           rules.push(rule);
         }
       }
@@ -25,20 +25,23 @@ async function updateDynamicRules(ruleGroups: RuleGroup[]) {
   // 移除所有现有规则
   const existingRules = await chrome.declarativeNetRequest.getDynamicRules()
   const existingRuleIds = existingRules.map(rule => rule.id)
-  await chrome.declarativeNetRequest.updateDynamicRules({
+  chrome.declarativeNetRequest.updateDynamicRules({
     removeRuleIds: existingRuleIds,
-    addRules: rules.map((rule, index) => ({
-      id: index + 1,
-      priority: 1,
-      action: {
-        type: 'redirect',
-        redirect: { url: rule.target }
-      },
-      condition: {
-        urlFilter: rule.source,
-        resourceTypes: ['script', 'stylesheet']
-      }
-    }))
+    addRules: rules.map((rule, index) => {
+      const conditionType = rule.source.startsWith('^') ? 'regex' : 'urlFilter';
+      return {
+        id: index + 1,
+        priority: 1,
+        action: {
+          type: 'redirect',
+          redirect: { url: rule.target }
+        },
+        condition: {
+          [conditionType]: rule.source,
+          resourceTypes: ['script', 'stylesheet']
+        }
+      };
+    })
   })
 }
 

@@ -1,196 +1,127 @@
 import React, { useEffect, useState } from 'react'
-import { Layout, List, Button, Form, Input, Modal, Avatar } from 'antd'
-import { PlusOutlined } from '@ant-design/icons'
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
-import GroupItem from './components/GroupItem';
+import { Layout, Form, Input, Modal } from 'antd'
 import GroupView from './components/GroupView';
+import Sidebar from './components/Sidebar';
 import type { RuleGroup } from './types'
-import Logo from './logo.png';
+import { createGroup } from './utils/createGroup';
 import './App.less';
 
-const { Sider, Content } = Layout
+const { Content } = Layout
 
 const App: React.FC = () => {
   const [groups, setGroups] = useState<RuleGroup[]>([])
   const [isModalVisible, setIsModalVisible] = useState(false)
   const [activeGroup, setActiveGroup] = useState<RuleGroup | null>(null)
+  const [editGroup, setEditGroup] = useState<RuleGroup | null>(null)
   const [form] = Form.useForm()
 
   useEffect(() => {
     chrome.storage.local.get('groups').then(({ groups = [] }) => {
-      const mockGroups = [
-        {
-          id: '1',
-          name: 'Group 1',
-          rules: [
-            {
-              id: '1',
-              source: 'https://example.com',
-              target: 'https://example.com',
-              enabled: true
-            },
-            {
-              id: '2',
-              source: 'https://example.com',
-              target: 'https://example.com',
-              enabled: false
-            },
-            {
-              id: '3',
-              source: 'https://example.com',
-              target: 'https://example.com',
-              enabled: true
-            },
-            {
-              id: '4',
-              source: 'https://example.com',
-              target: 'https://example.com',
-              enabled: false
-            },
-            {
-              id: '5',
-              source: 'https://example.com',
-              target: 'https://example.com',
-              enabled: true
-            },
-            {
-              id: '6',
-              source: 'https://example.com',
-              target: 'https://example.com',
-              enabled: false
-            }
-          ],
-          enabled: true
-        },
-        {
-          id: '2',
-          name: 'Group 2',
-          rules: [],
-          enabled: true
-        }
-      ];
-      // setGroups(groups)
-      setGroups(mockGroups);
-      setActiveGroup(mockGroups[0]);
+      if (groups?.length) {
+        setGroups(groups)
+        setActiveGroup(groups[0]);
+      } else {
+        const group = createGroup(chrome.i18n.getMessage('group_default_name'));
+        setGroups([group]);
+        setActiveGroup(group);
+      }
     })
   }, [])
 
-  const handleSave = async (values: any) => {
-    const newGroup: RuleGroup = {
-      id: Date.now().toString(),
-      name: values.name,
-      rules: [],
-      enabled: true
+  const handleAddGroup = () => {
+    setIsModalVisible(true)
+  }
+
+  const handleEditGroup = (group: RuleGroup) => {
+    setEditGroup(group)
+    setIsModalVisible(true)
+  }
+
+  const handleSaveGroup = async (values: any) => {
+    let updatedGroups;
+    if (editGroup) {
+      updatedGroups = groups.map((group) =>
+        group.id === editGroup.id ? { ...group, name: values.name } : group
+      );
+    } else {
+      const newGroup = createGroup(values.name)
+      updatedGroups = [...groups, newGroup]
     }
-    const updatedGroups = [...groups, newGroup]
     await chrome.storage.local.set({ groups: updatedGroups })
     setGroups(updatedGroups)
+    setEditGroup(null)
     setIsModalVisible(false)
     form.resetFields()
   }
 
-  const handleToggleGroup = async (groupId: string, enabled: boolean) => {
-    const updatedGroups = groups.map(group =>
-      group.id === groupId ? { ...group, enabled } : group
-    )
+  const handleDeleteGroup = async (group: RuleGroup) => {
+    const updatedGroups = groups.filter((g) => g.id !== group.id)
     await chrome.storage.local.set({ groups: updatedGroups })
     setGroups(updatedGroups)
+
+    const length = updatedGroups.length
+    if (length > 1) {
+      setActiveGroup(updatedGroups[length - 2])
+    } else {
+      setActiveGroup(updatedGroups[0] || null)
+    }
   }
 
-  const reorder = (list, startIndex, endIndex) => {
-    const result = Array.from(list);
-    const [removed] = result.splice(startIndex, 1);
-    result.splice(endIndex, 0, removed);
-  
-    return result;
-  };
-  
-  const getItemStyle = (isDragging, draggableStyle) => ({
-    // some basic styles to make the items look a bit nicer
-    userSelect: "none",
-  
-    // change background colour if dragging
-    background: isDragging ? "lightgreen" : "",
-    borderBottom: 'solid 1px #f0f0f0',
-  
-    // styles we need to apply on draggables
-    ...draggableStyle
-  });
+  const handleCopyGroup = async (group: RuleGroup) => {
+    const newGroup = createGroup(group.name)
+    newGroup.rules = JSON.parse(JSON.stringify(group.rules))
+    newGroup.enabled = group.enabled
+    const updatedGroups = [...groups, newGroup]
+    await chrome.storage.local.set({ groups: updatedGroups })
+    setGroups(updatedGroups)
+    setActiveGroup(newGroup)
+  }
+
+  const handleGroupChange = async (group: RuleGroup) => {
+    const updatedGroups = groups.map((g) => (g.id === group.id ? group : g))
+    await chrome.storage.local.set({ groups: updatedGroups })
+    setGroups(updatedGroups)
+    setActiveGroup(group)
+  }
 
   return (
     <Layout className="app-layout">
-      <Sider width={150} theme="light">
-        <div className="app-sider">
-          <div className="app-header">
-            <Avatar size="small" src={Logo} alt="Camora" />
-            <Button
-              size="small"
-              shape="circle"
-              icon={<PlusOutlined />}
-              onClick={() => setIsModalVisible(true)}
-            />
-          </div>
-          <DragDropContext>
-            <Droppable droppableId="droppable">
-              {(provided, snapshot) => (
-                <div
-                  className="app-items-list"
-                  {...provided.droppableProps}
-                  ref={provided.innerRef}
-                >
-                  {groups.map((group, index) => (
-                    <Draggable key={group.name} draggableId={group.name} index={index}>
-                      {(provided, snapshot) => (
-                        <div
-                          ref={provided.innerRef}
-                          {...provided.draggableProps}
-                          {...provided.dragHandleProps}
-                          style={getItemStyle(
-                            snapshot.isDragging,
-                            provided.draggableProps.style
-                          )}
-                        >
-                          <GroupItem
-                            active={activeGroup?.id === group.id}
-                            item={group}
-                            handleToggleGroup={handleToggleGroup}
-                            onClick={() => setActiveGroup(group)}
-                          />
-                        </div>
-                      )}
-                    </Draggable>
-                  ))}
-                  {provided.placeholder}
-                </div>
-              )}
-            </Droppable>
-          </DragDropContext>
-          <div className="app-footer">
-            Settings
-          </div>
-        </div>
-      </Sider>
+      <Sidebar
+        groups={groups}
+        onAddGroup={handleAddGroup}
+        onEditGroup={handleEditGroup}
+        onDeleteGroup={handleDeleteGroup}
+        onCopyGroup={handleCopyGroup}
+        activeGroup={activeGroup}
+        onChangeActiveGroup={setActiveGroup}
+        onChangeGroups={setGroups}
+      />
       <Content className="app-content">
         {activeGroup ? (
-          <GroupView key={activeGroup?.id} group={activeGroup} />
+          <GroupView
+            key={activeGroup?.id}
+            group={activeGroup}
+            onChange={handleGroupChange}
+          />
         ) : null}
       </Content>
 
       <Modal
-        title="Add Rule Group"
+        title={false}
         open={isModalVisible}
         onOk={form.submit}
         onCancel={() => setIsModalVisible(false)}
+        width={250}
       >
         <Form
           form={form}
           layout="vertical"
-          onFinish={handleSave}
+          onFinish={handleSaveGroup}
         >
           <Form.Item
             name="name"
-            label="Group Name"
-            rules={[{ required: true, message: 'Please input group name!' }]}
+            label={chrome.i18n.getMessage('group_name')}
+            rules={[{ required: true, message: chrome.i18n.getMessage('group_name_required') }]}
           >
             <Input />
           </Form.Item>
