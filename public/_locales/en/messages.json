@@ -7,6 +7,16 @@
     "message": "Group Name",
     "description": "Group name"
   },
+  "group_name_cloned": {
+    "message": "Clone of $name$",
+    "description": "Clone of group name",
+    "placeholders": {
+      "name": {
+        "content": "$1",
+        "example": "Unnamed Group"
+      }
+    }
+  },
   "group_name_required": {
     "message": "Group name cannot be empty",
     "description": "Group name cannot be empty"

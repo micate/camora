@@ -7,6 +7,16 @@
     "message": "分组名称",
     "description": "分组名称"
   },
+  "group_name_cloned": {
+    "message": "复制 $name$",
+    "description": "复制分组名称",
+    "placeholders": {
+      "name": {
+        "content": "$1",
+        "example": "未命名分组"
+      }
+    }
+  },
   "group_name_required": {
     "message": "分组名称不能为空",
     "description": "分组名称不能为空"

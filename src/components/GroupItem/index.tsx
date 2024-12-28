@@ -1,4 +1,4 @@
-import { Checkbox, Dropdown, Button } from 'antd';
+import { Checkbox, Dropdown, Button, Modal } from 'antd';
 import { MenuOutlined } from '@ant-design/icons';
 import { RuleGroup } from '../../types';
 import './index.less';
@@ -15,18 +15,34 @@ interface GroupItemProps {
 
 export default function GroupItem(props: GroupItemProps) {
   const { item, onToggleGroup, onEditGroup, onDeleteGroup, onCopyGroup, active, onClick } = props;
+
   const menuItems = [
     {
       key: 'edit',
       label: chrome.i18n.getMessage('group_edit'),
+      onClick: () => {
+        onEditGroup(item);
+      },
     },
     {
       key: 'copy',
       label: chrome.i18n.getMessage('group_copy'),
+      onClick: () => {
+        onCopyGroup(item);
+      },
     },
     {
       key: 'delete',
       label: chrome.i18n.getMessage('group_delete'),
+      onClick: () => {
+        Modal.confirm({
+          title: '确定要删除该分组吗?',
+          content: '同时会删除分组下的所有规则，删除后无法恢复',
+          onOk: () => {
+            onDeleteGroup(item);
+          },
+        });
+      },
     }
   ];
 

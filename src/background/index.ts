@@ -2,8 +2,8 @@ import { Rule, RuleGroup } from '../types'
 
 // 监听规则变化
 chrome.storage.onChanged.addListener((changes) => {
-  if (changes.rules) {
-    updateDynamicRules(changes.rules.newValue)
+  if (changes.groups) {
+    updateDynamicRules(changes.groups.newValue)
   }
 })
 
@@ -28,16 +28,16 @@ async function updateDynamicRules(ruleGroups: RuleGroup[]) {
   chrome.declarativeNetRequest.updateDynamicRules({
     removeRuleIds: existingRuleIds,
     addRules: rules.map((rule, index) => {
-      const conditionType = rule.source.startsWith('^') ? 'regex' : 'urlFilter';
+      const { source, sourceType, target, targetType} = rule;
       return {
         id: index + 1,
         priority: 1,
         action: {
           type: 'redirect',
-          redirect: { url: rule.target }
+          redirect: { [targetType || 'url']: target }
         },
         condition: {
-          [conditionType]: rule.source,
+          [sourceType || 'urlFilter']: source,
           resourceTypes: ['script', 'stylesheet']
         }
       };
@@ -46,6 +46,6 @@ async function updateDynamicRules(ruleGroups: RuleGroup[]) {
 }
 
 // 初始化规则
-chrome.storage.local.get('rules').then(({ rules = [] }) => {
-  updateDynamicRules(rules)
+chrome.storage.local.get('groups').then(({ groups }) => {
+  updateDynamicRules(groups)
 })

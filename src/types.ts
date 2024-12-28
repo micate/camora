@@ -1,7 +1,9 @@
 export interface Rule {
   id: string
   source: string
+  sourceType?: 'regexFilter' | 'urlFilter'
   target: string
+  targetType?: 'regexSubstitution' | 'url'
   enabled: boolean
 }
 

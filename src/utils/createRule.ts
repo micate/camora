@@ -3,7 +3,7 @@ import { uniqueId } from "./uniqueId";
 
 export function createRule(): Rule {
   return {
-    id: uniqueId(),
+    id: uniqueId('rule'),
     source: '',
     target: '',
     enabled: true,

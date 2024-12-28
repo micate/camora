@@ -14,6 +14,7 @@ const App: React.FC = () => {
   const [activeGroup, setActiveGroup] = useState<RuleGroup | null>(null)
   const [editGroup, setEditGroup] = useState<RuleGroup | null>(null)
   const [form] = Form.useForm()
+  const inputRef = React.createRef()
 
   useEffect(() => {
     chrome.storage.local.get('groups').then(({ groups = [] }) => {
@@ -27,6 +28,12 @@ const App: React.FC = () => {
       }
     })
   }, [])
+
+  useEffect(() => {
+    if (editGroup) {
+      form.setFieldsValue({ name: editGroup.name })
+    }
+  }, [editGroup])
 
   const handleAddGroup = () => {
     setIsModalVisible(true)
@@ -49,6 +56,7 @@ const App: React.FC = () => {
     }
     await chrome.storage.local.set({ groups: updatedGroups })
     setGroups(updatedGroups)
+    setActiveGroup(editGroup || updatedGroups[updatedGroups.length - 1]);
     setEditGroup(null)
     setIsModalVisible(false)
     form.resetFields()
@@ -68,10 +76,12 @@ const App: React.FC = () => {
   }
 
   const handleCopyGroup = async (group: RuleGroup) => {
-    const newGroup = createGroup(group.name)
+    const newGroup = createGroup(chrome.i18n.getMessage('group_name_cloned', group.name))
     newGroup.rules = JSON.parse(JSON.stringify(group.rules))
     newGroup.enabled = group.enabled
-    const updatedGroups = [...groups, newGroup]
+    const sourceIndex = groups.findIndex((g) => g.id === group.id)
+    const updatedGroups = [...groups]
+    updatedGroups.splice(sourceIndex + 1, 0, newGroup)
     await chrome.storage.local.set({ groups: updatedGroups })
     setGroups(updatedGroups)
     setActiveGroup(newGroup)
@@ -111,6 +121,11 @@ const App: React.FC = () => {
         open={isModalVisible}
         onOk={form.submit}
         onCancel={() => setIsModalVisible(false)}
+        afterOpenChange={(open) => {
+          if (open && inputRef.current) {
+            inputRef.current.focus()
+          }
+        }}
         width={250}
       >
         <Form
@@ -123,7 +138,7 @@ const App: React.FC = () => {
             label={chrome.i18n.getMessage('group_name')}
             rules={[{ required: true, message: chrome.i18n.getMessage('group_name_required') }]}
           >
-            <Input />
+            <Input ref={inputRef} />
           </Form.Item>
         </Form>
       </Modal>
