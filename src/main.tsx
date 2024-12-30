@@ -6,14 +6,23 @@ import { ConfigProvider, theme } from 'antd'
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <ConfigProvider
+      componentSize="small"
       theme={{
         "token": {
           "fontSize": 12,
           "sizeStep": 4,
           "borderRadius": 4,
-          "wireframe": false
+          "wireframe": true
         },
-        algorithm: theme.compactAlgorithm
+        "components": {
+          "Modal": {
+            "titleFontSize": 12,
+            "titleLineHeight": 1.2,
+            "controlHeight": 28,
+            "algorithm": true
+          }
+        },
+        "algorithm": theme.compactAlgorithm
       }}
     >
       <App />

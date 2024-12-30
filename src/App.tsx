@@ -17,10 +17,10 @@ const App: React.FC = () => {
   const inputRef = React.createRef()
 
   useEffect(() => {
-    chrome.storage.local.get('groups').then(({ groups = [] }) => {
+    chrome.storage.local.get(['activeGroupId', 'groups']).then(({ activeGroupId, groups = [] }) => {
       if (groups?.length) {
         setGroups(groups)
-        setActiveGroup(groups[0]);
+        setActiveGroup(groups.find((g: RuleGroup) => g.id === activeGroupId) || groups[0])
       } else {
         const group = createGroup(chrome.i18n.getMessage('group_default_name'));
         setGroups([group]);
@@ -28,6 +28,12 @@ const App: React.FC = () => {
       }
     })
   }, [])
+
+  useEffect(() => {
+    if (activeGroup) {
+      chrome.storage.local.set({ activeGroupId: activeGroup.id })
+    }
+  }, [activeGroup])
 
   useEffect(() => {
     if (editGroup) {
