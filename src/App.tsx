@@ -4,6 +4,7 @@ import GroupView from './components/GroupView';
 import Sidebar from './components/Sidebar';
 import type { RuleGroup } from './types'
 import { createGroup } from './utils/createGroup';
+import Logo from './logo.png';
 import './App.less';
 
 const { Content } = Layout
@@ -13,6 +14,7 @@ const App: React.FC = () => {
   const [isModalVisible, setIsModalVisible] = useState(false)
   const [activeGroup, setActiveGroup] = useState<RuleGroup | null>(null)
   const [editGroup, setEditGroup] = useState<RuleGroup | null>(null)
+  const [landing, setLanding] = useState(true)
   const [form] = Form.useForm()
   const inputRef = React.createRef()
 
@@ -26,6 +28,8 @@ const App: React.FC = () => {
         setGroups([group]);
         setActiveGroup(group);
       }
+
+      setLanding(false)
     })
   }, [])
 
@@ -148,6 +152,13 @@ const App: React.FC = () => {
           </Form.Item>
         </Form>
       </Modal>
+
+      <div className={`app-landing ${landing ? 'app-landing-visible' : 'app-landing-hidden'}`}>
+        <div className="app-landing-content">
+          <img className="app-landing-logo" src={Logo} alt="Camora" />
+          <h1 className="app-landing-title">Camora</h1>
+        </div>
+      </div>
     </Layout>
   )
 }
