@@ -36,5 +36,21 @@
   "group_delete": {
     "message": "Delete",
     "description": "Delete group"
+  },
+  "dynamic_rules": {
+    "message": "Dynamic Rules",
+    "description": "Dynamic rules"
+  },
+  "regex_rules": {
+    "message": "Regex Rules",
+    "description": "Regex rules"
+  },
+  "group_delete_title": {
+    "message": "Delete Group",
+    "description": "Delete group"
+  },
+  "group_delete_confirm": {
+    "message": "All rules under this group will be deleted and cannot be recovered.",
+    "description": "Delete group confirmation information"
   }
 }

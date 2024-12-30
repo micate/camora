@@ -27,6 +27,13 @@ export default function GroupView(props: IGroupViewProps) {
     });
   };
 
+  const handleCopyRule = (rule: Rule) => {
+    onChange({
+      ...group,
+      rules: [...rules, rule],
+    });
+  };
+
   const handleDeleteRule = (ruleId: string) => {
     onChange({
       ...group,
@@ -42,8 +49,6 @@ export default function GroupView(props: IGroupViewProps) {
           <Button
             size="small"
             icon={<PlusOutlined />}
-            ghost
-            type="primary"
             shape="circle"
             onClick={handleAddRule}
           />
@@ -56,6 +61,7 @@ export default function GroupView(props: IGroupViewProps) {
               key={rule.id}
               rule={rule}
               onChange={handleRuleChange}
+              onCopyRule={handleCopyRule}
               onDelete={() => handleDeleteRule(rule.id)}
             />
           ))}

@@ -1,9 +1,19 @@
+export enum SourceType {
+  REGEX_FILTER = 'regexFilter',
+  URL_FILTER = 'urlFilter',
+}
+
+export enum TargetType {
+  REGEX_SUBSTITUTION = 'regexSubstitution',
+  URL = 'url',
+}
+
 export interface Rule {
   id: string
   source: string
-  sourceType?: 'regexFilter' | 'urlFilter'
+  sourceType?: SourceType
   target: string
-  targetType?: 'regexSubstitution' | 'url'
+  targetType?: TargetType
   enabled: boolean
 }
 

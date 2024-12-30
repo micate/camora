@@ -36,5 +36,21 @@
   "group_delete": {
     "message": "删除",
     "description": "删除分组"
+  },
+  "dynamic_rules": {
+    "message": "动态规则",
+    "description": "动态规则"
+  },
+  "regex_rules": {
+    "message": "正则规则",
+    "description": "正则规则"
+  },
+  "group_delete_title": {
+    "message": "确定要删除该分组吗？",
+    "description": "删除分组"
+  },
+  "group_delete_confirm": {
+    "message": "分组下的所有规则都将同步删除且无法恢复",
+    "description": "删除分组确认信息"
   }
 }

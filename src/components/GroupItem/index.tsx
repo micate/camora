@@ -36,8 +36,8 @@ export default function GroupItem(props: GroupItemProps) {
       label: chrome.i18n.getMessage('group_delete'),
       onClick: () => {
         Modal.confirm({
-          title: '确定要删除该分组吗?',
-          content: '同时会删除分组下的所有规则，删除后无法恢复',
+          title: chrome.i18n.getMessage('group_delete_title'),
+          content: chrome.i18n.getMessage('group_delete_confirm'),
           onOk: () => {
             onDeleteGroup(item);
           },

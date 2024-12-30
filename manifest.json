@@ -18,7 +18,7 @@
     "service_worker": "src/background/index.ts",
     "type": "module"
   },
-  "default_locale": "zh_CN",
+  "default_locale": "en",
   "icons": {
     "16": "icons/icon.png",
     "48": "icons/icon.png",

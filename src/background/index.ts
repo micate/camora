@@ -1,7 +1,15 @@
-import { Rule, RuleGroup } from '../types'
+import { getEnabledRules } from '../utils/getEnabledRules'
+import { RuleGroup } from '../types'
 
 // 监听规则变化
 chrome.storage.onChanged.addListener((changes) => {
+  // 总开关改变
+  if (changes.enabled && !changes.enabled.newValue) {
+    updateDynamicRules([])
+    return;
+  }
+
+  // 规则改变
   if (changes.groups) {
     updateDynamicRules(changes.groups.newValue)
   }
@@ -9,43 +17,46 @@ chrome.storage.onChanged.addListener((changes) => {
 
 // 更新动态规则
 async function updateDynamicRules(ruleGroups: RuleGroup[]) {
-  const rules: Rule[] = [];
-  for (const group of ruleGroups) {
-    if (group.enabled) {
-      for (const rule of group.rules) {
-        if (rule.enabled && rule.source && rule.target) {
-          rules.push(rule);
-        }
-      }
-    }
-  }
+  // 找到所有启用的规则
+  const rules = getEnabledRules(ruleGroups)
+  console.log('Enabled input rules', rules)
 
-  console.info('rules', rules);
-  
   // 移除所有现有规则
   const existingRules = await chrome.declarativeNetRequest.getDynamicRules()
   const existingRuleIds = existingRules.map(rule => rule.id)
-  chrome.declarativeNetRequest.updateDynamicRules({
-    removeRuleIds: existingRuleIds,
-    addRules: rules.map((rule, index) => {
-      const { source, sourceType, target, targetType} = rule;
-      return {
-        id: index + 1,
-        priority: 1,
-        action: {
-          type: 'redirect',
-          redirect: { [targetType || 'url']: target }
-        },
-        condition: {
-          [sourceType || 'urlFilter']: source,
-          resourceTypes: ['script', 'stylesheet']
-        }
-      };
-    })
+
+  // 转化为 Chrome 声明性网络请求规则
+  const netRequestRules = rules.map((rule, index) => {
+    const { source, sourceType, target, targetType } = rule;
+    return {
+      id: index + 1,
+      priority: 1,
+      action: {
+        type: 'redirect',
+        redirect: { [targetType || 'url']: target }
+      },
+      condition: {
+        [sourceType || 'urlFilter']: source,
+        resourceTypes: ['script', 'stylesheet']
+      }
+    };
   })
+  console.info("Net request rules:", netRequestRules)
+
+  // 添加新规则
+  try {
+    chrome.declarativeNetRequest.updateDynamicRules({
+      removeRuleIds: existingRuleIds,
+      addRules: netRequestRules,
+    })
+  } catch (error) {
+    console.error("Failed to add dynamic rules:", error);
+  }
 }
 
 // 初始化规则
-chrome.storage.local.get('groups').then(({ groups }) => {
-  updateDynamicRules(groups)
+chrome.storage.local.get(['enabled', 'groups']).then(({ enabled, groups }) => {
+  if (enabled) {
+    updateDynamicRules(groups)
+  }
 })

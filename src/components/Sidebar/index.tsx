@@ -16,10 +16,24 @@ interface ISidebarProps {
   onChangeGroups: (groups: RuleGroup[]) => void;
   activeGroup: RuleGroup | null;
   onChangeActiveGroup: (group: RuleGroup | null) => void;
+
+  rulesCount: number;
+  regexRulesCount: number;
 }
 
 export default function Sidebar(props: ISidebarProps) {
-  const { groups, onAddGroup, onEditGroup, onDeleteGroup, onCopyGroup, onChangeGroups, activeGroup, onChangeActiveGroup } = props;
+  const {
+    groups,
+    onAddGroup,
+    onEditGroup,
+    onDeleteGroup,
+    onCopyGroup,
+    onChangeGroups,
+    activeGroup,
+    onChangeActiveGroup,
+    rulesCount,
+    regexRulesCount
+  } = props;
 
   const handleToggleGroup = async (groupId: string, enabled: boolean) => {
     const updatedGroups = groups.map(group =>
@@ -50,7 +64,7 @@ export default function Sidebar(props: ISidebarProps) {
   return (
     <Sider width={150} theme="light">
       <div className="app-sider">
-        <Header onAddGroup={onAddGroup} />
+        <Header onToggleEnabled={handleToggleGroup} />
         <DragDropContext>
           <Droppable droppableId="droppable">
             {(provided, snapshot) => (
@@ -89,7 +103,11 @@ export default function Sidebar(props: ISidebarProps) {
             )}
           </Droppable>
         </DragDropContext>
-        <Footer />
+        <Footer
+          rulesCount={rulesCount}
+          regexRulesCount={regexRulesCount}
+          onAddGroup={onAddGroup}
+        />
       </div>
     </Sider>
   );

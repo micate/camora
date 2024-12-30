@@ -1,14 +1,22 @@
-import { PlusOutlined } from "@ant-design/icons";
-import { Avatar, Button } from "antd";
+import { useEffect, useState } from "react";
+import { Avatar, Switch } from "antd";
 import Logo from "../../logo.png";
 import "./index.less";
 
-interface ISidebarProps {
-  onAddGroup: () => void;
-}
+export default function Header() {
+  const [enabled, setEnabled] = useState<boolean>(false);
 
-export default function Header(props: ISidebarProps) {
-  const { onAddGroup } = props;
+  useEffect(() => {
+    chrome.storage.local.get('enabled').then(({ enabled: savedEnabled }) => {
+      setEnabled(savedEnabled);
+    });
+  }, []);
+
+  const handleToggleRule = () => {
+    const newEnabled = !enabled
+    setEnabled(newEnabled);
+    chrome.storage.local.set({ enabled: newEnabled });
+  };
 
   return (
     <div className="app-header">
@@ -21,12 +29,7 @@ export default function Header(props: ISidebarProps) {
         </span>
       </span>
       <span className="app-header-actions">
-        <Button
-          size="small"
-          shape="circle"
-          icon={<PlusOutlined />}
-          onClick={onAddGroup}
-        />
+        <Switch checked={enabled} onChange={handleToggleRule} />
       </span>
     </div>
   )

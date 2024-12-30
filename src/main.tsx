@@ -1,7 +1,11 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import App from './App'
 import { ConfigProvider, theme } from 'antd'
+import zhCN from 'antd/locale/zh_CN';
+import enUS from 'antd/locale/en_US';
+import App from './App'
+
+const language = chrome.i18n.getUILanguage();
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
@@ -12,7 +16,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
           "fontSize": 12,
           "sizeStep": 4,
           "borderRadius": 4,
-          "wireframe": true
+          "wireframe": false
         },
         "components": {
           "Modal": {
@@ -24,6 +28,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
         },
         "algorithm": theme.compactAlgorithm
       }}
+      locale={language === 'zh-CN' ? zhCN : enUS}
     >
       <App />
     </ConfigProvider>

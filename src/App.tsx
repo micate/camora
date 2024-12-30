@@ -15,6 +15,8 @@ const App: React.FC = () => {
   const [activeGroup, setActiveGroup] = useState<RuleGroup | null>(null)
   const [editGroup, setEditGroup] = useState<RuleGroup | null>(null)
   const [landing, setLanding] = useState(true)
+  const [rulesCount, setRulesCount] = useState(0)
+  const [regexRulesCount, setRegexRulesCount] = useState(0)
   const [form] = Form.useForm()
   const inputRef = React.createRef()
 
@@ -31,6 +33,24 @@ const App: React.FC = () => {
 
       setLanding(false)
     })
+  }, [])
+
+  useEffect(() => {
+    const countEnabledRules = () => {
+      chrome.declarativeNetRequest.getDynamicRules().then((rules: chrome.declarativeNetRequest.Rule[]) => {
+        setRulesCount(rules.length)
+        setRegexRulesCount(rules.filter((rule) => rule.condition.regexFilter).length)
+      })
+    }
+
+    // 初始化时计算一次
+    countEnabledRules()
+
+    // 监听规则变化重新计算
+    chrome.storage.onChanged.addListener(countEnabledRules)
+    return () => {
+      chrome.storage.onChanged.removeListener(countEnabledRules)
+    }
   }, [])
 
   useEffect(() => {
@@ -115,6 +135,9 @@ const App: React.FC = () => {
         activeGroup={activeGroup}
         onChangeActiveGroup={setActiveGroup}
         onChangeGroups={setGroups}
+
+        rulesCount={rulesCount}
+        regexRulesCount={regexRulesCount}
       />
       <Content className="app-content">
         {activeGroup ? (
@@ -147,6 +170,7 @@ const App: React.FC = () => {
             name="name"
             label={chrome.i18n.getMessage('group_name')}
             rules={[{ required: true, message: chrome.i18n.getMessage('group_name_required') }]}
+            style={{ marginBottom: 0 }}
           >
             <Input ref={inputRef} />
           </Form.Item>

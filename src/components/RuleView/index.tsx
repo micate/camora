@@ -3,32 +3,42 @@ import { Space, Input, Button, Divider, Switch, Popconfirm } from 'antd';
 import { SearchOutlined, CopyOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
 import { Rule } from '../../types';
 import { uniqueId } from '../../utils/uniqueId';
+import { determineFilterType, determineRedirectType } from '../../utils/determineInputType';
 import './index.less';
 
 interface IRuleViewProps {
   rule: Rule;
   onChange: (rule: Rule) => void;
+  onCopyRule: (rule: Rule) => void;
   onDelete: () => void;
 }
 
 export default function RuleView(props: IRuleViewProps) {
-  const { rule, onChange, onDelete } = props;
+  const { rule, onChange, onCopyRule, onDelete } = props;
   const { source, target } = rule || {};
   const [draftSource, setDraftSource] = useState(source);
   const [draftTarget, setDraftTarget] = useState(target);
 
   const handleSourceChange = () => {
-    onChange({ ...rule, source: draftSource })
+    if (draftSource === source) {
+      return;
+    }
+    const sourceType = determineFilterType(draftSource).type;
+    onChange({ ...rule, source: draftSource, sourceType })
   };
 
   const handleTargetChange = () => {
-    onChange({ ...rule, target: draftTarget })
+    if (draftTarget === target) {
+      return;
+    }
+    const targetType = determineRedirectType(draftTarget).type;
+    onChange({ ...rule, target: draftTarget, targetType });
   };
 
   const handleCopyRule = () => {
     const newRule = { ...rule };
     newRule.id = uniqueId('rule');
-    onChange(newRule);
+    onCopyRule(newRule);
   };
 
   const handleToggleRule = (checked: boolean) => {
@@ -40,7 +50,15 @@ export default function RuleView(props: IRuleViewProps) {
       <Space className="rule-view-content" size="small" direction="vertical">
         <div className="rule-view-source">
           <Input
-            addonBefore={<SearchOutlined />}
+            addonBefore={(
+              <a
+                target="_blank"
+                href="https://developer.chrome.com/docs/extensions/reference/api/declarativeNetRequest#url_filter_syntax"
+                style={{ cursor: 'help' }}
+              >
+                <SearchOutlined />
+              </a>
+            )}
             size="small"
             value={draftSource}
             onChange={(e) => setDraftSource(e.target.value)}
@@ -50,7 +68,15 @@ export default function RuleView(props: IRuleViewProps) {
         </div>
         <div className="rule-view-target">
           <Input
-            addonBefore={<EditOutlined />}
+            addonBefore={(
+              <a
+                target="_blank"
+                href="https://developer.chrome.com/docs/extensions/reference/api/declarativeNetRequest#url_filter_syntax"
+                style={{ cursor: 'help' }}
+              >
+                <EditOutlined />
+              </a>
+            )}
             size="small"
             value={draftTarget}
             onChange={(e) => setDraftTarget(e.target.value)}
