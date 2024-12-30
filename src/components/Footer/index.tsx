@@ -1,12 +1,7 @@
 import { SettingOutlined, PlusOutlined } from '@ant-design/icons';
+import { green, yellow, red } from '@ant-design/colors';
 import { Button, Progress, Space } from 'antd';
 import './index.less';
-
-const conicColors = {
-  '0%': '#87d068',
-  '50%': '#ffe58f',
-  '100%': '#ffccc7',
-};
 
 interface IFooterProps {
   rulesCount: number;
@@ -14,16 +9,22 @@ interface IFooterProps {
   onAddGroup: () => void;
 }
 
+const conicColors = {
+  '0%': green[5],
+  '50%': yellow[5],
+  '100%': red[5],
+};
+
 export default function Footer(props: IFooterProps) {
   const { rulesCount, regexRulesCount, onAddGroup } = props;
   const { MAX_NUMBER_OF_DYNAMIC_RULES, MAX_NUMBER_OF_REGEX_RULES } = chrome.declarativeNetRequest;
 
   const rulesFormat = (percent?: number | undefined) => {
-    return `${chrome.i18n.getMessage('dynamic_rules')} ${(percent || 0).toFixed(2)}% | ${rulesCount} / ${MAX_NUMBER_OF_DYNAMIC_RULES}`
+    return `${chrome.i18n.getMessage('dynamic_rules')} ${Math.max(percent || 0, 1).toFixed(0)}% | ${rulesCount} / ${MAX_NUMBER_OF_DYNAMIC_RULES}`
   }
 
   const regexRulesFormat = (percent?: number | undefined) => {
-    return `${chrome.i18n.getMessage('regex_rules')} ${(percent || 0).toFixed(2)}% | ${regexRulesCount} / ${MAX_NUMBER_OF_REGEX_RULES}`
+    return `${chrome.i18n.getMessage('regex_rules')} ${Math.max(percent || 0, 1).toFixed(0)}% | ${regexRulesCount} / ${MAX_NUMBER_OF_REGEX_RULES}`
   }
 
   return (
@@ -60,6 +61,7 @@ export default function Footer(props: IFooterProps) {
               size={14}
               percent={(regexRulesCount / MAX_NUMBER_OF_REGEX_RULES) * 100}
               strokeColor={conicColors}
+              trailColor="#f0f0f0"
               format={regexRulesFormat}
             />
           </Space>

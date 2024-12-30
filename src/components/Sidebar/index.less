@@ -1,0 +1,27 @@
+.app-sidebar {
+  width: 150px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.app-items-list {
+  flex: 1;
+  overflow: hidden;
+  overflow-y: auto;
+
+  &-empty {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  > div:last-child {
+    border-bottom: none !important;
+  }
+}

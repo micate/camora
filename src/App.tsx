@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react'
-import { Layout, Form, Input, Modal } from 'antd'
+import { Layout, Form, Input, Modal, Empty } from 'antd'
+import Landing from './components/Landing';
 import GroupView from './components/GroupView';
 import Sidebar from './components/Sidebar';
 import type { RuleGroup } from './types'
 import { createGroup } from './utils/createGroup';
-import Logo from './logo.png';
 import './App.less';
 
 const { Content } = Layout
@@ -76,17 +76,19 @@ const App: React.FC = () => {
 
   const handleSaveGroup = async (values: any) => {
     let updatedGroups;
+    let newGroup: RuleGroup;
     if (editGroup) {
+      newGroup = { ...editGroup, name: values.name }
       updatedGroups = groups.map((group) =>
-        group.id === editGroup.id ? { ...group, name: values.name } : group
+        group.id === editGroup.id ? newGroup : group
       );
     } else {
-      const newGroup = createGroup(values.name)
+      newGroup = createGroup(values.name)
       updatedGroups = [...groups, newGroup]
     }
     await chrome.storage.local.set({ groups: updatedGroups })
     setGroups(updatedGroups)
-    setActiveGroup(editGroup || updatedGroups[updatedGroups.length - 1]);
+    setActiveGroup(newGroup);
     setEditGroup(null)
     setIsModalVisible(false)
     form.resetFields()
@@ -139,15 +141,19 @@ const App: React.FC = () => {
         rulesCount={rulesCount}
         regexRulesCount={regexRulesCount}
       />
-      <Content className="app-content">
-        {activeGroup ? (
+      {activeGroup ? (
+        <Content className="app-content">
           <GroupView
             key={activeGroup?.id}
             group={activeGroup}
             onChange={handleGroupChange}
           />
-        ) : null}
-      </Content>
+        </Content>
+      ) : (
+        <Content className="app-content app-content-empty">
+          <Empty description={false} />
+        </Content>
+      )}
 
       <Modal
         title={false}
@@ -177,12 +183,7 @@ const App: React.FC = () => {
         </Form>
       </Modal>
 
-      <div className={`app-landing ${landing ? 'app-landing-visible' : 'app-landing-hidden'}`}>
-        <div className="app-landing-content">
-          <img className="app-landing-logo" src={Logo} alt="Camora" />
-          <h1 className="app-landing-title">Camora</h1>
-        </div>
-      </div>
+      <Landing visible={landing} />
     </Layout>
   )
 }
