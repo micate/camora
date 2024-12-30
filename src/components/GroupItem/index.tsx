@@ -1,9 +1,12 @@
 import { Checkbox, Dropdown, Button, Modal } from 'antd';
 import { MenuOutlined } from '@ant-design/icons';
+import { useSortable } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 import { RuleGroup } from '../../types';
 import './index.less';
 
 interface GroupItemProps {
+  id: string;
   item: RuleGroup;
   onToggleGroup: (enabled: boolean) => void;
   onEditGroup: (group: RuleGroup) => void;
@@ -15,6 +18,21 @@ interface GroupItemProps {
 
 export default function GroupItem(props: GroupItemProps) {
   const { item, onToggleGroup, onEditGroup, onDeleteGroup, onCopyGroup, active, onClick } = props;
+
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+  } = useSortable({
+    id: props.id,
+  });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  };
 
   const menuItems = [
     {
@@ -47,13 +65,22 @@ export default function GroupItem(props: GroupItemProps) {
   ];
 
   return (
-    <div className={`group-item ${active ? 'group-item-active' : 'group-item-inactive'}`}>
+    <div
+      ref={setNodeRef}
+      className={`group-item ${active ? 'group-item-active' : 'group-item-inactive'}`}
+      style={style}
+    >
       <div className="group-name">
         <Checkbox
           checked={item.enabled}
           onChange={(e) => onToggleGroup(e.target.checked)}
         />
-        <span className="group-name-text" onClick={onClick}>
+        <span
+          className="group-name-text"
+          onClick={onClick}
+          {...attributes}
+          {...listeners}
+        >
           {item.name}
         </span>
       </div>

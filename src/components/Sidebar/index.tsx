@@ -1,5 +1,19 @@
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { Layout, Empty } from 'antd';
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core';
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
+import { restrictToVerticalAxis } from '@dnd-kit/modifiers';
 import { RuleGroup } from "@/types";
 import Footer from "../Footer";
 import GroupItem from "../GroupItem";
@@ -36,6 +50,13 @@ export default function Sidebar(props: ISidebarProps) {
     regexRulesCount
   } = props;
 
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
+
   const handleToggleGroup = async (groupId: string, enabled: boolean) => {
     const updatedGroups = groups.map(group =>
       group.id === groupId ? { ...group, enabled } : group
@@ -44,67 +65,50 @@ export default function Sidebar(props: ISidebarProps) {
     onChangeGroups(updatedGroups)
   }
 
-  const reorder = (list, startIndex, endIndex) => {
-    const result = Array.from(list);
-    const [removed] = result.splice(startIndex, 1);
-    result.splice(endIndex, 0, removed);
-
-    return result;
-  };
-
-  const getItemStyle = (isDragging, draggableStyle) => ({
-    // some basic styles to make the items look a bit nicer
-    userSelect: "none",
-    // change background colour if dragging
-    background: isDragging ? "lightgreen" : "",
-    borderBottom: 'solid 1px #f0f0f0',
-    // styles we need to apply on draggables
-    ...draggableStyle
-  });
+  const handleDragEnd = (event: any) => {
+    const {active, over} = event;
+    
+    if (active.id !== over.id) {
+      const oldIndex = groups.findIndex(group => group.id === active.id);
+      const newIndex = groups.findIndex(group => group.id === over.id);
+      const updatedGroups = arrayMove(groups, oldIndex, newIndex);
+      chrome.storage.local.set({ groups: updatedGroups })
+      onChangeGroups(updatedGroups);
+    }
+  }
 
   return (
     <Sider width={150} theme="light">
       <div className="app-sidebar">
         <Header />
         {groups?.length ? (
-          <DragDropContext>
-            <Droppable droppableId="droppable">
-              {(provided, snapshot) => (
-                <div
-                  className="app-items-list"
-                  {...provided.droppableProps}
-                  ref={provided.innerRef}
-                >
-                  {groups.map((group, index) => (
-                    <Draggable key={group.name} draggableId={group.name} index={index}>
-                      {(provided, snapshot) => (
-                        <div
-                          ref={provided.innerRef}
-                          {...provided.draggableProps}
-                          {...provided.dragHandleProps}
-                          style={getItemStyle(
-                            snapshot.isDragging,
-                            provided.draggableProps.style
-                          )}
-                        >
-                          <GroupItem
-                            active={activeGroup?.id === group.id}
-                            item={group}
-                            onToggleGroup={(enabled: boolean) => handleToggleGroup(group.id, enabled)}
-                            onCopyGroup={onCopyGroup}
-                            onEditGroup={onEditGroup}
-                            onDeleteGroup={onDeleteGroup}
-                            onClick={() => onChangeActiveGroup(group)}
-                          />
-                        </div>
-                      )}
-                    </Draggable>
-                  ))}
-                  {provided.placeholder}
-                </div>
-              )}
-            </Droppable>
-          </DragDropContext>
+          <div className="app-items-list">
+            <DndContext
+              sensors={sensors}
+              collisionDetection={closestCenter}
+              modifiers={[restrictToVerticalAxis]}
+              onDragEnd={handleDragEnd}
+            >
+              <SortableContext
+                items={groups}
+                strategy={verticalListSortingStrategy}
+              >
+                {groups.map((group: any) => (
+                  <GroupItem
+                    key={group.id}
+                    id={group.id}
+                    active={activeGroup?.id === group.id}
+                    item={group}
+                    onToggleGroup={(enabled: boolean) => handleToggleGroup(group.id, enabled)}
+                    onCopyGroup={onCopyGroup}
+                    onEditGroup={onEditGroup}
+                    onDeleteGroup={onDeleteGroup}
+                    onClick={() => onChangeActiveGroup(group)}
+                  />
+                ))}
+              </SortableContext>
+            </DndContext>
+          </div>
         ) : (
           <div className="app-items-list app-items-list-empty">
             <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={false} />
