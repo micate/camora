@@ -12,7 +12,8 @@
     "<all_urls>"
   ],
   "action": {
-    "default_popup": "index.html"
+    "default_popup": "index.html",
+    "default_icon": "icons/icon.png"
   },
   "background": {
     "service_worker": "src/background/index.ts",

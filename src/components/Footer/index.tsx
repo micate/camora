@@ -17,7 +17,7 @@ const conicColors = {
 
 export default function Footer(props: IFooterProps) {
   const { rulesCount, regexRulesCount, onAddGroup } = props;
-  const { MAX_NUMBER_OF_DYNAMIC_RULES, MAX_NUMBER_OF_REGEX_RULES } = chrome.declarativeNetRequest;
+  const { MAX_NUMBER_OF_DYNAMIC_RULES, MAX_NUMBER_OF_REGEX_RULES } = chrome.declarativeNetRequest as any;
 
   const rulesFormat = (percent?: number | undefined) => {
     return `${chrome.i18n.getMessage('dynamic_rules')} ${Math.max(percent || 0, 1).toFixed(0)}% | ${rulesCount} / ${MAX_NUMBER_OF_DYNAMIC_RULES}`

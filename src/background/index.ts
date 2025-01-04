@@ -32,12 +32,12 @@ async function updateDynamicRules(ruleGroups: RuleGroup[]) {
       id: index + 1,
       priority: 1,
       action: {
-        type: 'redirect',
+        type: chrome.declarativeNetRequest.RuleActionType.REDIRECT,
         redirect: { [targetType || 'url']: target }
       },
       condition: {
         [sourceType || 'urlFilter']: source,
-        resourceTypes: ['script', 'stylesheet']
+        resourceTypes: [chrome.declarativeNetRequest.ResourceType.SCRIPT, chrome.declarativeNetRequest.ResourceType.STYLESHEET]
       }
     };
   })

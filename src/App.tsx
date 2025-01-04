@@ -18,7 +18,7 @@ const App: React.FC = () => {
   const [rulesCount, setRulesCount] = useState(0)
   const [regexRulesCount, setRegexRulesCount] = useState(0)
   const [form] = Form.useForm()
-  const inputRef = React.createRef()
+  const inputRef = React.createRef<any>()
 
   useEffect(() => {
     chrome.storage.local.get(['activeGroupId', 'groups']).then(({ activeGroupId, groups = [] }) => {

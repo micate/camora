@@ -1,4 +1,3 @@
-import React from 'react';
 import { Space, Button, Empty } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import RuleView from '../RuleView';
