@@ -1,25 +1,15 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { ConfigProvider, theme } from 'antd'
 import zhCN from 'antd/locale/zh_CN';
 import enUS from 'antd/locale/en_US';
 import App from './App'
+import { useDarkMode } from './hooks/useDarkMode';
 
 const language = chrome.i18n.getUILanguage();
 
 function Main() {
-  const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
-  const [darkTheme, setDarkTheme] = useState(prefersDarkScheme.matches);
-
-  useEffect(() => {
-    const onDarkThemeChange = () => {
-      setDarkTheme(prefersDarkScheme.matches);
-    };
-    prefersDarkScheme.addEventListener('change', onDarkThemeChange);
-    return () => {
-      prefersDarkScheme.removeEventListener('change', onDarkThemeChange);
-    };
-  }, []);
+  const darkMode = useDarkMode();
 
   return (
     <React.StrictMode>
@@ -41,8 +31,8 @@ function Main() {
               "algorithm": true
             }
           },
-          // "algorithm": darkTheme ? [theme.darkAlgorithm, theme.compactAlgorithm] : theme.compactAlgorithm
-          "algorithm": theme.compactAlgorithm
+          "algorithm": darkMode ? [theme.darkAlgorithm, theme.compactAlgorithm] : theme.compactAlgorithm
+          // "algorithm": theme.compactAlgorithm
         }}
         locale={language === 'zh-CN' ? zhCN : enUS}
       >
