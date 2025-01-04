@@ -9,11 +9,19 @@
   cursor: pointer;
 
   &:hover {
-    background-color: #f3fafd;
+    background-color: var(--ant-color-primary-hover);
+
+    .group-name-text {
+      color: var(--ant-color-text-light-solid);
+    }
   }
 
   &-active {
-    background-color: #e6f7ff;
+    background-color: var(--ant-color-primary-active);
+
+    .group-name-text {
+      color: var(--ant-color-text-light-solid);
+    }
   }
 }
 
@@ -27,6 +35,7 @@
     flex: 1;
     display: block;
     padding: 6px;
+    color: var(--ant-color-text);
   }
 }
 
