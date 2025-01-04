@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Space, Input, Button, Divider, Switch, Popconfirm } from 'antd';
+import { Space, Input, Button, Divider, Switch, Popconfirm, Tooltip } from 'antd';
 import { SearchOutlined, CopyOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
 import { Rule } from '../../types';
 import { uniqueId } from '../../utils/uniqueId';
@@ -84,14 +84,18 @@ export default function RuleView(props: IRuleViewProps) {
             onBlur={handleTargetChange}
           />
           <Space className="rule-view-actions" size="small" direction="horizontal">
-            <Button size="small" icon={<CopyOutlined />} onClick={handleCopyRule} />
+            <Tooltip title={chrome.i18n.getMessage('copy_rule')} placement="top">
+              <Button size="small" icon={<CopyOutlined />} onClick={handleCopyRule} />
+            </Tooltip>
             <Popconfirm
-              title="Delete this rule?"
-              description="This action cannot be undone."
+              title={chrome.i18n.getMessage('delete_rule')}
+              description={chrome.i18n.getMessage('delete_rule_confirmation')}
               onConfirm={onDelete}
-              placement="bottomRight"
+              placement="bottom"
             >
-              <Button size="small" icon={<DeleteOutlined />} />
+              <Tooltip title={chrome.i18n.getMessage('delete_rule')} placement="top">
+                <Button size="small" icon={<DeleteOutlined />} />
+              </Tooltip>
             </Popconfirm>
             <Divider type="vertical" />
             <Switch checked={rule.enabled} onChange={handleToggleRule} />

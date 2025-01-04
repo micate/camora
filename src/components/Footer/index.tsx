@@ -1,6 +1,6 @@
 import { SettingOutlined, PlusOutlined } from '@ant-design/icons';
 import { green, yellow, red } from '@ant-design/colors';
-import { Button, Progress, Space } from 'antd';
+import { Button, Progress, Space, Tooltip } from 'antd';
 import './index.less';
 
 interface IFooterProps {
@@ -38,13 +38,15 @@ export default function Footer(props: IFooterProps) {
         />
       </div>
       <div className="app-footer-center">
-        <Button
-          size="small"
-          shape="circle"
-          type="primary"
-          icon={<PlusOutlined />}
-          onClick={onAddGroup}
-        />
+        <Tooltip title={chrome.i18n.getMessage('add_group')} placement="top">
+          <Button
+            size="small"
+            shape="circle"
+            type="primary"
+            icon={<PlusOutlined />}
+            onClick={onAddGroup}
+          />
+        </Tooltip>
       </div>
       <div className="app-footer-right">
         <div className="app-usage">

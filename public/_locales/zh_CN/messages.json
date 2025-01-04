@@ -3,6 +3,10 @@
     "message": "Camora",
     "description": "扩展的名称"
   },
+  "add_group": {
+    "message": "添加分组",
+    "description": "添加分组"
+  },
   "group_name": {
     "message": "分组名称",
     "description": "分组名称"
@@ -52,5 +56,21 @@
   "group_delete_confirm": {
     "message": "分组下的所有规则都将同步删除且无法恢复",
     "description": "删除分组确认信息"
+  },
+  "add_rule": {
+    "message": "添加规则",
+    "description": "添加规则"
+  },
+  "copy_rule": {
+    "message": "复制规则",
+    "description": "复制规则"
+  },
+  "delete_rule": {
+    "message": "删除规则",
+    "description": "删除规则"  
+  },
+  "delete_rule_confirmation": {
+    "message": "确定要删除该规则吗？",
+    "description": "删除规则确认信息"
   }
 }

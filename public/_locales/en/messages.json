@@ -3,6 +3,10 @@
     "message": "Camora",
     "description": "The name of the extension"
   },
+  "add_group": {
+    "message": "Add Group",
+    "description": "Add group"
+  },
   "group_name": {
     "message": "Group Name",
     "description": "Group name"
@@ -52,5 +56,21 @@
   "group_delete_confirm": {
     "message": "All rules under this group will be deleted and cannot be recovered.",
     "description": "Delete group confirmation information"
+  },
+  "add_rule": {
+    "message": "Add Rule",
+    "description": "Add rule"
+  },
+  "copy_rule": {
+    "message": "Copy Rule",
+    "description": "Copy rule"
+  },
+  "delete_rule": {
+    "message": "Delete Rule",
+    "description": "Delete rule"
+  },
+  "delete_rule_confirmation": {
+    "message": "Are you sure you want to delete this rule?",
+    "description": "Delete rule confirmation information"
   }
 }
