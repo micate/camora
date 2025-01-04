@@ -7,6 +7,7 @@ interface IFooterProps {
   rulesCount: number;
   regexRulesCount: number;
   onAddGroup: () => void;
+  onToggleSetting: (visible: boolean) => void;
 }
 
 const conicColors = {
@@ -16,7 +17,7 @@ const conicColors = {
 };
 
 export default function Footer(props: IFooterProps) {
-  const { rulesCount, regexRulesCount, onAddGroup } = props;
+  const { rulesCount, regexRulesCount, onAddGroup, onToggleSetting } = props;
   const { MAX_NUMBER_OF_DYNAMIC_RULES, MAX_NUMBER_OF_REGEX_RULES } = chrome.declarativeNetRequest as any;
 
   const rulesFormat = (percent?: number | undefined) => {
@@ -35,6 +36,7 @@ export default function Footer(props: IFooterProps) {
           type="text"
           shape="circle"
           icon={<SettingOutlined />}
+          onClick={() => onToggleSetting(true)}
         />
       </div>
       <div className="app-footer-center">

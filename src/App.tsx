@@ -3,6 +3,7 @@ import { Layout, Form, Input, Modal, Empty } from 'antd'
 import Landing from './components/Landing';
 import GroupView from './components/GroupView';
 import Sidebar from './components/Sidebar';
+import Setting from './components/Setting';
 import type { RuleGroup } from './types'
 import { createGroup } from './utils/createGroup';
 import './App.less';
@@ -17,6 +18,7 @@ const App: React.FC = () => {
   const [landing, setLanding] = useState(true)
   const [rulesCount, setRulesCount] = useState(0)
   const [regexRulesCount, setRegexRulesCount] = useState(0)
+  const [settingVisible, setSettingVisible] = useState(false)
   const [form] = Form.useForm()
   const inputRef = React.createRef<any>()
 
@@ -137,7 +139,7 @@ const App: React.FC = () => {
         activeGroup={activeGroup}
         onChangeActiveGroup={setActiveGroup}
         onChangeGroups={setGroups}
-
+        onToggleSetting={setSettingVisible}
         rulesCount={rulesCount}
         regexRulesCount={regexRulesCount}
       />
@@ -184,6 +186,8 @@ const App: React.FC = () => {
       </Modal>
 
       <Landing visible={landing} />
+
+      <Setting visible={settingVisible} onToggleSetting={setSettingVisible} />
     </Layout>
   )
 }

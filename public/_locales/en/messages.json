@@ -72,5 +72,17 @@
   "delete_rule_confirmation": {
     "message": "Are you sure you want to delete this rule?",
     "description": "Delete rule confirmation information"
+  },
+  "syncing": {
+    "message": "Syncing...",
+    "description": "Syncing"
+  },
+  "sync_success": {
+    "message": "Synced successfully",
+    "description": "Synced successfully"
+  },
+  "sync_error": {
+    "message": "Sync error",
+    "description": "Sync error"
   }
 }

@@ -1,8 +1,27 @@
 import { getEnabledRules } from '../utils/getEnabledRules'
 import { RuleGroup } from '../types'
+import { debounce } from '../utils/debounce'
+
+const syncToChromeStorageSync = debounce(() => {
+  chrome.storage.local.set({ syncStatus: { loading: true } });
+  chrome.storage.local.get(['enabled', 'groups', 'activeGroupId']).then(({ enabled, groups, activeGroupId }) => {
+    chrome.storage.sync.set({ enabled, groups, activeGroupId }, () => {
+      if (chrome.runtime.lastError) {
+        console.error("Sync error:", chrome.runtime.lastError.message);
+        chrome.storage.local.set({ syncStatus: { error: chrome.runtime.lastError.message } });
+      } else {
+        chrome.storage.local.set({ syncStatus: { success: new Date().toLocaleString() } });
+      }
+    })
+  })
+}, 2000);
 
 // 监听规则变化
 chrome.storage.onChanged.addListener((changes) => {
+  if (changes.enabled || changes.groups || changes.activeGroupId) {
+    syncToChromeStorageSync();
+  }
+
   // 总开关改变
   if (changes.enabled && !changes.enabled.newValue) {
     updateDynamicRules([])

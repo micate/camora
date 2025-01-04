@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
-import { Avatar, Switch } from "antd";
+import { Avatar, Space, Switch } from "antd";
 import Logo from "../../logo.png";
+import SyncStatus from "../SyncStatus";
 import "./index.less";
 
 export default function Header() {
@@ -28,9 +29,10 @@ export default function Header() {
           Camora
         </span>
       </span>
-      <span className="app-header-actions">
+      <Space className="app-header-actions" size="small" direction="horizontal">
+        <SyncStatus />
         <Switch checked={enabled} onChange={handleToggleRule} />
-      </span>
+      </Space>
     </div>
   )
 }

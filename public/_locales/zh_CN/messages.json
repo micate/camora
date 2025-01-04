@@ -72,5 +72,17 @@
   "delete_rule_confirmation": {
     "message": "确定要删除该规则吗？",
     "description": "删除规则确认信息"
+  },
+  "syncing": {
+    "message": "同步中...",
+    "description": "同步中"
+  },
+  "sync_success": {
+    "message": "同步成功",
+    "description": "同步成功"
+  },
+  "sync_error": {
+    "message": "同步失败",
+    "description": "同步失败"
   }
 }

@@ -31,7 +31,7 @@ interface ISidebarProps {
   onChangeGroups: (groups: RuleGroup[]) => void;
   activeGroup: RuleGroup | null;
   onChangeActiveGroup: (group: RuleGroup | null) => void;
-
+  onToggleSetting: (visible: boolean) => void;
   rulesCount: number;
   regexRulesCount: number;
 }
@@ -46,6 +46,7 @@ export default function Sidebar(props: ISidebarProps) {
     onChangeGroups,
     activeGroup,
     onChangeActiveGroup,
+    onToggleSetting,
     rulesCount,
     regexRulesCount
   } = props;
@@ -118,6 +119,7 @@ export default function Sidebar(props: ISidebarProps) {
           rulesCount={rulesCount}
           regexRulesCount={regexRulesCount}
           onAddGroup={onAddGroup}
+          onToggleSetting={onToggleSetting}
         />
       </div>
     </Sider>

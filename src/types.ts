@@ -23,3 +23,9 @@ export interface RuleGroup {
   rules: Rule[]
   enabled: boolean
 }
+
+export interface ISyncStatus {
+  loading?: boolean
+  success?: string
+  error?: string
+}
