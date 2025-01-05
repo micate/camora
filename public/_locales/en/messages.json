@@ -84,5 +84,35 @@
   "sync_error": {
     "message": "Sync error",
     "description": "Sync error"
+  },
+  "import_rules": {
+    "message": "Import Rules",
+    "description": "Import rules"
+  },
+  "export_rules": {
+    "message": "Export Rules",
+    "description": "Export rules"
+  },
+  "export_success": {
+    "message": "Export success",
+    "description": "Export success"
+  },
+  "export_content_empty": {
+    "message": "No rules to export",
+    "description": "No rules to export"
+  },
+  "import_confirm_title": {
+    "message": "Are you sure you want to import $length$ groups of rules?",
+    "description": "Import rules confirmation information",
+    "placeholders": {
+      "length": {
+        "content": "$1",
+        "example": "1"
+      }
+    }
+  },
+  "import_confirm_content": {
+    "message": "Importing will overwrite your existing rules",
+    "description": "Import rules confirmation information"
   }
 }

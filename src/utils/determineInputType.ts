@@ -2,8 +2,7 @@ import { SourceType, TargetType } from "../types";
 
 function isValidUrl(input: string) {
   try {
-    new URL(input); // 使用 URL 构造器尝试解析
-    return true; // 如果构造器成功，说明是一个有效的 URL
+    return new URL(input).toString() === input;
   } catch (e) {
     return false; // 否则不是有效的 URL
   }

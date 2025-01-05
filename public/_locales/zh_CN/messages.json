@@ -84,5 +84,43 @@
   "sync_error": {
     "message": "同步失败",
     "description": "同步失败"
+  },
+  "import_rules": {
+    "message": "导入规则",
+    "description": "导入规则"
+  },
+  "export_rules": {
+    "message": "导出规则",
+    "description": "导出规则"
+  },
+  "export_success": {
+    "message": "导出成功",
+    "description": "导出成功"
+  },
+  "export_content_empty": {
+    "message": "暂无可导出的规则",
+    "description": "暂无可导出的规则"
+  },
+  "import_confirm_title": {
+    "message": "确定要导入 $length$ 组规则吗？",
+    "description": "导入规则确认信息",
+    "placeholders": {
+      "length": {
+        "content": "$1",
+        "example": "1"
+      }
+    }
+  },
+  "import_confirm_content": {
+    "message": "导入后原有的规则将被覆盖",
+    "description": "导入规则确认信息"
+  },
+  "import_error_title": {
+    "message": "导入失败",
+    "description": "导入失败"
+  },
+  "import_error_content_empty": {
+    "message": "文件中无可导入的规则",
+    "description": "导入失败"
   }
 }
