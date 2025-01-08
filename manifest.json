@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Camora",
   "version": "1.0.1",
-  "description": "A Chrome extension for replacing web resources based on user-defined rules",
+  "description": "Redirect web page resources based on user-defined rules, useful for frontend development.",
   "permissions": [
     "storage",
     "declarativeNetRequest"
