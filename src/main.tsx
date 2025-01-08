@@ -18,7 +18,7 @@ function Main() {
         theme={{
           "cssVar": true,
           "token": {
-            "fontSize": 12,
+            "fontSize": 14,
             "sizeStep": 4,
             "borderRadius": 4,
             "wireframe": false

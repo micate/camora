@@ -1,11 +1,10 @@
 {
   "manifest_version": 3,
   "name": "Camora",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A Chrome extension for replacing web resources based on user-defined rules",
   "permissions": [
     "storage",
-    "webRequest",
     "declarativeNetRequest"
   ],
   "host_permissions": [

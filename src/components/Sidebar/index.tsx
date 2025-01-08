@@ -81,7 +81,7 @@ export default function Sidebar(props: ISidebarProps) {
   }
 
   return (
-    <Sider width={150} theme="light">
+    <Sider width={180} theme="light">
       <div className="app-sidebar">
         <Header />
         {groups?.length ? (

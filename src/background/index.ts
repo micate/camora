@@ -16,6 +16,21 @@ const syncToChromeStorageSync = debounce(() => {
   })
 }, 2000);
 
+const updateBadge = () => {
+  Promise.all([
+    chrome.storage.local.get('enabled'),
+    chrome.declarativeNetRequest.getDynamicRules(),
+  ]).then(([{ enabled }, rules]) => {
+    if (enabled) {
+      chrome.action.setBadgeText({ text: rules.length.toString() });
+      chrome.action.setBadgeBackgroundColor({ color: "rgb(22, 104, 220)" });
+    } else {
+      chrome.action.setBadgeText({ text: "OFF" });
+      chrome.action.setBadgeBackgroundColor({ color: "rgba(255, 255, 255, 0.25)" });
+    }
+  });
+};
+
 // 监听规则变化
 chrome.storage.onChanged.addListener((changes) => {
   if (changes.enabled || changes.groups || changes.activeGroupId) {
@@ -23,14 +38,25 @@ chrome.storage.onChanged.addListener((changes) => {
   }
 
   // 总开关改变
-  if (changes.enabled && !changes.enabled.newValue) {
-    updateDynamicRules([])
+  if (changes.enabled) {
+    if (changes.enabled.newValue) {
+      // 打开总开关
+      chrome.storage.local.get(['groups']).then(({ groups }) => {
+        updateDynamicRules(groups)
+        updateBadge()
+      })
+    } else {
+      // 关闭总开关
+      updateDynamicRules([])
+      updateBadge()
+    }
     return;
   }
 
   // 规则改变
   if (changes.groups) {
     updateDynamicRules(changes.groups.newValue)
+    updateBadge()
   }
 })
 
@@ -78,4 +104,5 @@ chrome.storage.local.get(['enabled', 'groups']).then(({ enabled, groups }) => {
   if (enabled) {
     updateDynamicRules(groups)
   }
+  updateBadge()
 })
