@@ -4,8 +4,8 @@ import { debounce } from '../utils/debounce'
 
 const syncToChromeStorageSync = debounce(() => {
   chrome.storage.local.set({ syncStatus: { loading: true } });
-  chrome.storage.local.get(['enabled', 'groups', 'activeGroupId']).then(({ enabled, groups, activeGroupId }) => {
-    chrome.storage.sync.set({ enabled, groups, activeGroupId }, () => {
+  chrome.storage.local.get(['groups']).then(({ groups }) => {
+    chrome.storage.sync.set({ groups }, () => {
       if (chrome.runtime.lastError) {
         console.error("Sync error:", chrome.runtime.lastError.message);
         chrome.storage.local.set({ syncStatus: { error: chrome.runtime.lastError.message } });
@@ -14,7 +14,7 @@ const syncToChromeStorageSync = debounce(() => {
       }
     })
   })
-}, 2000);
+}, 5000);
 
 const updateBadge = () => {
   Promise.all([
@@ -32,31 +32,33 @@ const updateBadge = () => {
 };
 
 // 监听规则变化
-chrome.storage.onChanged.addListener((changes) => {
-  if (changes.enabled || changes.groups || changes.activeGroupId) {
-    syncToChromeStorageSync();
-  }
-
-  // 总开关改变
-  if (changes.enabled) {
-    if (changes.enabled.newValue) {
-      // 打开总开关
-      chrome.storage.local.get(['groups']).then(({ groups }) => {
-        updateDynamicRules(groups)
+chrome.storage.onChanged.addListener((changes, area) => {
+  if (area === 'local') {
+    if (changes.groups) {
+      syncToChromeStorageSync();
+    }
+  
+    // 总开关改变
+    if (changes.enabled) {
+      if (changes.enabled.newValue) {
+        // 打开总开关
+        chrome.storage.local.get(['groups']).then(({ groups }) => {
+          updateDynamicRules(groups)
+          updateBadge()
+        })
+      } else {
+        // 关闭总开关
+        updateDynamicRules([])
         updateBadge()
-      })
-    } else {
-      // 关闭总开关
-      updateDynamicRules([])
+      }
+      return;
+    }
+  
+    // 规则改变
+    if (changes.groups) {
+      updateDynamicRules(changes.groups.newValue)
       updateBadge()
     }
-    return;
-  }
-
-  // 规则改变
-  if (changes.groups) {
-    updateDynamicRules(changes.groups.newValue)
-    updateBadge()
   }
 })
 
