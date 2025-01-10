@@ -2,8 +2,15 @@ import { getEnabledRules } from '../utils/getEnabledRules'
 import { RuleGroup } from '../types'
 import { debounce } from '../utils/debounce'
 
+let isSyncing = false;
 const syncToChromeStorageSync = debounce(() => {
+  if (isSyncing) {
+    return;
+  }
+
+  isSyncing = true;
   chrome.storage.local.set({ syncStatus: { loading: true } });
+
   chrome.storage.local.get(['groups']).then(({ groups }) => {
     chrome.storage.sync.set({ groups }, () => {
       if (chrome.runtime.lastError) {
@@ -12,6 +19,8 @@ const syncToChromeStorageSync = debounce(() => {
       } else {
         chrome.storage.local.set({ syncStatus: { success: new Date().toLocaleString() } });
       }
+
+      isSyncing = false;
     })
   })
 }, 5000);
