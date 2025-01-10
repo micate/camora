@@ -14,14 +14,14 @@ export interface Rule {
   sourceType?: SourceType
   target: string
   targetType?: TargetType
-  enabled: boolean
+  enabled?: boolean
 }
 
 export interface RuleGroup {
   id: string
   name: string
   rules: Rule[]
-  enabled: boolean
+  enabled?: boolean
 }
 
 export interface ISyncStatus {

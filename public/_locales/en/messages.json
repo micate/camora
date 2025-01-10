@@ -114,5 +114,29 @@
   "import_confirm_content": {
     "message": "Importing will overwrite your existing rules",
     "description": "Import rules confirmation information"
+  },
+  "sync_confirm_title": {
+    "message": "You have $length$ unsynced rules",
+    "description": "Sync rules confirmation information",
+    "placeholders": {
+      "length": {
+        "content": "$1",
+        "example": "1"
+      }
+    }
+  },
+  "sync_confirm_content": {
+    "message": "Whether to use remote rules ($sync$ groups) to replace local rules ($local$ groups)?",
+    "description": "Sync rules confirmation information",
+    "placeholders": {
+      "sync": {
+        "content": "$1",
+        "example": "1"
+      },
+      "local": {
+        "content": "$2",
+        "example": "2"
+      }
+    }
   }
 }

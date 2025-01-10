@@ -122,5 +122,23 @@
   "import_error_content_empty": {
     "message": "文件中无可导入的规则",
     "description": "导入失败"
+  },
+  "sync_confirm_title": {
+    "message": "有未同步的规则",
+    "description": "同步规则确认信息"
+  },
+  "sync_confirm_content": {
+    "message": "是否使用远程规则（$sync$ 组）替换本地规则（$local$ 组）？",
+    "description": "同步规则确认信息",
+    "placeholders": {
+      "sync": {
+        "content": "$1",
+        "example": "1"
+      },
+      "local": {
+        "content": "$2",
+        "example": "2"
+      }
+    }
   }
 }
