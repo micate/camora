@@ -5,8 +5,8 @@ import GroupView from './components/GroupView';
 import Sidebar from './components/Sidebar';
 import type { RuleGroup } from './types'
 import { createGroup } from './utils/createGroup';
-import { cleanupGroups } from './utils/cleanupGroups';
-import { hashMessage } from './utils/hashMessage';
+import { useRulesUsage } from './hooks/useRulesUsage';
+import { useSyncCheck } from './hooks/useSyncCheck';
 import './App.less';
 
 const { Content } = Layout
@@ -17,10 +17,11 @@ const App: React.FC = () => {
   const [activeGroup, setActiveGroup] = useState<RuleGroup | null>(null)
   const [editGroup, setEditGroup] = useState<RuleGroup | null>(null)
   const [landing, setLanding] = useState(true)
-  const [rulesCount, setRulesCount] = useState(0)
-  const [regexRulesCount, setRegexRulesCount] = useState(0)
+  const { rulesCount, regexRulesCount } = useRulesUsage()
   const [form] = Form.useForm()
   const inputRef = React.createRef<any>()
+
+  useSyncCheck()
 
   useEffect(() => {
     chrome.storage.local.get(['activeGroupId', 'groups']).then(({ activeGroupId, groups = [] }) => {
@@ -38,72 +39,7 @@ const App: React.FC = () => {
   }, [])
 
   useEffect(() => {
-    const countEnabledRules = () => {
-      chrome.declarativeNetRequest.getDynamicRules().then((rules: chrome.declarativeNetRequest.Rule[]) => {
-        setRulesCount(rules.length)
-        setRegexRulesCount(rules.filter((rule) => rule.condition.regexFilter).length)
-      })
-    }
-
-    // 初始化时计算一次
-    countEnabledRules()
-
-    // 监听规则变化重新计算
-    chrome.storage.onChanged.addListener(countEnabledRules)
-    return () => {
-      chrome.storage.onChanged.removeListener(countEnabledRules)
-    }
-  }, [])
-
-  useEffect(() => {
-    const sync = async () => {
-      const [local, sync] = await Promise.all([
-        chrome.storage.local.get('groups'),
-        chrome.storage.sync.get('groups'), 
-      ]);
-
-      if (!sync.groups?.length) {
-        return;
-      }
-
-      const localGroupString = JSON.stringify(cleanupGroups(local.groups));
-      const syncGroupString = JSON.stringify(cleanupGroups(sync.groups));
-      if (localGroupString === syncGroupString) {
-        return;
-      }
-
-      const syncGroupHash = await hashMessage(syncGroupString);
-      chrome.storage.local.get('ignoredSync').then(({ ignoredSync }) => {
-        if (ignoredSync === syncGroupHash) {
-          return;
-        }
-
-        Modal.confirm({
-          title: chrome.i18n.getMessage('sync_confirm_title'),
-          content: chrome.i18n.getMessage('sync_confirm_content', [`${sync.groups.length}`, `${local.groups.length}`]),
-          onOk: () => {
-            chrome.storage.local.set({
-              groups: sync.groups,
-              activeGroupId: sync.groups[0].id,
-              syncStatus: { success: new Date().toLocaleString() }
-            });
-            location.reload();
-          },
-          onCancel: () => {
-            chrome.storage.local.set({
-              ignoredSync: syncGroupHash,
-            });
-          }
-        });
-      })
-    }
-    sync()
-  }, []);
-
-  useEffect(() => {
-    if (activeGroup) {
-      chrome.storage.local.set({ activeGroupId: activeGroup.id })
-    }
+    chrome.storage.local.set({ activeGroupId: activeGroup?.id })
   }, [activeGroup])
 
   useEffect(() => {
