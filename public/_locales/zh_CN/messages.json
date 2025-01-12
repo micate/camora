@@ -140,5 +140,9 @@
         "example": "2"
       }
     }
+  },
+  "search_placeholder": {
+    "message": "搜索",
+    "description": "搜索"
   }
 }

@@ -15,38 +15,30 @@ import {
 } from '@dnd-kit/sortable';
 import { restrictToVerticalAxis } from '@dnd-kit/modifiers';
 import { RuleGroup } from "@/types";
-import Footer from "../Footer";
 import GroupItem from "../GroupItem";
-import Header from "../Header";
 import './index.less';
 
 const { Sider } = Layout
 
 interface ISidebarProps {
   groups: RuleGroup[];
-  onAddGroup: () => void;
   onEditGroup: (group: RuleGroup) => void;
   onDeleteGroup: (group: RuleGroup) => void;
   onCopyGroup: (group: RuleGroup) => void;
   onChangeGroups: (groups: RuleGroup[]) => void;
   activeGroup: RuleGroup | null;
   onChangeActiveGroup: (group: RuleGroup | null) => void;
-  rulesCount: number;
-  regexRulesCount: number;
 }
 
 export default function Sidebar(props: ISidebarProps) {
   const {
     groups,
-    onAddGroup,
     onEditGroup,
     onDeleteGroup,
     onCopyGroup,
     onChangeGroups,
     activeGroup,
     onChangeActiveGroup,
-    rulesCount,
-    regexRulesCount
   } = props;
 
   const sensors = useSensors(
@@ -83,7 +75,6 @@ export default function Sidebar(props: ISidebarProps) {
   return (
     <Sider width={180} theme="light">
       <div className="app-sidebar">
-        <Header />
         {groups?.length ? (
           <div className="app-items-list">
             <DndContext
@@ -117,11 +108,6 @@ export default function Sidebar(props: ISidebarProps) {
             <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={false} />
           </div>
         )}
-        <Footer
-          rulesCount={rulesCount}
-          regexRulesCount={regexRulesCount}
-          onAddGroup={onAddGroup}
-        />
       </div>
     </Sider>
   );

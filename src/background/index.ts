@@ -43,9 +43,9 @@ const updateBadge = () => {
 // 监听规则变化
 chrome.storage.onChanged.addListener((changes, area) => {
   if (area === 'local') {
-    if (changes.groups) {
-      syncToChromeStorageSync();
-    }
+    // if (changes.groups) {
+    //   syncToChromeStorageSync();
+    // }
   
     // 总开关改变
     if (changes.enabled) {

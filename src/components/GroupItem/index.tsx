@@ -1,4 +1,5 @@
-import { Checkbox, Dropdown, Button, Modal } from 'antd';
+import { useState } from 'react';
+import { Checkbox, Dropdown, Button, Modal, MenuProps } from 'antd';
 import { MenuOutlined } from '@ant-design/icons';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
@@ -18,6 +19,7 @@ interface GroupItemProps {
 
 export default function GroupItem(props: GroupItemProps) {
   const { item, onToggleGroup, onEditGroup, onDeleteGroup, onCopyGroup, active, onClick } = props;
+  const [hover, setHover] = useState(false);
 
   const {
     attributes,
@@ -34,7 +36,7 @@ export default function GroupItem(props: GroupItemProps) {
     transition,
   };
 
-  const menuItems = [
+  const menuItems: MenuProps['items'] = [
     {
       key: 'edit',
       label: chrome.i18n.getMessage('group_edit'),
@@ -50,7 +52,11 @@ export default function GroupItem(props: GroupItemProps) {
       },
     },
     {
+      type: 'divider',
+    },
+    {
       key: 'delete',
+      danger: true,
       label: chrome.i18n.getMessage('group_delete'),
       onClick: () => {
         Modal.confirm({
@@ -67,7 +73,7 @@ export default function GroupItem(props: GroupItemProps) {
   return (
     <div
       ref={setNodeRef}
-      className={`group-item ${active ? 'group-item-active' : 'group-item-inactive'}`}
+      className={`group-item ${hover ? 'group-item-hover' : ''} ${active ? 'group-item-active' : 'group-item-inactive'}`}
       style={style}
     >
       <div className="group-name">
@@ -90,6 +96,9 @@ export default function GroupItem(props: GroupItemProps) {
           placement="bottom"
           autoAdjustOverflow
           arrow
+          onOpenChange={(open) => {
+            setHover(open);
+          }}
         >
           <Button
             size="small"

@@ -1,4 +1,4 @@
-import { Space, Button, Empty } from 'antd';
+import { Space, Button, Empty, Divider } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import RuleView from '../RuleView';
 import { Rule, RuleGroup } from '../../types';
@@ -42,19 +42,16 @@ export default function GroupView(props: IGroupViewProps) {
 
   return (
     <div className="group-view">
-      <div className="group-view-header">
+      {/* <div className="group-view-header">
         <div className="group-view-name">{name}</div>
-        <div className="group-view-actions">
-          <Button
-            size="small"
-            icon={<PlusOutlined />}
-            shape="circle"
-            onClick={handleAddRule}
-          />
-        </div>
-      </div>
+      </div> */}
       {rules?.length ? (
-        <Space className="group-view-content" size="small" direction="vertical">
+        <Space
+          className="group-view-content"
+          size="small"
+          direction="vertical"
+          split={<Divider type="horizontal" style={{ margin: '4px 0' }} />}
+        >
           {(rules || []).map((rule) => (
             <RuleView
               key={rule.id}
@@ -64,10 +61,19 @@ export default function GroupView(props: IGroupViewProps) {
               onDelete={() => handleDeleteRule(rule.id)}
             />
           ))}
+          <div className="group-view-actions">
+            <Button size="small" onClick={handleAddRule}>
+              <PlusOutlined />
+            </Button>
+          </div>
         </Space>
       ) : (
         <Space className="group-view-content group-view-empty" size="small" direction="vertical">
-          <Empty description={false} />
+          <Empty description={false}>
+            <Button size="small" onClick={handleAddRule}>
+              <PlusOutlined />
+            </Button>
+          </Empty>
         </Space>
       )}
     </div>

@@ -1,6 +1,15 @@
 .app-layout {
   height: 100vh;
   overflow: hidden;
+  flex-direction: column !important;
+}
+
+.app-content-container {
+  flex: 1;
+  height: 0;
+  display: flex;
+  flex-direction: row;
+  background: var(--ant-layout-light-sider-bg);
 }
 
 .app-content {

@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import { Layout, Form, Input, Modal, Empty } from 'antd'
 import Landing from './components/Landing';
+import Header from './components/Header';
 import GroupView from './components/GroupView';
 import Sidebar from './components/Sidebar';
 import type { RuleGroup } from './types'
 import { createGroup } from './utils/createGroup';
-import { useRulesUsage } from './hooks/useRulesUsage';
-import { useSyncCheck } from './hooks/useSyncCheck';
 import './App.less';
 
 const { Content } = Layout
@@ -17,11 +16,8 @@ const App: React.FC = () => {
   const [activeGroup, setActiveGroup] = useState<RuleGroup | null>(null)
   const [editGroup, setEditGroup] = useState<RuleGroup | null>(null)
   const [landing, setLanding] = useState(true)
-  const { rulesCount, regexRulesCount } = useRulesUsage()
   const [form] = Form.useForm()
   const inputRef = React.createRef<any>()
-
-  useSyncCheck()
 
   useEffect(() => {
     chrome.storage.local.get(['activeGroupId', 'groups']).then(({ activeGroupId, groups = [] }) => {
@@ -82,11 +78,13 @@ const App: React.FC = () => {
     await chrome.storage.local.set({ groups: updatedGroups })
     setGroups(updatedGroups)
 
-    const length = updatedGroups.length
-    if (length > 1) {
-      setActiveGroup(updatedGroups[length - 2])
+    const index = groups.findIndex((g: RuleGroup) => g.id === group?.id);
+    if (groups[index + 1]) {
+      setActiveGroup(groups[index + 1])
+    } else if (groups[index - 1]) {
+      setActiveGroup(groups[index - 1])
     } else {
-      setActiveGroup(updatedGroups[0] || null)
+      setActiveGroup(updatedGroups[0])
     }
   }
 
@@ -111,31 +109,38 @@ const App: React.FC = () => {
 
   return (
     <Layout className="app-layout">
-      <Sidebar
-        groups={groups}
+      <Header
+        activeGroup={activeGroup || null}
         onAddGroup={handleAddGroup}
-        onEditGroup={handleEditGroup}
-        onDeleteGroup={handleDeleteGroup}
-        onCopyGroup={handleCopyGroup}
-        activeGroup={activeGroup}
-        onChangeActiveGroup={setActiveGroup}
-        onChangeGroups={setGroups}
-        rulesCount={rulesCount}
-        regexRulesCount={regexRulesCount}
+        onChangeActiveGroup={(groupId: string) => {
+          const group = groups.find((g: RuleGroup) => g.id === groupId)
+          setActiveGroup(group || null);
+        }}
       />
-      {activeGroup ? (
-        <Content className="app-content">
-          <GroupView
-            key={activeGroup?.id}
-            group={activeGroup}
-            onChange={handleGroupChange}
-          />
-        </Content>
-      ) : (
-        <Content className="app-content app-content-empty">
-          <Empty description={false} />
-        </Content>
-      )}
+      <div className="app-content-container">
+        <Sidebar
+          groups={groups}
+          onEditGroup={handleEditGroup}
+          onDeleteGroup={handleDeleteGroup}
+          onCopyGroup={handleCopyGroup}
+          activeGroup={activeGroup}
+          onChangeActiveGroup={setActiveGroup}
+          onChangeGroups={setGroups}
+        />
+        {activeGroup ? (
+          <Content className="app-content">
+            <GroupView
+              key={activeGroup?.id}
+              group={activeGroup}
+              onChange={handleGroupChange}
+            />
+          </Content>
+        ) : (
+          <Content className="app-content app-content-empty">
+            <Empty description={false} />
+          </Content>
+        )}
+      </div>
 
       <Modal
         title={false}
@@ -160,7 +165,7 @@ const App: React.FC = () => {
             rules={[{ required: true, message: chrome.i18n.getMessage('group_name_required') }]}
             style={{ marginBottom: 0 }}
           >
-            <Input ref={inputRef} />
+            <Input ref={inputRef} maxLength={34} />
           </Form.Item>
         </Form>
       </Modal>

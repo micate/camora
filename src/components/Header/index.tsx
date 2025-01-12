@@ -1,17 +1,51 @@
 import { useEffect, useState } from "react";
-import { Avatar, Space, Switch } from "antd";
-import Logo from "../../logo.png";
-import SyncStatus from "../SyncStatus";
+import { Button, Progress, Space, Switch, Dropdown, MenuProps, AutoComplete } from "antd";
+import { PlusOutlined } from "@ant-design/icons";
+import { useRulesUsage } from "../../hooks/useRulesUsage";
+import { importRules } from "../../utils/importRules";
+import { exportRules } from "../../utils/exportRules";
+import { RuleGroup } from "../../types";
 import "./index.less";
 
-export default function Header() {
+interface IHeaderProps {
+  activeGroup?: RuleGroup | null;
+  onAddGroup: () => void;
+  onChangeActiveGroup: (groupId: string) => void;
+}
+
+export default function Header(props: IHeaderProps) {
+  const { activeGroup, onAddGroup, onChangeActiveGroup } = props;
   const [enabled, setEnabled] = useState<boolean>(false);
+  const { rulesCountPercent, regexRulesCountPercent, rulesFormat, regexRulesFormat, conicColors } = useRulesUsage()
+  const [completeOptions, setCompleteOptions] = useState<{ label: string, value: string }[]>([]);
+  const [inputValue, setInputValue] = useState<string>('');
 
   useEffect(() => {
-    chrome.storage.local.get('enabled').then(({ enabled: savedEnabled }) => {
+    chrome.storage.local.get(['enabled']).then(({ enabled: savedEnabled }) => {
       setEnabled(savedEnabled);
     });
   }, []);
+
+  const menuItems: MenuProps['items'] = [
+    {
+      key: 'addGroup',
+      label: chrome.i18n.getMessage('add_group'),
+      onClick: onAddGroup,
+    },
+    {
+      type: 'divider',
+    },
+    {
+      key: 'import',
+      label: chrome.i18n.getMessage('import_rules'),
+      onClick: importRules,
+    },
+    {
+      key: 'export',
+      label: chrome.i18n.getMessage('export_rules'),
+      onClick: exportRules,
+    },
+  ];
 
   const handleToggleRule = () => {
     const newEnabled = !enabled
@@ -21,18 +55,80 @@ export default function Header() {
 
   return (
     <div className="app-header">
-      <span className="app-header-main">
-        <span className="app-header-logo">
-          <Avatar size="small" src={Logo} alt="Camora" />
-        </span>
-        <span className="app-header-name">
-          Camora
-        </span>
-      </span>
-      <Space className="app-header-actions" size="small" direction="horizontal">
-        <SyncStatus />
-        <Switch checked={enabled} onChange={handleToggleRule} />
-      </Space>
+      <div className="app-header-main">
+        <div className="app-search">
+          <AutoComplete
+            size="small"
+            placeholder={chrome.i18n.getMessage('search_placeholder')}
+            allowClear
+            popupMatchSelectWidth={false}
+            notFoundContent="No results"
+            options={completeOptions}
+            filterOption={(inputValue, option) =>
+              option?.label.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1
+            }
+            onDropdownVisibleChange={(open) => {
+              if (open) {
+                chrome.storage.local.get('groups').then(({ groups }) => {
+                  const options = groups.map((group: RuleGroup) => ({ label: group.name, value: group.id }));
+                  setCompleteOptions(options);
+                });
+              } else {
+                setCompleteOptions([]);
+              }
+            }}
+            value={inputValue}
+            onChange={setInputValue}
+            onSelect={(value) => {
+              onChangeActiveGroup(value);
+              setInputValue('');
+            }}
+            style={{ width: '100%' }}
+          />
+        </div>
+        <div className="app-menus">
+          <Dropdown
+            menu={{ items: menuItems }}
+            placement="top"
+            autoAdjustOverflow
+            arrow
+          >
+            <Button
+              size="small"
+              type="primary"
+              icon={<PlusOutlined />}
+              onClick={onAddGroup}
+            />
+          </Dropdown>
+        </div>
+      </div>
+      <div className="app-header-secondary">
+        <div className="app-rules-usage">
+          <Space size="small" direction="horizontal">
+            <Progress
+              type="circle"
+              size={16}
+              percent={rulesCountPercent}
+              strokeColor={conicColors}
+              format={rulesFormat}
+            />
+            <Progress
+              type="circle"
+              size={14}
+              percent={regexRulesCountPercent}
+              strokeColor={conicColors}
+              trailColor="#f0f0f0"
+              format={regexRulesFormat}
+            />
+          </Space>
+        </div>
+        <div className="app-active-group">
+          {activeGroup?.name}
+        </div>
+        <div className="app-switch">
+          <Switch checked={enabled} onChange={handleToggleRule} />
+        </div>
+      </div>
     </div>
   )
 }
