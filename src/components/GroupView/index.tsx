@@ -12,7 +12,7 @@ interface IGroupViewProps {
 
 export default function GroupView(props: IGroupViewProps) {
   const { group, onChange } = props;
-  const { name, rules } = group || {};
+  const { rules } = group || {};
 
   const handleAddRule = () => {
     const newRule = createRule();

@@ -1,29 +1,29 @@
 import { getEnabledRules } from '../utils/getEnabledRules'
 import { RuleGroup } from '../types'
-import { debounce } from '../utils/debounce'
+// import { debounce } from '../utils/debounce'
 
-let isSyncing = false;
-const syncToChromeStorageSync = debounce(() => {
-  if (isSyncing) {
-    return;
-  }
+// let isSyncing = false;
+// const syncToChromeStorageSync = debounce(() => {
+//   if (isSyncing) {
+//     return;
+//   }
 
-  isSyncing = true;
-  chrome.storage.local.set({ syncStatus: { loading: true } });
+//   isSyncing = true;
+//   chrome.storage.local.set({ syncStatus: { loading: true } });
 
-  chrome.storage.local.get(['groups']).then(({ groups }) => {
-    chrome.storage.sync.set({ groups }, () => {
-      if (chrome.runtime.lastError) {
-        console.error("Sync error:", chrome.runtime.lastError.message);
-        chrome.storage.local.set({ syncStatus: { error: chrome.runtime.lastError.message } });
-      } else {
-        chrome.storage.local.set({ syncStatus: { success: new Date().toLocaleString() } });
-      }
+//   chrome.storage.local.get(['groups']).then(({ groups }) => {
+//     chrome.storage.sync.set({ groups }, () => {
+//       if (chrome.runtime.lastError) {
+//         console.error("Sync error:", chrome.runtime.lastError.message);
+//         chrome.storage.local.set({ syncStatus: { error: chrome.runtime.lastError.message } });
+//       } else {
+//         chrome.storage.local.set({ syncStatus: { success: new Date().toLocaleString() } });
+//       }
 
-      isSyncing = false;
-    })
-  })
-}, 5000);
+//       isSyncing = false;
+//     })
+//   })
+// }, 5000);
 
 const updateBadge = () => {
   Promise.all([
