@@ -104,7 +104,17 @@ async function updateDynamicRules(ruleGroups: RuleGroup[]) {
       },
       condition: {
         [sourceType || 'urlFilter']: source,
-        resourceTypes: [chrome.declarativeNetRequest.ResourceType.SCRIPT, chrome.declarativeNetRequest.ResourceType.STYLESHEET]
+        resourceTypes: [
+          chrome.declarativeNetRequest.ResourceType.MAIN_FRAME,
+          chrome.declarativeNetRequest.ResourceType.SUB_FRAME,
+          chrome.declarativeNetRequest.ResourceType.STYLESHEET,
+          chrome.declarativeNetRequest.ResourceType.SCRIPT,
+          chrome.declarativeNetRequest.ResourceType.IMAGE,
+          chrome.declarativeNetRequest.ResourceType.FONT,
+          chrome.declarativeNetRequest.ResourceType.XMLHTTPREQUEST,
+          chrome.declarativeNetRequest.ResourceType.CSP_REPORT,
+          chrome.declarativeNetRequest.ResourceType.MEDIA,
+        ]
       }
     };
   })
