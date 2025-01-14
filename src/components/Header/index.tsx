@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Button, Progress, Space, Switch, Dropdown, MenuProps, AutoComplete } from "antd";
+import { Button, Progress, Space, Switch, Dropdown, MenuProps, AutoComplete, Badge } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import { useRulesUsage } from "../../hooks/useRulesUsage";
 import { importRules } from "../../utils/importRules";
@@ -123,10 +123,19 @@ export default function Header(props: IHeaderProps) {
           </Space>
         </div>
         <div className="app-active-group">
-          {activeGroup?.name}
+          {activeGroup ? (
+            <Space size="small" direction="horizontal">
+              {activeGroup.enabled ? (
+                <Badge status="processing" />
+              ) : (
+                <Badge status="default" />
+              )}
+              {activeGroup?.name}
+            </Space>
+          ) : null}
         </div>
         <div className="app-switch">
-          <Switch checked={enabled} onChange={handleToggleRule} />
+          <Switch size="default" checked={enabled} onChange={handleToggleRule} />
         </div>
       </div>
     </div>

@@ -25,19 +25,32 @@ import { RuleGroup } from '../types'
 //   })
 // }, 5000);
 
-const updateBadge = () => {
-  Promise.all([
-    chrome.storage.local.get('enabled'),
-    chrome.declarativeNetRequest.getDynamicRules(),
-  ]).then(([{ enabled }, rules]) => {
-    if (enabled) {
-      chrome.action.setBadgeText({ text: rules.length.toString() });
-      chrome.action.setBadgeBackgroundColor({ color: "rgb(22, 104, 220)" });
-    } else {
-      chrome.action.setBadgeText({ text: "OFF" });
-      chrome.action.setBadgeBackgroundColor({ color: "rgba(255, 255, 255, 0.25)" });
-    }
-  });
+const updateStatus = (enabled: boolean) => {
+  if (enabled) {
+    chrome.action.setBadgeText({ text: '' });
+    chrome.action.setBadgeBackgroundColor({ color: "rgb(22, 104, 220)" });
+  } else {
+    chrome.action.setBadgeText({ text: "OFF" });
+    chrome.action.setBadgeBackgroundColor({ color: "rgba(255, 255, 255, 0.25)" });
+  }
+}
+
+let updateTimeout: number | null = null;
+const updateCount = () => {
+  if (updateTimeout) {
+    clearTimeout(updateTimeout);
+  }
+  updateTimeout = setTimeout(() => {
+    Promise.all([
+      chrome.storage.local.get('enabled'),
+      chrome.declarativeNetRequest.getDynamicRules(),
+    ]).then(([{ enabled }, rules]) => {
+      if (enabled) {
+        chrome.action.setBadgeText({ text: rules.length.toString() });
+        chrome.action.setBadgeBackgroundColor({ color: "rgb(22, 104, 220)" });
+      }
+    });
+  }, 1000);
 };
 
 // 监听规则变化
@@ -49,16 +62,15 @@ chrome.storage.onChanged.addListener((changes, area) => {
   
     // 总开关改变
     if (changes.enabled) {
+      updateStatus(changes.enabled.newValue)
       if (changes.enabled.newValue) {
-        // 打开总开关
+        // 设置动态规则
         chrome.storage.local.get(['groups']).then(({ groups }) => {
           updateDynamicRules(groups)
-          updateBadge()
         })
       } else {
-        // 关闭总开关
+        // 清空动态规则
         updateDynamicRules([])
-        updateBadge()
       }
       return;
     }
@@ -66,7 +78,6 @@ chrome.storage.onChanged.addListener((changes, area) => {
     // 规则改变
     if (changes.groups) {
       updateDynamicRules(changes.groups.newValue)
-      updateBadge()
     }
   }
 })
@@ -108,12 +119,15 @@ async function updateDynamicRules(ruleGroups: RuleGroup[]) {
   } catch (error) {
     console.error("Failed to add dynamic rules:", error);
   }
+
+  updateCount();
 }
 
 // 初始化规则
 chrome.storage.local.get(['enabled', 'groups']).then(({ enabled, groups }) => {
+  updateStatus(enabled)
+
   if (enabled) {
     updateDynamicRules(groups)
   }
-  updateBadge()
 })

@@ -58,6 +58,10 @@ export default function Sidebar(props: ISidebarProps) {
     )
     await chrome.storage.local.set({ groups: updatedGroups })
     onChangeGroups(updatedGroups)
+    const activeGroup = updatedGroups.find(group => group.id === groupId)
+    if (activeGroup) {
+      onChangeActiveGroup(activeGroup)
+    }
   }
 
   const handleDragEnd = (event: any) => {
