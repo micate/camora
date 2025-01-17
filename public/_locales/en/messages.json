@@ -142,5 +142,9 @@
   "search_placeholder": {
     "message": "Search",
     "description": "Search"
+  },
+  "import_export": {
+    "message": "Import/Export",
+    "description": "Import/Export"
   }
 }

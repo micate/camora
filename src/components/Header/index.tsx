@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
-import { Button, Progress, Space, Switch, Dropdown, MenuProps, AutoComplete, Badge } from "antd";
-import { PlusOutlined } from "@ant-design/icons";
+import { Button, Progress, Space, Switch, AutoComplete, Badge, Tooltip, Modal } from "antd";
+import { CodeOutlined, PlusOutlined } from "@ant-design/icons";
+import SourceView from "../SourceView";
 import { useRulesUsage } from "../../hooks/useRulesUsage";
-import { importRules } from "../../utils/importRules";
-import { exportRules } from "../../utils/exportRules";
 import { RuleGroup } from "../../types";
 import "./index.less";
 
@@ -16,9 +15,10 @@ interface IHeaderProps {
 export default function Header(props: IHeaderProps) {
   const { activeGroup, onAddGroup, onChangeActiveGroup } = props;
   const [enabled, setEnabled] = useState<boolean>(false);
-  const { rulesCountPercent, regexRulesCountPercent, rulesFormat, regexRulesFormat, conicColors } = useRulesUsage()
+  const { rulesCountPercent, regexRulesCountPercent, rulesFormat, regexRulesFormat } = useRulesUsage()
   const [completeOptions, setCompleteOptions] = useState<{ label: string, value: string }[]>([]);
   const [inputValue, setInputValue] = useState<string>('');
+  const [modal, contextHolder] = Modal.useModal();
 
   useEffect(() => {
     chrome.storage.local.get(['enabled']).then(({ enabled: savedEnabled }) => {
@@ -26,26 +26,21 @@ export default function Header(props: IHeaderProps) {
     });
   }, []);
 
-  const menuItems: MenuProps['items'] = [
-    {
-      key: 'addGroup',
-      label: chrome.i18n.getMessage('add_group'),
-      onClick: onAddGroup,
-    },
-    {
-      type: 'divider',
-    },
-    {
-      key: 'import',
-      label: chrome.i18n.getMessage('import_rules'),
-      onClick: importRules,
-    },
-    {
-      key: 'export',
-      label: chrome.i18n.getMessage('export_rules'),
-      onClick: exportRules,
-    },
-  ];
+  const handleViewSource = () => {
+    const dialog = modal.info({
+      wrapClassName: 'app-source-view-modal',
+      content: (
+        <SourceView
+          onClose={() => {
+            dialog.destroy();
+          }}
+        />
+      ),
+      centered: true,
+      width: 680,
+      footer: false,
+    });
+  }
 
   const handleToggleRule = () => {
     const newEnabled = !enabled
@@ -86,40 +81,40 @@ export default function Header(props: IHeaderProps) {
             style={{ width: '100%' }}
           />
         </div>
-        <div className="app-menus">
-          <Dropdown
-            menu={{ items: menuItems }}
-            placement="top"
-            autoAdjustOverflow
-            arrow
-          >
-            <Button
-              size="small"
-              type="primary"
-              icon={<PlusOutlined />}
-              onClick={onAddGroup}
-            />
-          </Dropdown>
-        </div>
+        <Tooltip title={chrome.i18n.getMessage('import_export')} placement="bottom">
+          <Button
+            size="small"
+            icon={<CodeOutlined />}
+            onClick={handleViewSource}
+          />
+        </Tooltip>
+        <Tooltip title={chrome.i18n.getMessage('add_group')} placement="bottom">
+          <Button
+            size="small"
+            type="primary"
+            icon={<PlusOutlined />}
+            onClick={onAddGroup}
+          />
+        </Tooltip>
       </div>
       <div className="app-header-secondary">
-        <div className="app-rules-usage">
+        <div className="app-quick-actions">
           <Space size="small" direction="horizontal">
-            <Progress
-              type="circle"
-              size={16}
-              percent={rulesCountPercent}
-              strokeColor={conicColors}
-              format={rulesFormat}
-            />
-            <Progress
-              type="circle"
-              size={14}
-              percent={regexRulesCountPercent}
-              strokeColor={conicColors}
-              trailColor="#f0f0f0"
-              format={regexRulesFormat}
-            />
+              <Progress
+                type="circle"
+                size={16}
+                percent={rulesCountPercent}
+                // strokeColor={conicColors}
+                format={rulesFormat}
+              />
+              <Progress
+                type="circle"
+                size={12}
+                percent={regexRulesCountPercent}
+                // strokeColor={conicColors}
+                // trailColor="#f0f0f0"
+                format={regexRulesFormat}
+              />
           </Space>
         </div>
         <div className="app-active-group">
@@ -138,6 +133,7 @@ export default function Header(props: IHeaderProps) {
           <Switch size="default" checked={enabled} onChange={handleToggleRule} />
         </div>
       </div>
+      <div>{contextHolder}</div>
     </div>
   )
 }

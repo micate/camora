@@ -1,0 +1,37 @@
+.app-source-view {
+  display: flex;
+  flex-direction: column;
+  width: 650px;
+  height: 450px;
+
+  &-modal {
+    .ant-modal-confirm-body {
+      > .anticon {
+        display: none;
+      }
+      > .ant-modal-confirm-paragraph {
+        max-width: 100%;
+      }
+    }
+  }
+
+  &-content {
+    flex: 1;
+    border: solid 1px var(--ant-color-split);
+    border-radius: 4px;
+    height: 0;
+    font-size: 12px;
+
+    > .cm-editor {
+      height: 100%;
+    }
+  }
+
+  &-actions {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 12px;
+    padding: 16px 0 0;
+  }
+}
