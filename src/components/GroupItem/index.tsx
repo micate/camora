@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import classnames from 'classnames';
 import { Checkbox, Dropdown, Button, Modal, MenuProps } from 'antd';
 import { MenuOutlined } from '@ant-design/icons';
 import { useSortable } from '@dnd-kit/sortable';
@@ -73,7 +74,11 @@ export default function GroupItem(props: GroupItemProps) {
   return (
     <div
       ref={setNodeRef}
-      className={`group-item ${hover ? 'group-item-hover' : ''} ${active ? 'group-item-active' : 'group-item-inactive'}`}
+      className={classnames('group-item', {
+        'group-item-hover': hover,
+        'group-item-active': active,
+      })}
+      data-group-id={item.id}
       style={style}
     >
       <div className="group-name">

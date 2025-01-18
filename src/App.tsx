@@ -41,6 +41,11 @@ const App: React.FC = () => {
       fromCopy.current = false
       handleEditGroup(activeGroup as RuleGroup);
     }
+
+    const groupNode = document.querySelector(`[data-group-id="${activeGroup?.id}"]`)
+    if (groupNode) {
+      groupNode.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    }
   }, [activeGroup])
 
   useEffect(() => {
