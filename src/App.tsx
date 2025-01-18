@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { Layout, Form, Input, Modal, Empty } from 'antd'
 import Landing from './components/Landing';
 import Header from './components/Header';
@@ -18,6 +18,7 @@ const App: React.FC = () => {
   const [landing, setLanding] = useState(true)
   const [form] = Form.useForm()
   const inputRef = React.createRef<any>()
+  const fromCopy = useRef<boolean>(false)
 
   useEffect(() => {
     chrome.storage.local.get(['activeGroupId', 'groups']).then(({ activeGroupId, groups = [] }) => {
@@ -36,6 +37,10 @@ const App: React.FC = () => {
 
   useEffect(() => {
     chrome.storage.local.set({ activeGroupId: activeGroup?.id })
+    if (fromCopy.current) {
+      fromCopy.current = false
+      handleEditGroup(activeGroup as RuleGroup);
+    }
   }, [activeGroup])
 
   useEffect(() => {
@@ -97,6 +102,7 @@ const App: React.FC = () => {
     updatedGroups.splice(sourceIndex + 1, 0, newGroup)
     await chrome.storage.local.set({ groups: updatedGroups })
     setGroups(updatedGroups)
+    fromCopy.current = true
     setActiveGroup(newGroup)
   }
 

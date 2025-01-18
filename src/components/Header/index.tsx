@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Button, Progress, Space, Switch, AutoComplete, Badge, Tooltip, Modal } from "antd";
+import { Button, Progress, Space, Switch, AutoComplete, Badge, Tooltip } from "antd";
 import { CodeOutlined, PlusOutlined } from "@ant-design/icons";
 import SourceView from "../SourceView";
 import { useRulesUsage } from "../../hooks/useRulesUsage";
