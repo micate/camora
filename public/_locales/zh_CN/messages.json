@@ -1,8 +1,4 @@
 {
-  "extension_name": {
-    "message": "Camora",
-    "description": "扩展的名称"
-  },
   "add_group": {
     "message": "添加分组",
     "description": "添加分组"
@@ -57,10 +53,6 @@
     "message": "分组下的所有规则都将同步删除且无法恢复",
     "description": "删除分组确认信息"
   },
-  "add_rule": {
-    "message": "添加规则",
-    "description": "添加规则"
-  },
   "copy_rule": {
     "message": "复制规则",
     "description": "复制规则"
@@ -73,71 +65,17 @@
     "message": "确定要删除该规则吗？",
     "description": "删除规则确认信息"
   },
-  "syncing": {
-    "message": "同步中...",
-    "description": "同步中"
-  },
-  "sync_success": {
-    "message": "同步成功",
-    "description": "同步成功"
-  },
-  "sync_error": {
-    "message": "同步失败",
-    "description": "同步失败"
-  },
-  "import_rules": {
-    "message": "导入规则",
-    "description": "导入规则"
-  },
-  "export_rules": {
-    "message": "导出规则",
-    "description": "导出规则"
-  },
-  "export_success": {
-    "message": "导出成功",
-    "description": "导出成功"
-  },
-  "export_content_empty": {
-    "message": "暂无可导出的规则",
-    "description": "暂无可导出的规则"
-  },
-  "import_confirm_title": {
-    "message": "确定要导入 $length$ 组规则吗？",
-    "description": "导入规则确认信息",
-    "placeholders": {
-      "length": {
-        "content": "$1",
-        "example": "1"
-      }
-    }
-  },
-  "import_confirm_content": {
-    "message": "导入后原有的规则将被覆盖",
-    "description": "导入规则确认信息"
-  },
   "import_error_title": {
     "message": "导入失败",
     "description": "导入失败"
   },
-  "import_error_content_empty": {
-    "message": "文件中无可导入的规则",
-    "description": "导入失败"
-  },
-  "sync_confirm_title": {
-    "message": "有未同步的规则",
-    "description": "同步规则确认信息"
-  },
-  "sync_confirm_content": {
-    "message": "是否使用远程规则（$sync$ 组）替换本地规则（$local$ 组）？",
-    "description": "同步规则确认信息",
+  "import_error_content_invalid": {
+    "message": "规则内容为空或格式不正确 $error$",
+    "description": "导入失败",
     "placeholders": {
-      "sync": {
+      "error": {
         "content": "$1",
         "example": "1"
-      },
-      "local": {
-        "content": "$2",
-        "example": "2"
       }
     }
   },
@@ -148,5 +86,21 @@
   "import_export": {
     "message": "导入/导出",
     "description": "导入导出"
+  },
+  "import_not_changed": {
+    "message": "规则未发生变化",
+    "description": "规则未发生变化"
+  },
+  "import_success": {
+    "message": "导入成功，请稍后",
+    "description": "导入成功，请稍后"
+  },
+  "close": {
+    "message": "关闭",
+    "description": "关闭"
+  },
+  "import": {
+    "message": "导入",
+    "description": "导入"
   }
 }

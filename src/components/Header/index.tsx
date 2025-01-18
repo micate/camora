@@ -18,7 +18,7 @@ export default function Header(props: IHeaderProps) {
   const { rulesCountPercent, regexRulesCountPercent, rulesFormat, regexRulesFormat } = useRulesUsage()
   const [completeOptions, setCompleteOptions] = useState<{ label: string, value: string }[]>([]);
   const [inputValue, setInputValue] = useState<string>('');
-  const [modal, contextHolder] = Modal.useModal();
+  const [sourceViewVisible, setSourceViewVisible] = useState<boolean>(false);
 
   useEffect(() => {
     chrome.storage.local.get(['enabled']).then(({ enabled: savedEnabled }) => {
@@ -27,19 +27,7 @@ export default function Header(props: IHeaderProps) {
   }, []);
 
   const handleViewSource = () => {
-    const dialog = modal.info({
-      wrapClassName: 'app-source-view-modal',
-      content: (
-        <SourceView
-          onClose={() => {
-            dialog.destroy();
-          }}
-        />
-      ),
-      centered: true,
-      width: 680,
-      footer: false,
-    });
+    setSourceViewVisible(true);
   }
 
   const handleToggleRule = () => {
@@ -133,7 +121,10 @@ export default function Header(props: IHeaderProps) {
           <Switch size="default" checked={enabled} onChange={handleToggleRule} />
         </div>
       </div>
-      <div>{contextHolder}</div>
+      <SourceView
+        visible={sourceViewVisible}
+        onClose={() => setSourceViewVisible(false)}
+      />
     </div>
   )
 }
