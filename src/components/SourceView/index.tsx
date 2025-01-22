@@ -6,6 +6,7 @@ import { Button, message, Modal, Spin } from "antd";
 import { LoadingOutlined } from '@ant-design/icons';
 import { useDarkMode } from "../../hooks/useDarkMode";
 import { exportRules } from "../../utils/exportRules";
+import { correctIds } from "../../utils/correctIds";
 import './index.less';
 
 interface ISourceViewProps {
@@ -77,7 +78,8 @@ export default function SourceView(props: ISourceViewProps) {
       const newData = JSON.parse(newSource);
       const newDataSource = JSON.stringify(newData, null, 2);
       if (newDataSource !== initialSource.current) {
-        chrome.storage.local.set({ groups: newData.groups });
+        const groups = correctIds(newData.groups)
+        chrome.storage.local.set({ groups });
         messageApi.open({
           type: 'success',
           content: chrome.i18n.getMessage('import_success'),
