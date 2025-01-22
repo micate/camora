@@ -120,7 +120,7 @@ export default function SourceView(props: ISourceViewProps) {
           <div ref={contentRef} className="app-source-view-content" />
           <div className="app-source-view-actions">
             <div className="app-source-view-left-actions">
-
+              {chrome.i18n.getMessage('import_id_tips')}
             </div>
             <div className="app-source-view-right-actions">
               <Button size="middle" onClick={handleClose}>

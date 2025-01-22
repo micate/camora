@@ -1,23 +1,23 @@
-import { RuleGroup } from "../types";
+import { Rule, RuleGroup } from "../types";
 import { uniqueId } from "./uniqueId";
 
 // 遍历每个分组和每个分组下的规则
-// 1. 如果没有 groupId 或者 ruleId 则自动生成一个；
-// 2. 如果有重复的 groupId 或者 ruleId 则重新生成 groupId 或者 ruleId 并替换；
+// 1. 如果没有 group.id 或者 rule.id 则自动生成一个；
+// 2. 如果有重复的 group.id 或者 rule.id 则重新生成 group.id 或者 rule.id 并替换；
 export function correctIds(ruleGroups: RuleGroup[]): RuleGroup[] {
   if (Array.isArray(ruleGroups)) {
-    const idMaps = new Set<boolean>();
-    ruleGroups.forEach((group: any) => {
-      if (!group.groupId || idMaps.has(group.groupId)) {
-        group.groupId = uniqueId('group');
+    const idMaps = new Set<string>();
+    ruleGroups.forEach((group: RuleGroup) => {
+      if (!group.id || idMaps.has(group.id)) {
+        group.id = uniqueId('group');
       }
-      idMaps.add(group.groupId);
+      idMaps.add(group.id);
       if (Array.isArray(group.rules)) {
-        group.rules.forEach((rule: any) => {
-          if (!rule.ruleId || idMaps.has(rule.ruleId)) {
-            rule.ruleId = uniqueId('rule');
+        group.rules.forEach((rule: Rule) => {
+          if (!rule.id || idMaps.has(rule.id)) {
+            rule.id = uniqueId('rule');
           }
-          idMaps.add(rule.ruleId);
+          idMaps.add(rule.id);
         });
       }
     });

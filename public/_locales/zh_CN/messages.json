@@ -102,5 +102,9 @@
   "import": {
     "message": "导入",
     "description": "导入"
+  },
+  "import_id_tips": {
+    "message": "将自动生成缺失或替换重复的 id",
+    "description": "将自动生成缺失或替换重复的 id"
   }
 }
