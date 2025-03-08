@@ -53,6 +53,20 @@ const updateCount = () => {
   }, 1000);
 };
 
+// 提取获取存储数据并应用规则的函数
+const getAndApplyRules = () => {
+  return chrome.storage.local.get(['enabled', 'groups']).then(({ enabled, groups }) => {
+    const isEnabled = enabled === undefined ? false : enabled;
+    updateStatus(isEnabled);
+    
+    if (isEnabled) {
+      updateDynamicRules(groups || []);
+    }
+    
+    return { isEnabled, groups: groups || [] };
+  });
+};
+
 // 监听规则变化
 chrome.storage.onChanged.addListener((changes, area) => {
   if (area === 'local') {
@@ -134,10 +148,16 @@ async function updateDynamicRules(ruleGroups: RuleGroup[]) {
 }
 
 // 初始化规则
-chrome.storage.local.get(['enabled', 'groups']).then(({ enabled, groups }) => {
-  updateStatus(enabled)
+getAndApplyRules();
 
-  if (enabled) {
-    updateDynamicRules(groups)
+// 添加扩展安装和更新时的处理
+chrome.runtime.onInstalled.addListener((details) => {
+  if (details.reason === 'install') {
+    // 新安装时设置默认状态
+    chrome.storage.local.set({ enabled: false, groups: [] });
+    updateStatus(false);
+  } else if (details.reason === 'update') {
+    // 更新时确保状态正确
+    getAndApplyRules();
   }
-})
+});
