@@ -3,9 +3,34 @@
   display: flex;
   flex-direction: column;
   background: var(--ant-layout-body-bg);
+
+  &.fn-overflow-top:before,
+  &.fn-overflow-bottom:after {
+    display: block;
+    content: ' ';
+    position: absolute;
+    z-index: 1;
+    width: 100%;
+    height: 30px;
+    pointer-events: none;
+    left: 0;
+    right: 0;
+    transition: box-shadow var(--ant-motion-duration-slow);
+  }
+
+  &.fn-overflow-top:before {
+    top: 0;
+    box-shadow: inset 0px 8px 8px 0px var(--ant-color-split);
+  }
+
+  &.fn-overflow-bottom:after {
+    bottom: 0;
+    box-shadow: inset 0px -8px 8px 0px var(--ant-color-split);
+  }
 }
 
 .app-items-list {
+  position: relative;
   flex: 1;
   overflow: hidden;
   overflow-y: auto;

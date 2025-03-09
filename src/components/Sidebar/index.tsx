@@ -1,3 +1,4 @@
+import { createRef, useEffect } from 'react';
 import { Layout, Empty } from 'antd';
 import {
   DndContext,
@@ -40,6 +41,34 @@ export default function Sidebar(props: ISidebarProps) {
     activeGroup,
     onChangeActiveGroup,
   } = props;
+  const sidebarRef = createRef<HTMLDivElement>();
+  const itemsListRef = createRef<HTMLDivElement>();
+
+  useEffect(() => {
+    const checkOverflow = () => {
+      if (sidebarRef.current && itemsListRef.current) {
+        if (itemsListRef.current.scrollTop > 0) {
+          sidebarRef.current.classList.add('fn-overflow-top');
+        } else {
+          sidebarRef.current.classList.remove('fn-overflow-top');
+        }
+        if (itemsListRef.current.scrollTop + itemsListRef.current.clientHeight < itemsListRef.current.scrollHeight) {
+          sidebarRef.current.classList.add('fn-overflow-bottom');
+        } else {
+          sidebarRef.current.classList.remove('fn-overflow-bottom');
+        }
+      }
+    }
+    checkOverflow();
+    if (itemsListRef.current) {
+      itemsListRef.current.addEventListener('scroll', checkOverflow);
+    }
+    return () => {
+      if (itemsListRef.current) {
+        itemsListRef.current.removeEventListener('scroll', checkOverflow);
+      }
+    }
+  }, [sidebarRef, itemsListRef]);
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -66,7 +95,7 @@ export default function Sidebar(props: ISidebarProps) {
 
   const handleDragEnd = (event: any) => {
     const {active, over} = event;
-    
+
     if (active.id !== over.id) {
       const oldIndex = groups.findIndex(group => group.id === active.id);
       const newIndex = groups.findIndex(group => group.id === over.id);
@@ -78,9 +107,15 @@ export default function Sidebar(props: ISidebarProps) {
 
   return (
     <Sider width={180} theme="light">
-      <div className="app-sidebar">
+      <div
+        ref={sidebarRef}
+        className="app-sidebar"
+      >
         {groups?.length ? (
-          <div className="app-items-list">
+          <div
+            ref={itemsListRef}
+            className="app-items-list"
+          >
             <DndContext
               sensors={sensors}
               collisionDetection={closestCenter}
