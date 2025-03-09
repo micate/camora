@@ -1,10 +1,12 @@
 import { useEffect, useRef } from "react";
+import classnames from 'classnames';
 import { EditorView, minimalSetup } from "codemirror"
 import { oneDark } from "@codemirror/theme-one-dark";
 import { useDarkMode } from "../../hooks/useDarkMode";
 import './index.less';
 
 interface ICodeViewProps {
+  className?: string;
   height?: string | number;
   value?: string;
   onChange?: (value: string) => void;
@@ -12,7 +14,7 @@ interface ICodeViewProps {
 }
 
 export default function CodeView(props: ICodeViewProps) {
-  const { height = 100, value, onChange, extensions: extensionsProp } = props;
+  const { className, height = 100, value, onChange, extensions: extensionsProp } = props;
   const editorRef = useRef<any>(null);
   const contentRef = useRef<any>(null);
   const darkMode = useDarkMode();
@@ -39,7 +41,9 @@ export default function CodeView(props: ICodeViewProps) {
     extensions.push(EditorView.updateListener.of((update) => {
       if (update.docChanged) {
         let newValue = update.state.doc.toString();
-        onChange?.(newValue);
+        if (newValue !== value) {
+          onChange?.(newValue);
+        }
       }
     }));
     editorRef.current = new EditorView({
@@ -69,7 +73,7 @@ export default function CodeView(props: ICodeViewProps) {
   }, [value]);
 
   return (
-    <div className="code-view-container">
+    <div className={classnames('code-view-container', className)}>
       <div ref={contentRef} className="code-view" style={{ height }}></div>
     </div>
   )
