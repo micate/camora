@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react";
-import { Button, Progress, Space, Switch, AutoComplete, Badge, Tooltip } from "antd";
-import { CodeOutlined, PlusOutlined } from "@ant-design/icons";
-import SourceView from "../SourceView";
-import { useRulesUsage } from "../../hooks/useRulesUsage";
+import { Button, Space, Switch, AutoComplete, Badge, Tooltip } from "antd";
+import { PlusOutlined } from "@ant-design/icons";
 import { RuleGroup } from "../../types";
 import "./index.less";
 
@@ -15,20 +13,14 @@ interface IHeaderProps {
 export default function Header(props: IHeaderProps) {
   const { activeGroup, onAddGroup, onChangeActiveGroup } = props;
   const [enabled, setEnabled] = useState<boolean>(false);
-  const { rulesCountPercent, regexRulesCountPercent, rulesFormat, regexRulesFormat } = useRulesUsage()
   const [completeOptions, setCompleteOptions] = useState<{ label: string, value: string }[]>([]);
   const [inputValue, setInputValue] = useState<string>('');
-  const [sourceViewVisible, setSourceViewVisible] = useState<boolean>(false);
 
   useEffect(() => {
     chrome.storage.local.get(['enabled']).then(({ enabled: savedEnabled }) => {
       setEnabled(savedEnabled);
     });
   }, []);
-
-  const handleViewSource = () => {
-    setSourceViewVisible(true);
-  }
 
   const handleToggleRule = () => {
     const newEnabled = !enabled
@@ -69,13 +61,6 @@ export default function Header(props: IHeaderProps) {
             style={{ width: '100%' }}
           />
         </div>
-        <Tooltip title={chrome.i18n.getMessage('import_export')} placement="bottom">
-          <Button
-            size="small"
-            icon={<CodeOutlined />}
-            onClick={handleViewSource}
-          />
-        </Tooltip>
         <Tooltip title={chrome.i18n.getMessage('add_group')} placement="bottom">
           <Button
             size="small"
@@ -86,45 +71,24 @@ export default function Header(props: IHeaderProps) {
         </Tooltip>
       </div>
       <div className="app-header-secondary">
-        <div className="app-quick-actions">
-          <Space size="small" direction="horizontal">
-              <Progress
-                type="circle"
-                size={16}
-                percent={rulesCountPercent}
-                // strokeColor={conicColors}
-                format={rulesFormat}
-              />
-              <Progress
-                type="circle"
-                size={12}
-                percent={regexRulesCountPercent}
-                // strokeColor={conicColors}
-                // trailColor="#f0f0f0"
-                format={regexRulesFormat}
-              />
-          </Space>
-        </div>
         <div className="app-active-group">
-          {activeGroup ? (
-            <Space size="small" direction="horizontal">
-              {activeGroup.enabled ? (
-                <Badge status="processing" />
-              ) : (
-                <Badge status="default" />
-              )}
-              {activeGroup?.name}
-            </Space>
-          ) : null}
+          <div className="app-active-group-name">
+            {activeGroup ? (
+              <Space size="small" direction="horizontal">
+                {activeGroup.enabled ? (
+                  <Badge status="processing" />
+                ) : (
+                  <Badge status="default" />
+                )}
+                {activeGroup?.name}
+              </Space>
+            ) : null}
+          </div>
         </div>
         <div className="app-switch">
           <Switch size="default" checked={enabled} onChange={handleToggleRule} />
         </div>
       </div>
-      <SourceView
-        visible={sourceViewVisible}
-        onClose={() => setSourceViewVisible(false)}
-      />
     </div>
   )
 }

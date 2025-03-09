@@ -106,5 +106,33 @@
   "import_id_tips": {
     "message": "Missing or duplicate ids will be automatically (re)generated.",
     "description": "import id tips"
+  },
+  "source_map_enabled": {
+    "message": "Source Map On",
+    "description": "Source Map On"
+  },
+  "source_map_disabled": {
+    "message": "Source Map Off",
+    "description": "Source Map Off"
+  },
+  "source_map_tips": {
+    "message": "Specify Source Map header for JS resources.",
+    "description": "Specify Source Map header for JS resources."
+  },
+  "enable_source_map": {
+    "message": "Enable Source Map",
+    "description": "Enable Source Map"
+  },
+  "source_map_formatter": {
+    "message": "Source Map URL Formatter",
+    "description": "Source Map URL Formatter"
+  },
+  "appearance": {
+    "message": "Appearance",
+    "description": "Appearance"
+  },
+  "sourceMap": {
+    "message": "Source Map",
+    "description": "Source Map"
   }
 }

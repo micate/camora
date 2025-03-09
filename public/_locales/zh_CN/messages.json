@@ -59,7 +59,7 @@
   },
   "delete_rule": {
     "message": "删除规则",
-    "description": "删除规则"  
+    "description": "删除规则"
   },
   "delete_rule_confirmation": {
     "message": "确定要删除该规则吗？",
@@ -106,5 +106,33 @@
   "import_id_tips": {
     "message": "将自动生成缺失或替换重复的 id",
     "description": "将自动生成缺失或替换重复的 id"
+  },
+  "source_map_enabled": {
+    "message": "Source Map 已启用",
+    "description": "Source Map 已启用"
+  },
+  "source_map_disabled": {
+    "message": "Source Map 未启用",
+    "description": "Source Map 未启用"
+  },
+  "source_map_tips": {
+    "message": "对 JS 资源指定 Source Map 头信息",
+    "description": "对 JS 资源指定 Source Map 头信息"
+  },
+  "enable_source_map": {
+    "message": "启用 Source Map",
+    "description": "启用 Source Map"
+  },
+  "source_map_formatter": {
+    "message": "Source Map 地址获取方式",
+    "description": "Source Map 地址获取方式"
+  },
+  "appearance": {
+    "message": "外观",
+    "description": "外观"
+  },
+  "sourceMap": {
+    "message": "Source Map",
+    "description": "Source Map"
   }
 }
