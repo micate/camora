@@ -21,6 +21,7 @@ export default function CodeView(props: ICodeViewProps) {
 
   useEffect(() => {
     const cleanup = () => {
+      debugger;
       if (editorRef.current) {
         editorRef.current.destroy();
         editorRef.current = null;

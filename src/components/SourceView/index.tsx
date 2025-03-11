@@ -1,12 +1,10 @@
 import { CSSProperties, useEffect, useRef, useState } from "react";
-import { EditorView, minimalSetup } from "codemirror"
 import { json } from "@codemirror/lang-json"
-import { oneDark } from "@codemirror/theme-one-dark";
 import { Button, message, Modal, Spin } from "antd";
 import { LoadingOutlined } from '@ant-design/icons';
-import { useDarkMode } from "../../hooks/useDarkMode";
 import { exportRules } from "../../utils/exportRules";
 import { correctIds } from "../../utils/correctIds";
+import CodeView from "../CodeView";
 import './index.less';
 
 interface ISourceViewProps {
@@ -17,65 +15,31 @@ interface ISourceViewProps {
 
 export default function SourceView(props: ISourceViewProps) {
   const { style, visible, onClose } = props;
-  const editorRef = useRef<any>(null);
-  const contentRef = useRef<any>(null);
   const initialSource = useRef<string>('');
+  const [ruleSource, setRuleSource] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(true);
-  const darkMode = useDarkMode();
   const [messageApi, contextHolder] = message.useMessage();
+
+  useEffect(() => {
+    if (visible) {
+      updateEditorState();
+    }
+  }, [visible]);
 
   const updateEditorState = () => {
     setLoading(true);
     exportRules().then((rulesText: string) => {
-      if (editorRef.current) {
-        editorRef.current.dispatch({
-          changes: {
-            from: 0,
-            to: editorRef.current.state.doc.length,
-            insert: rulesText,
-          },
-        });
-        initialSource.current = rulesText;
-      }
+      setRuleSource(rulesText);
+      initialSource.current = rulesText;
       setTimeout(() => {
         setLoading(false);
       }, 300);
     });
   };
 
-  useEffect(() => {
-    if (visible) {
-      if (!editorRef.current) {
-        const extensions = [
-          minimalSetup,
-          json(),
-        ];
-        if (darkMode) {
-          extensions.push(oneDark);
-        }
-        editorRef.current = new EditorView({
-          extensions,
-          parent: contentRef.current,
-        });
-      }
-      updateEditorState();
-      editorRef.current?.focus();
-    }
-
-    return () => {
-      if (editorRef.current) {
-        console.info('editor destroyed');
-        editorRef.current.destroy();
-        editorRef.current = null;
-      }
-    }
-  }, [visible, darkMode, contentRef.current]);
-
   const handleImport = () => {
-    const newSource = editorRef.current.state.doc.toString();
-
     try {
-      const newData = JSON.parse(newSource);
+      const newData = JSON.parse(ruleSource);
       const newDataSource = JSON.stringify(newData, null, 2);
       if (newDataSource !== initialSource.current) {
         const groups = correctIds(newData.groups)
@@ -117,7 +81,17 @@ export default function SourceView(props: ISourceViewProps) {
     >
       <Spin indicator={<LoadingOutlined spin />} spinning={loading}>
         <div className="app-source-view" style={style}>
-          <div ref={contentRef} className="app-source-view-content" />
+          {visible ? (
+            <CodeView
+              className="app-source-view-content"
+              height="100%"
+              extensions={[json()]}
+              value={ruleSource}
+              onChange={(value) => {
+                setRuleSource(value);
+              }}
+            />
+          ) : null}
           <div className="app-source-view-actions">
             <div className="app-source-view-left-actions">
               {chrome.i18n.getMessage('import_id_tips')}

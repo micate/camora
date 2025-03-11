@@ -89,9 +89,11 @@ export default function Setting(props: ISettingProps) {
           <Form.Item label={chrome.i18n.getMessage('enable_source_map')} name="enableSourceMap">
             <Switch />
           </Form.Item>
-          <Form.Item label={chrome.i18n.getMessage('source_map_formatter')} name="sourceMapFormatter">
-            <CodeView height={200} extensions={extensions.current} />
-          </Form.Item>
+          {visible ? (
+            <Form.Item label={chrome.i18n.getMessage('source_map_formatter')} name="sourceMapFormatter">
+              <CodeView height={200} extensions={extensions.current} />
+            </Form.Item>
+          ) : null}
         </Form>
       </div>
     </Modal>
