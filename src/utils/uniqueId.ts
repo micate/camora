@@ -1,3 +1,3 @@
 export function uniqueId(prefix = ''): string {
-  return [prefix || '', Date.now().toString(36)].join('_');
+  return [prefix || '', Math.random().toString(36).substring(2)].join('_');
 }
