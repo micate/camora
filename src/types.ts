@@ -8,14 +8,29 @@ export enum TargetType {
   URL = 'url',
 }
 
-export interface Rule {
+export enum RuleType {
+  Redirect = 'redirect',
+  SourceMap = 'sourceMap',
+}
+
+export interface BaseRule {
   id: string
+  type: RuleType
   source: string
   sourceType?: SourceType
-  target: string
-  targetType?: TargetType
   enabled?: boolean
 }
+
+export interface RedirectRule extends BaseRule {
+  target: string
+  targetType?: TargetType
+}
+
+export interface SourceMapRule extends BaseRule {
+  sourceMapUrl: string
+}
+
+export type Rule = RedirectRule | SourceMapRule
 
 export interface RuleGroup {
   id: string

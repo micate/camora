@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Button, Progress, Space, Tooltip } from "antd";
-import { CodeOutlined, FullscreenOutlined, ReadOutlined, SettingOutlined } from "@ant-design/icons";
+import { CodeOutlined, FullscreenOutlined, SettingOutlined } from "@ant-design/icons";
 import SourceView from "../SourceView";
 import Setting from "../Setting";
 import { useRulesUsage } from "../../hooks/useRulesUsage";
@@ -8,28 +8,10 @@ import "./index.less";
 
 interface IFooterProps { }
 
-export default function Header(props: IFooterProps) {
+export default function Footer(props: IFooterProps) {
   const { rulesCountPercent, regexRulesCountPercent, rulesFormat, regexRulesFormat } = useRulesUsage()
   const [sourceViewVisible, setSourceViewVisible] = useState<boolean>(false)
   const [settingVisible, setSettingVisible] = useState<boolean>(false)
-  const [enableSourceMap, setEnableSourceMap] = useState<boolean>(false)
-
-  useEffect(() => {
-    chrome.storage.local.get(['enableSourceMap'], ({ enableSourceMap }) => {
-      setEnableSourceMap(!!enableSourceMap);
-    });
-
-    const onChange = (changes: { [key: string]: chrome.storage.StorageChange }) => {
-      if (changes.enableSourceMap) {
-        setEnableSourceMap(!!changes.enableSourceMap.newValue);
-      }
-    };
-
-    chrome.storage.onChanged.addListener(onChange);
-    return () => {
-      chrome.storage.onChanged.removeListener(onChange);
-    }
-  }, []);
 
   const handleViewSource = () => {
     setSourceViewVisible(true);
@@ -50,27 +32,6 @@ export default function Header(props: IFooterProps) {
             icon={<SettingOutlined />}
             onClick={handleViewSetting}
           />
-        </div>
-        <div className="app-source-map-status">
-          {enableSourceMap ? (
-            <Tooltip title={chrome.i18n.getMessage('source_map_enabled')} placement="top">
-              <ReadOutlined
-                style={{ color: 'var(--ant-color-info)' }}
-                onClick={() => {
-                  setSettingVisible(true);
-                }}
-              />
-            </Tooltip>
-          ) : (
-            <Tooltip title={chrome.i18n.getMessage('source_map_disabled')} placement="top">
-              <ReadOutlined
-                style={{ color: 'var(--ant-color-text)' }}
-                onClick={() => {
-                  setSettingVisible(true);
-                }}
-              />
-            </Tooltip>
-          )}
         </div>
         <Tooltip title={chrome.i18n.getMessage('import_export')} placement="bottom">
           <Button

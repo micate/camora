@@ -1,23 +1,23 @@
 import { useState } from 'react';
 import { Space, Input, Button, Divider, Switch, Popconfirm, Tooltip } from 'antd';
-import { SearchOutlined, CopyOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
-import { Rule } from '../../types';
-import { uniqueId } from '../../utils/uniqueId';
-import { determineFilterType, determineRedirectType } from '../../utils/determineInputType';
+import { SearchOutlined, CopyOutlined, DeleteOutlined, ReadOutlined } from '@ant-design/icons';
+import { SourceMapRule } from '../../../types';
+import { uniqueId } from '../../../utils/uniqueId';
+import { determineFilterType } from '../../../utils/determineInputType';
 import './index.less';
 
 interface IRuleViewProps {
-  rule: Rule;
-  onChange: (rule: Rule) => void;
-  onCopyRule: (rule: Rule) => void;
+  rule: SourceMapRule;
+  onChange: (rule: SourceMapRule) => void;
+  onCopyRule: (rule: SourceMapRule) => void;
   onDelete: () => void;
 }
 
-export default function RuleView(props: IRuleViewProps) {
+export default function SourceMapRuleView(props: IRuleViewProps) {
   const { rule, onChange, onCopyRule, onDelete } = props;
-  const { source, target } = rule || {};
+  const { source, sourceMapUrl } = rule || {};
   const [draftSource, setDraftSource] = useState(source);
-  const [draftTarget, setDraftTarget] = useState(target);
+  const [draftSourceMapUrl, setDraftSourceMapUrl] = useState(sourceMapUrl);
 
   const handleSourceChange = () => {
     if (draftSource === source) {
@@ -27,12 +27,11 @@ export default function RuleView(props: IRuleViewProps) {
     onChange({ ...rule, source: draftSource, sourceType })
   };
 
-  const handleTargetChange = () => {
-    if (draftTarget === target) {
+  const handleSourceMapUrlChange = () => {
+    if (draftSourceMapUrl === sourceMapUrl) {
       return;
     }
-    const targetType = determineRedirectType(draftTarget).type;
-    onChange({ ...rule, target: draftTarget, targetType });
+    onChange({ ...rule, sourceMapUrl: draftSourceMapUrl });
   };
 
   const handleCopyRule = () => {
@@ -69,19 +68,13 @@ export default function RuleView(props: IRuleViewProps) {
         <div className="rule-view-target">
           <Input
             addonBefore={(
-              <a
-                target="_blank"
-                href="https://developer.chrome.com/docs/extensions/reference/api/declarativeNetRequest#url_filter_syntax"
-                style={{ cursor: 'help' }}
-              >
-                <EditOutlined />
-              </a>
+              <ReadOutlined />
             )}
             size="small"
-            value={draftTarget}
-            onChange={(e) => setDraftTarget(e.target.value)}
-            onPressEnter={handleTargetChange}
-            onBlur={handleTargetChange}
+            value={draftSourceMapUrl}
+            onChange={(e) => setDraftSourceMapUrl(e.target.value)}
+            onPressEnter={handleSourceMapUrlChange}
+            onBlur={handleSourceMapUrlChange}
           />
           <Space className="rule-view-actions" size="small" direction="horizontal">
             <Tooltip title={chrome.i18n.getMessage('copy_rule')} placement="top">

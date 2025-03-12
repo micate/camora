@@ -5,8 +5,7 @@
   "description": "Redirect web page resources based on user-defined rules, useful for frontend development.",
   "permissions": [
     "storage",
-    "declarativeNetRequest",
-    "declarativeNetRequestWithHostAccess"
+    "declarativeNetRequest"
   ],
   "host_permissions": [
     "<all_urls>"

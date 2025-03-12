@@ -1,29 +1,5 @@
 import { getEnabledRules } from '../utils/getEnabledRules'
-import { RuleGroup } from '../types'
-// import { debounce } from '../utils/debounce'
-
-// let isSyncing = false;
-// const syncToChromeStorageSync = debounce(() => {
-//   if (isSyncing) {
-//     return;
-//   }
-
-//   isSyncing = true;
-//   chrome.storage.local.set({ syncStatus: { loading: true } });
-
-//   chrome.storage.local.get(['groups']).then(({ groups }) => {
-//     chrome.storage.sync.set({ groups }, () => {
-//       if (chrome.runtime.lastError) {
-//         console.error("Sync error:", chrome.runtime.lastError.message);
-//         chrome.storage.local.set({ syncStatus: { error: chrome.runtime.lastError.message } });
-//       } else {
-//         chrome.storage.local.set({ syncStatus: { success: new Date().toLocaleString() } });
-//       }
-
-//       isSyncing = false;
-//     })
-//   })
-// }, 5000);
+import { RedirectRule, RuleGroup, RuleType, SourceMapRule } from '../types'
 
 const updateStatus = (enabled: boolean) => {
   if (enabled) {
@@ -58,11 +34,11 @@ const getAndApplyRules = () => {
   return chrome.storage.local.get(['enabled', 'groups']).then(({ enabled, groups }) => {
     const isEnabled = enabled === undefined ? false : enabled;
     updateStatus(isEnabled);
-    
+
     if (isEnabled) {
       updateDynamicRules(groups || []);
     }
-    
+
     return { isEnabled, groups: groups || [] };
   });
 };
@@ -73,7 +49,7 @@ chrome.storage.onChanged.addListener((changes, area) => {
     // if (changes.groups) {
     //   syncToChromeStorageSync();
     // }
-  
+
     // 总开关改变
     if (changes.enabled) {
       updateStatus(changes.enabled.newValue)
@@ -88,7 +64,7 @@ chrome.storage.onChanged.addListener((changes, area) => {
       }
       return;
     }
-  
+
     // 规则改变
     if (changes.groups) {
       updateDynamicRules(changes.groups.newValue)
@@ -108,7 +84,37 @@ async function updateDynamicRules(ruleGroups: RuleGroup[]) {
 
   // 转化为 Chrome 声明性网络请求规则
   const netRequestRules = rules.map((rule, index) => {
-    const { source, sourceType, target, targetType } = rule;
+    const { type, source, sourceType } = rule;
+
+    if (type === RuleType.SourceMap) {
+      const { sourceMapUrl } = rule as SourceMapRule;
+      return {
+        id: index + 1,
+        priority: 1,
+        action: {
+          type: chrome.declarativeNetRequest.RuleActionType.MODIFY_HEADERS,
+          responseHeaders: [
+            {
+              header: 'SourceMap',
+              operation: chrome.declarativeNetRequest.HeaderOperation.SET,
+              value: sourceMapUrl
+            }
+          ]
+        },
+        condition: {
+          [sourceType || 'urlFilter']: source,
+          resourceTypes: [
+            chrome.declarativeNetRequest.ResourceType.MAIN_FRAME,
+            chrome.declarativeNetRequest.ResourceType.SUB_FRAME,
+            chrome.declarativeNetRequest.ResourceType.STYLESHEET,
+            chrome.declarativeNetRequest.ResourceType.SCRIPT,
+            chrome.declarativeNetRequest.ResourceType.XMLHTTPREQUEST,
+          ]
+        }
+      };
+    }
+
+    const { target, targetType } = rule as RedirectRule;
     return {
       id: index + 1,
       priority: 1,
@@ -131,7 +137,7 @@ async function updateDynamicRules(ruleGroups: RuleGroup[]) {
         ]
       }
     };
-  })
+  }).filter(Boolean)
   console.info("Net request rules:", netRequestRules)
 
   // 添加新规则

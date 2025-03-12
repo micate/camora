@@ -1,7 +1,9 @@
-import { Space, Button, Empty, Divider } from 'antd';
+import { useEffect, useState } from 'react';
+import { Space, Empty, Dropdown, MenuProps, Button } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
-import RuleView from '../RuleView';
-import { Rule, RuleGroup } from '../../types';
+import RedirectRuleView from '../RuleViews/RedirectRuleView';
+import SourceMapRuleView from '../RuleViews/SourceMapRuleView';
+import { RedirectRule, Rule, RuleGroup, RuleType, SourceMapRule } from '../../types';
 import { createRule } from '../../utils/createRule';
 import './index.less';
 
@@ -13,13 +15,44 @@ interface IGroupViewProps {
 export default function GroupView(props: IGroupViewProps) {
   const { group, onChange } = props;
   const { rules } = group || {};
+  const [showSourceMap, setShowSourceMap] = useState(false);
 
-  const handleAddRule = () => {
-    const newRule = createRule();
+  useEffect(() => {
+    chrome.storage.local.get(['enableSourceMap'], ({ enableSourceMap }) => {
+      setShowSourceMap(enableSourceMap)
+    });
+
+    const onChange = (changes: { [key: string]: chrome.storage.StorageChange }) => {
+      if (changes.enableSourceMap) {
+        setShowSourceMap(!!changes.enableSourceMap.newValue);
+      }
+    };
+
+    chrome.storage.onChanged.addListener(onChange);
+    return () => {
+      chrome.storage.onChanged.removeListener(onChange);
+    }
+  }, []);
+
+  const menuItems: MenuProps['items'] = [
+    showSourceMap ? {
+      key: 'addSourceMap',
+      label: chrome.i18n.getMessage('add_source_map'),
+      onClick: () => {
+        handleAddRule({
+          type: RuleType.SourceMap,
+        });
+      },
+    } : null,
+  ].filter(Boolean);
+
+  const handleAddRule = (data?: Partial<Rule>) => {
+    const newRule = createRule(data);
     onChange({ ...group, rules: [...rules, newRule] });
   };
 
   const handleRuleChange = (rule: Rule) => {
+    rule.type = rule.type || RuleType.Redirect;
     onChange({
       ...group,
       rules: rules.map((r) => (r.id === rule.id ? rule : r)),
@@ -27,6 +60,7 @@ export default function GroupView(props: IGroupViewProps) {
   };
 
   const handleCopyRule = (rule: Rule) => {
+    rule.type = rule.type || RuleType.Redirect;
     onChange({
       ...group,
       rules: [...rules, rule],
@@ -40,39 +74,63 @@ export default function GroupView(props: IGroupViewProps) {
     });
   };
 
+  const addBtn = menuItems.length ? (
+    <Dropdown.Button
+      menu={{ items: menuItems }}
+      placement="bottom"
+      autoAdjustOverflow
+      size="small"
+      onClick={() => {
+        handleAddRule({ type: RuleType.Redirect });
+      }}
+      style={{ display: 'inline-block' }}
+    >
+      <PlusOutlined />
+    </Dropdown.Button>
+  ) : (
+    <Button size="small" onClick={() => handleAddRule({ type: RuleType.Redirect })}>
+      <PlusOutlined />
+    </Button>
+  );
+
   return (
     <div className="group-view">
-      {/* <div className="group-view-header">
-        <div className="group-view-name">{name}</div>
-      </div> */}
       {rules?.length ? (
         <Space
           className="group-view-content"
-          size="small"
+          size="large"
           direction="vertical"
-          split={<Divider type="horizontal" style={{ margin: '4px 0' }} />}
         >
-          {(rules || []).map((rule) => (
-            <RuleView
-              key={rule.id}
-              rule={rule}
-              onChange={handleRuleChange}
-              onCopyRule={handleCopyRule}
-              onDelete={() => handleDeleteRule(rule.id)}
-            />
-          ))}
+          {(rules || []).map((rule) => {
+            if (rule.type === RuleType.SourceMap) {
+              return (
+                <SourceMapRuleView
+                  key={rule.id}
+                  rule={rule as SourceMapRule}
+                  onChange={handleRuleChange}
+                  onCopyRule={handleCopyRule}
+                  onDelete={() => handleDeleteRule(rule.id)}
+                />
+              );
+            }
+            return (
+              <RedirectRuleView
+                key={rule.id}
+                rule={rule as RedirectRule}
+                onChange={handleRuleChange}
+                onCopyRule={handleCopyRule}
+                onDelete={() => handleDeleteRule(rule.id)}
+              />
+            );
+          })}
           <div className="group-view-actions">
-            <Button size="small" onClick={handleAddRule}>
-              <PlusOutlined />
-            </Button>
+            {addBtn}
           </div>
         </Space>
       ) : (
         <Space className="group-view-content group-view-empty" size="small" direction="vertical">
           <Empty description={false}>
-            <Button size="small" onClick={handleAddRule}>
-              <PlusOutlined />
-            </Button>
+            {addBtn}
           </Empty>
         </Space>
       )}

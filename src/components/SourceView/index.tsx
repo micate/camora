@@ -1,6 +1,6 @@
 import { CSSProperties, useEffect, useRef, useState } from "react";
 import { json } from "@codemirror/lang-json"
-import { Button, message, Modal, Spin } from "antd";
+import { Alert, Button, message, Modal, Spin } from "antd";
 import { LoadingOutlined } from '@ant-design/icons';
 import { exportRules } from "../../utils/exportRules";
 import { correctIds } from "../../utils/correctIds";
@@ -94,7 +94,7 @@ export default function SourceView(props: ISourceViewProps) {
           ) : null}
           <div className="app-source-view-actions">
             <div className="app-source-view-left-actions">
-              {chrome.i18n.getMessage('import_id_tips')}
+              <Alert message={chrome.i18n.getMessage('import_id_tips')} type="info" showIcon />
             </div>
             <div className="app-source-view-right-actions">
               <Button size="middle" onClick={handleClose}>
