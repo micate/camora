@@ -23,8 +23,19 @@ export default function SourceMapRuleView(props: IRuleViewProps) {
     if (draftSource === source) {
       return;
     }
+
+    let autoSourceMapUrl = draftSourceMapUrl;
+    if (!draftSourceMapUrl) {
+      const matches = draftSource.match(/^https?:\/\/(dev\.)?g\.alicdn\.com\/([^\/]+)\/([^\/]+)\/([^\/]+)\/([^\/]+)\.js$/);
+      if (matches) {
+        const [, , group, repo, version, filename] = matches;
+        autoSourceMapUrl = `https://sourcemap.def.alibaba-inc.com/sourcemap/${group}/${repo}/${version}/${filename}.js.map`;
+        setDraftSourceMapUrl(autoSourceMapUrl);
+      }
+    }
+
     const sourceType = determineFilterType(draftSource).type;
-    onChange({ ...rule, source: draftSource, sourceType })
+    onChange({ ...rule, source: draftSource, sourceType, sourceMapUrl: autoSourceMapUrl })
   };
 
   const handleSourceMapUrlChange = () => {
