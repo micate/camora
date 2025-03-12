@@ -7,5 +7,5 @@ export function createRule(data?: Partial<Rule>): Rule {
     id: uniqueId('rule'),
     source: '',
     enabled: true,
-  };
+  } as any;
 }

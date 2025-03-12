@@ -6,9 +6,7 @@ import Setting from "../Setting";
 import { useRulesUsage } from "../../hooks/useRulesUsage";
 import "./index.less";
 
-interface IFooterProps { }
-
-export default function Footer(props: IFooterProps) {
+export default function Footer() {
   const { rulesCountPercent, regexRulesCountPercent, rulesFormat, regexRulesFormat } = useRulesUsage()
   const [sourceViewVisible, setSourceViewVisible] = useState<boolean>(false)
   const [settingVisible, setSettingVisible] = useState<boolean>(false)
