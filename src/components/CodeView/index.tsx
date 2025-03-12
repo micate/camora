@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import classnames from 'classnames';
 import { EditorView, minimalSetup } from "codemirror"
 import { oneDark } from "@codemirror/theme-one-dark";
@@ -19,12 +19,31 @@ export default function CodeView(props: ICodeViewProps) {
   const contentRef = useRef<any>(null);
   const darkMode = useDarkMode();
 
+  const updateValue = useCallback((newValue?: string) => {
+    if (editorRef.current) {
+      const currentValue = editorRef.current.state.doc.toString();
+      if (currentValue !== newValue) {
+        editorRef.current.dispatch({
+          changes: {
+            from: 0,
+            to: editorRef.current.state.doc.length,
+            insert: newValue,
+          },
+        });
+      }
+    }
+  }, [editorRef.current, value]);
+
   useEffect(() => {
     const cleanup = () => {
       if (editorRef.current) {
         editorRef.current.destroy();
         editorRef.current = null;
       }
+    }
+
+    if (!contentRef.current) {
+      return;
     }
 
     if (editorRef.current) {
@@ -50,26 +69,16 @@ export default function CodeView(props: ICodeViewProps) {
       extensions,
       parent: contentRef.current,
     });
+    updateValue(value);
     editorRef.current?.focus();
 
     return () => {
       cleanup();
     }
-  }, [darkMode, extensionsProp, contentRef.current]);
+  }, [darkMode]); // 这里不监听 extensionProp，因为 extensionProp 引用对象每次都会发生变化
 
   useEffect(() => {
-    if (editorRef.current) {
-      const currentValue = editorRef.current.state.doc.toString();
-      if (currentValue !== value) {
-        editorRef.current.dispatch({
-          changes: {
-            from: 0,
-            to: editorRef.current.state.doc.length,
-            insert: value,
-          },
-        });
-      }
-    }
+    updateValue(value);
   }, [value]);
 
   return (
