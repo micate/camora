@@ -83,7 +83,6 @@ export default function GroupView(props: IGroupViewProps) {
       onClick={() => {
         handleAddRule({ type: RuleType.Redirect });
       }}
-      style={{ display: 'inline-block' }}
     >
       <PlusOutlined />
     </Dropdown.Button>

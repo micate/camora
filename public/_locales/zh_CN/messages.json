@@ -1,15 +1,12 @@
 {
   "add_group": {
-    "message": "添加分组",
-    "description": "添加分组"
+    "message": "添加分组"
   },
   "group_name": {
-    "message": "分组名称",
-    "description": "分组名称"
+    "message": "分组名称"
   },
   "group_name_cloned": {
     "message": "复制 $name$",
-    "description": "复制分组名称",
     "placeholders": {
       "name": {
         "content": "$1",
@@ -18,60 +15,46 @@
     }
   },
   "group_name_required": {
-    "message": "分组名称不能为空",
-    "description": "分组名称不能为空"
+    "message": "分组名称不能为空"
   },
   "group_default_name": {
-    "message": "未命名分组",
-    "description": "默认分组名称"
+    "message": "未命名分组"
   },
   "group_edit": {
-    "message": "编辑",
-    "description": "编辑分组"
+    "message": "编辑"
   },
   "group_copy": {
-    "message": "复制",
-    "description": "复制分组"
+    "message": "复制"
   },
   "group_delete": {
-    "message": "删除",
-    "description": "删除分组"
+    "message": "删除"
   },
   "dynamic_rules": {
-    "message": "动态规则",
-    "description": "动态规则"
+    "message": "动态规则"
   },
   "regex_rules": {
-    "message": "正则规则",
-    "description": "正则规则"
+    "message": "正则规则"
   },
   "group_delete_title": {
-    "message": "确定要删除该分组吗？",
-    "description": "删除分组"
+    "message": "确定要删除该分组吗？"
   },
   "group_delete_confirm": {
-    "message": "分组下的所有规则都将同步删除且无法恢复",
-    "description": "删除分组确认信息"
+    "message": "分组下的所有规则都将同步删除且无法恢复"
   },
   "copy_rule": {
-    "message": "复制规则",
-    "description": "复制规则"
+    "message": "复制规则"
   },
   "delete_rule": {
-    "message": "删除规则",
-    "description": "删除规则"
+    "message": "删除规则"
   },
   "delete_rule_confirmation": {
-    "message": "确定要删除该规则吗？",
-    "description": "删除规则确认信息"
+    "message": "确定要删除该规则吗？"
   },
   "import_error_title": {
-    "message": "导入失败",
-    "description": "导入失败"
+    "message": "导入失败"
   },
   "import_error_content_invalid": {
     "message": "规则内容为空或格式不正确 $error$",
-    "description": "导入失败",
     "placeholders": {
       "error": {
         "content": "$1",
@@ -80,47 +63,48 @@
     }
   },
   "search_placeholder": {
-    "message": "搜索",
-    "description": "搜索"
+    "message": "搜索"
   },
   "import_export": {
-    "message": "导入/导出",
-    "description": "导入导出"
+    "message": "导入/导出"
   },
   "import_not_changed": {
-    "message": "规则未发生变化",
-    "description": "规则未发生变化"
+    "message": "规则未发生变化"
   },
   "import_success": {
-    "message": "导入成功，请稍后",
-    "description": "导入成功，请稍后"
+    "message": "导入成功，请稍后"
   },
   "close": {
-    "message": "关闭",
-    "description": "关闭"
+    "message": "关闭"
   },
   "import": {
-    "message": "导入",
-    "description": "导入"
+    "message": "导入"
   },
   "import_id_tips": {
-    "message": "无需提供 id，将会自动生成或去重",
-    "description": "无需提供 id，将会自动生成或去重"
+    "message": "无需提供 id，将会自动生成或去重"
   },
   "enable_source_map": {
-    "message": "启用 Source Map",
-    "description": "启用 Source Map"
+    "message": "启用 Source Map"
   },
   "add_source_map": {
-    "message": "添加 Source Map",
-    "description": "添加 Source Map"
+    "message": "添加 Source Map"
   },
   "common": {
-    "message": "常用",
-    "description": "常用"
+    "message": "常用"
   },
   "advanced": {
-    "message": "高级",
-    "description": "高级"
+    "message": "高级"
+  },
+  "source_map_source_placeholder": {
+    "message": "例如 https://mycdn.com/path/to/file.js"
+  },
+  "source_map_url_placeholder": {
+    "message": "例如 https://mycdn.com/path/to/file.js.map"
+  },
+  "redirect_source_placeholder": {
+    "message": "例如 ^https://(dev.)?mycdn.com/my-project/([^/+])/(.*)"
+  },
+  "redirect_target_placeholder": {
+    "message": "例如 http://127.0.0.1:3000/\\3"
   }
 }

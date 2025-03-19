@@ -23,16 +23,26 @@ export default function RedirectRuleView(props: IRuleViewProps) {
     if (draftSource === source) {
       return;
     }
-    const sourceType = determineFilterType(draftSource).type;
-    onChange({ ...rule, source: draftSource, sourceType })
+    let newSource = draftSource;
+    if (draftSource.includes('(') && !draftSource.startsWith('^')) {
+      newSource = `^${draftSource}`;
+      setDraftSource(newSource);
+    }
+    const sourceType = determineFilterType(newSource).type;
+    onChange({ ...rule, source: newSource, sourceType })
   };
 
   const handleTargetChange = () => {
     if (draftTarget === target) {
       return;
     }
-    const targetType = determineRedirectType(draftTarget).type;
-    onChange({ ...rule, target: draftTarget, targetType });
+    let newTarget = draftTarget;
+    if (draftTarget.includes('$')) {
+      newTarget = draftTarget.replace(/\$(\d+)/g, '\\$1');
+      setDraftTarget(newTarget);
+    }
+    const targetType = determineRedirectType(newTarget).type;
+    onChange({ ...rule, target: newTarget, targetType });
   };
 
   const handleCopyRule = () => {
@@ -60,6 +70,7 @@ export default function RedirectRuleView(props: IRuleViewProps) {
               </a>
             )}
             size="small"
+            placeholder={chrome.i18n.getMessage('redirect_source_placeholder')}
             value={draftSource}
             onChange={(e) => setDraftSource(e.target.value)}
             onPressEnter={handleSourceChange}
@@ -78,6 +89,7 @@ export default function RedirectRuleView(props: IRuleViewProps) {
               </a>
             )}
             size="small"
+            placeholder={chrome.i18n.getMessage('redirect_target_placeholder')}
             value={draftTarget}
             onChange={(e) => setDraftTarget(e.target.value)}
             onPressEnter={handleTargetChange}

@@ -9,7 +9,7 @@ type Procedure = (...args: any[]) => void;
  * @returns A debounced version of the original function.
  */
 export function debounce<T extends Procedure>(func: T, wait: number): T {
-  let timeoutId: number | null = null;
+  let timeoutId: NodeJS.Timeout | null = null;
 
   const debouncedFunction = (...args: Parameters<T>): void => {
     if (timeoutId !== null) {

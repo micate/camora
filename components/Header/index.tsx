@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Button, Space, Switch, AutoComplete, Badge, Tooltip } from "antd";
-import { PlusOutlined } from "@ant-design/icons";
+import { PlusOutlined, QuestionCircleOutlined } from "@ant-design/icons";
+import Help from "../Help";
 import { RuleGroup } from "../../types";
 import "./index.less";
 
@@ -15,6 +16,7 @@ export default function Header(props: IHeaderProps) {
   const [enabled, setEnabled] = useState<boolean>(false);
   const [completeOptions, setCompleteOptions] = useState<{ label: string, value: string }[]>([]);
   const [inputValue, setInputValue] = useState<string>('');
+  const [helpVisible, setHelpVisible] = useState<boolean>(false);
 
   useEffect(() => {
     chrome.storage.local.get(['enabled']).then(({ enabled: savedEnabled }) => {
@@ -71,6 +73,22 @@ export default function Header(props: IHeaderProps) {
         </Tooltip>
       </div>
       <div className="app-header-secondary">
+        <div className="app-help">
+          <QuestionCircleOutlined
+            style={{
+              color: 'var(--ant-color-text)',
+              fontSize: '16px',
+              cursor: 'pointer',
+            }}
+            onClick={() => {
+              setHelpVisible(true);
+            }}
+          />
+          <Help
+            visible={helpVisible}
+            onClose={() => setHelpVisible(false)}
+          />
+        </div>
         <div className="app-active-group">
           <div className="app-active-group-name">
             {activeGroup ? (

@@ -70,6 +70,7 @@ export default function SourceMapRuleView(props: IRuleViewProps) {
               </a>
             )}
             size="small"
+            placeholder={chrome.i18n.getMessage('source_map_source_placeholder')}
             value={draftSource}
             onChange={(e) => setDraftSource(e.target.value)}
             onPressEnter={handleSourceChange}
@@ -82,6 +83,7 @@ export default function SourceMapRuleView(props: IRuleViewProps) {
               <ReadOutlined />
             )}
             size="small"
+            placeholder={chrome.i18n.getMessage('source_map_url_placeholder')}
             value={draftSourceMapUrl}
             onChange={(e) => setDraftSourceMapUrl(e.target.value)}
             onPressEnter={handleSourceMapUrlChange}

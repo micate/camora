@@ -1,0 +1,47 @@
+.app-help-content {
+  pre {
+    margin: 4px 0;
+    padding: 8px;
+    border: solid 1px var(--ant-color-split);
+    border-radius: var(--ant-border-radius-lg);
+    background-color: var(--ant-color-bg-base);
+  }
+
+  .table-container {
+    border: solid 1px var(--ant-color-split);
+    border-radius: var(--ant-border-radius-lg);
+    overflow: hidden;
+    margin: 4px 0;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+
+    th, td {
+      padding: 8px;
+
+      &:first-child {
+        border-left: 0;
+      }
+
+      &:last-child {
+        border-right: 0;
+      }
+    }
+
+    th {
+      background-color: var(--ant-color-bg-base);
+      border: solid var(--ant-color-split);
+      border-width: 0 1px 1px;
+    }
+
+    td {
+      border: solid 1px var(--ant-color-split);
+    }
+
+    tr:last-child td {
+      border-bottom: 0;
+    }
+  }
+}
