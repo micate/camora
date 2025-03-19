@@ -1,6 +1,6 @@
-import { Rule, RuleGroup, RuleType, RedirectRule, SourceMapRule } from "../../types"
-import { getEnabledRules } from '../../utils/getEnabledRules'
-import { updateCount } from "./updateCount"
+import { Rule, RuleGroup, RuleType, RedirectRule, SourceMapRule } from '../types'
+import { getEnabledRules } from './getEnabledRules'
+import { updateCount } from './updateCount'
 
 // 更新动态规则
 export async function updateDynamicRules(ruleGroups: RuleGroup[]) {

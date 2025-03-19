@@ -1,4 +1,4 @@
-let updateTimeout: number | null = null;
+let updateTimeout: NodeJS.Timeout | null = null;
 export function updateCount() {
   if (updateTimeout) {
     clearTimeout(updateTimeout);

@@ -4,7 +4,7 @@ import { ConfigProvider, theme } from 'antd'
 import zhCN from 'antd/locale/zh_CN';
 import enUS from 'antd/locale/en_US';
 import App from './App'
-import { useDarkMode } from './hooks/useDarkMode';
+import { useDarkMode } from '../../hooks/useDarkMode';
 
 const language = chrome.i18n.getUILanguage();
 

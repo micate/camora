@@ -1,5 +1,5 @@
-import { updateDynamicRules } from "./updateDynamicRules";
-import { updateStatus } from "./updateStatus";
+import { updateDynamicRules } from './updateDynamicRules';
+import { updateStatus } from './updateStatus';
 
 // 提取获取存储数据并应用规则的函数
 export function getAndApplyRules() {

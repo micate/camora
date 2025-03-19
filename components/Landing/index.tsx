@@ -1,4 +1,4 @@
-import Logo from '../../logo.png';
+import Logo from '/icon/icon.png?url';
 import './index.less';
 
 interface ILandingProps {

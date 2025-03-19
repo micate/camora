@@ -1,12 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { Layout, Form, Input, Modal, Empty } from 'antd'
-import Landing from './components/Landing';
-import Header from './components/Header';
-import GroupView from './components/GroupView';
-import Sidebar from './components/Sidebar';
-import Footer from './components/Footer';
-import type { RuleGroup } from './types'
-import { createGroup } from './utils/createGroup';
+import Landing from '../../components/Landing';
+import Header from '../../components/Header';
+import GroupView from '../../components/GroupView';
+import Sidebar from '../../components/Sidebar';
+import Footer from '../../components/Footer';
+import type { RuleGroup } from '../../types'
+import { createGroup } from '../../utils/createGroup';
 import './App.less';
 
 const { Content } = Layout
