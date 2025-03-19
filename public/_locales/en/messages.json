@@ -106,5 +106,47 @@
   },
   "redirect_target_placeholder": {
     "message": "Example: http://127.0.0.1:3000/\\3"
+  },
+  "rule_help_title": {
+    "message": "Rule Explanation"
+  },
+  "rule_help_tip_1": {
+    "message": "For more detailed rule explanation, please refer to the official documentation of Google Chrome:"
+  },
+  "rule_help_tip_2": {
+    "message": "URL matching"
+  },
+  "rule_help_regex_title": {
+    "message": "Use regex rules"
+  },
+  "rule_help_regex_match_title": {
+    "message": "Matching rule (note that ^ should be used):"
+  },
+  "rule_help_regex_forward_title": {
+    "message": "Forward rule (use \\number to reference captured content):"
+  },
+  "rule_help_wildcard_title": {
+    "message": "Use wildcard rules"
+  },
+  "rule_help_wildcard_match_title": {
+    "message": "Matching rule:"
+  },
+  "rule_help_wildcard_forward_title": {
+    "message": "Forward rule (cannot reference matching content):"
+  },
+  "rule_help_wildcard_match_ok": {
+    "message": "Match"
+  },
+  "rule_help_wildcard_match_not_ok": {
+    "message": "Not match"
+  },
+  "rule_help_static_title": {
+    "message": "Use static rules"
+  },
+  "rule_help_static_match_title": {
+    "message": "Matching rule:"
+  },
+  "rule_help_static_forward_title": {
+    "message": "Forward rule:"
   }
 }

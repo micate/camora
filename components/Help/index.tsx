@@ -16,29 +16,29 @@ export default function Help(props: IHelpProps) {
   const items = [
     {
       key: '1',
-      label: '使用正则规则',
+      label: chrome.i18n.getMessage('rule_help_regex_title'),
       children: (
         <div>
-          匹配规则（注意以 ^ 开头）：
+          {chrome.i18n.getMessage('rule_help_regex_match_title')}
           <pre>^https://(dev.)?mycdn.com/my-project/([^/+])/(.*)</pre>
-          转发规则（使用 \序号 引用捕获内容）：
+          {chrome.i18n.getMessage('rule_help_regex_forward_title')}
           <pre>http://127.0.0.1:3000/\3</pre>
         </div>
       ),
     },
     {
       key: '2',
-      label: '使用通配符规则',
+      label: chrome.i18n.getMessage('rule_help_wildcard_title'),
       children: (
         <div>
-          匹配规则：
+          {chrome.i18n.getMessage('rule_help_wildcard_match_title')}
           <div className="table-container">
             <table>
               <tbody>
                 <tr>
                   <th><code dir="ltr" translate="no"><b>urlFilter</b></code></th>
-                  <th>配对</th>
-                  <th>不匹配</th>
+                  <th>{chrome.i18n.getMessage('rule_help_wildcard_match_ok')}</th>
+                  <th>{chrome.i18n.getMessage('rule_help_wildcard_match_not_ok')}</th>
                 </tr>
                 <tr>
                   <td><code dir="ltr" translate="no">"abc"</code></td>
@@ -68,19 +68,19 @@ export default function Help(props: IHelpProps) {
               </tbody>
             </table>
           </div>
-          转发规则（无法引用匹配内容）：
+          {chrome.i18n.getMessage('rule_help_wildcard_forward_title')}
           <pre>https://example.com/</pre>
         </div>
       ),
     },
     {
       key: '3',
-      label: '使用静态规则',
+      label: chrome.i18n.getMessage('rule_help_static_title'),
       children: (
         <div>
-          匹配规则：
+          {chrome.i18n.getMessage('rule_help_static_match_title')}
           <pre>https://example1.com/</pre>
-          转发规则：
+          {chrome.i18n.getMessage('rule_help_static_forward_title')}
           <pre>https://example2.com/</pre>
         </div>
       ),
@@ -89,7 +89,7 @@ export default function Help(props: IHelpProps) {
 
   return (
     <Drawer
-      title="规则说明"
+      title={chrome.i18n.getMessage('rule_help_title')}
       open={visible}
       placement="bottom"
       height="calc(100vh - 30px)"
@@ -100,13 +100,13 @@ export default function Help(props: IHelpProps) {
           <Alert
             message={(
               <span>
-                更详细的规则说明请参考 Google Chrome 的官方文档：
+                {chrome.i18n.getMessage('rule_help_tip_1')}
                 <a
                   href="https://developer.chrome.com/docs/extensions/reference/api/declarativeNetRequest?#property-RuleCondition-urlFilter"
                   target="_blank"
                   rel="noreferrer"
                 >
-                  网址匹配
+                  {chrome.i18n.getMessage('rule_help_tip_2')}
                 </a>
               </span>
             )}
