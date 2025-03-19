@@ -5,8 +5,8 @@ export default defineConfig({
   manifest: {
     manifest_version: 3,
     name: "Camora",
-    version: "1.3.0",
-    description: "Redirect web page resources based on user-defined rules, useful for frontend development.",
+    version: "1.3.1",
+    description: "A frontend development tool that allows you to replace web resources based on user-defined rules.",
     permissions: [
       "storage",
       "declarativeNetRequest"
