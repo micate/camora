@@ -1,4 +1,4 @@
-import { RedirectRule, Rule, RuleGroup, SourceMapRule } from "@/types";
+import { RedirectRule, Rule, RuleGroup, SourceMapRule } from "../types";
 
 export function getEnabledRules(ruleGroups: RuleGroup[]) {
   const enabledRules: Rule[] = [];

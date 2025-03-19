@@ -1,6 +1,5 @@
-import { Rule, RuleGroup, RuleType, SourceMapRule } from "../../types"
+import { Rule, RuleGroup, RuleType, RedirectRule, SourceMapRule } from "../../types"
 import { getEnabledRules } from '../../utils/getEnabledRules'
-import { RedirectRule } from "../../types"
 import { updateCount } from "./updateCount"
 
 // 更新动态规则
