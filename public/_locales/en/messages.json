@@ -114,7 +114,7 @@
     "message": "Rule Explanation"
   },
   "rule_help_tip_1": {
-    "message": "For more detailed rule explanation, please refer to the official documentation of Google Chrome:"
+    "message": "For more detailed rule explanation, please refer to the official documentation of Google Chrome: "
   },
   "rule_help_tip_2": {
     "message": "URL matching"
