@@ -39,7 +39,7 @@ export default function Header(props: IHeaderProps) {
             placeholder={chrome.i18n.getMessage('search_placeholder')}
             allowClear
             popupMatchSelectWidth={false}
-            notFoundContent="No results"
+            notFoundContent={chrome.i18n.getMessage('no_results')}
             options={completeOptions}
             filterOption={(inputValue, option) =>
               option?.label.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1

@@ -1,10 +1,12 @@
 import { CSSProperties, useEffect, useRef, useState } from "react";
 import { json } from "@codemirror/lang-json"
-import { Alert, Button, message, Modal, Spin } from "antd";
+import { Button, message, Modal, Spin } from "antd";
 import { LoadingOutlined } from '@ant-design/icons';
 import { exportRules } from "../../utils/exportRules";
 import { correctIds } from "../../utils/correctIds";
 import CodeView from "../CodeView";
+import Backup from "../Backup";
+import { RuleGroup } from "../../types";
 import './index.less';
 
 interface ISourceViewProps {
@@ -26,15 +28,36 @@ export default function SourceView(props: ISourceViewProps) {
     }
   }, [visible]);
 
+  const buildRuleSource = (groups: RuleGroup[]) => {
+    return JSON.stringify({
+      vendor: 'Camora',
+      version: 1,
+      createTime: getCurrentTime(),
+      groups,
+    }, null, 2);
+  }
+
   const updateEditorState = () => {
     setLoading(true);
-    exportRules().then((rulesText: string) => {
+    exportRules().then((groups: RuleGroup[]) => {
+      const rulesText = buildRuleSource(groups);
       setRuleSource(rulesText);
       initialSource.current = rulesText;
       setTimeout(() => {
         setLoading(false);
       }, 300);
     });
+  };
+
+  const handleBackupChange = (groups?: RuleGroup[]) => {
+    if (groups) {
+      const rulesText = buildRuleSource(groups);
+      if (rulesText !== ruleSource) {
+        setRuleSource(rulesText);
+      }
+    } else {
+      setRuleSource(initialSource.current);
+    }
   };
 
   const handleImport = () => {
@@ -94,7 +117,7 @@ export default function SourceView(props: ISourceViewProps) {
           ) : null}
           <div className="app-source-view-actions">
             <div className="app-source-view-left-actions">
-              <Alert message={chrome.i18n.getMessage('import_id_tips')} type="info" showIcon />
+              <Backup onChange={handleBackupChange} />
             </div>
             <div className="app-source-view-right-actions">
               <Button size="middle" onClick={handleClose}>

@@ -2,6 +2,7 @@
 import { updateStatus } from '../utils/updateStatus';
 import { getAndApplyRules } from '../utils/getAndApplyRules';
 import { updateDynamicRules } from '../utils/updateDynamicRules';
+import { backup } from '../utils/cloud';
 
 export default defineBackground(() => {
 
@@ -27,6 +28,8 @@ export default defineBackground(() => {
       if (changes.groups) {
         updateDynamicRules(changes.groups.newValue)
       }
+
+      backup();
     }
   })
 
@@ -44,5 +47,14 @@ export default defineBackground(() => {
 
   // 初始化规则
   getAndApplyRules();
+
+  // 监听消息
+  chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+    if (message.action === 'doBackup') {
+      backup();
+      sendResponse('Backup start');
+    }
+    return true;
+  });
 
 });

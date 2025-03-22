@@ -14,18 +14,28 @@ export default function Setting(props: ISettingProps) {
 
   useEffect(() => {
     if (visible) {
-      chrome.storage.local.get(['enableSourceMap'], ({ enableSourceMap }) => {
-        form.setFieldsValue({
-          enableSourceMap: enableSourceMap || false,
-        });
-      });
+      chrome.storage.local.get(
+        ['enableSourceMap', 'enableBackup'],
+        ({ enableSourceMap, enableBackup }) => {
+          form.setFieldsValue({
+            enableSourceMap: enableSourceMap || false,
+            enableBackup: enableBackup || false,
+          });
+        }
+      );
     }
   }, [visible]);
 
   const handleFormChange = (values: any) => {
-    const { enableSourceMap } = values || {};
+    const { enableSourceMap, enableBackup } = values || {};
     if (enableSourceMap !== undefined) {
       chrome.storage.local.set({ enableSourceMap });
+    }
+    if (enableBackup !== undefined) {
+      chrome.storage.local.set({ enableBackup });
+      if (enableBackup) {
+        chrome.runtime.sendMessage({ action: "doBackup" });
+      }
     }
   };
 
@@ -62,6 +72,9 @@ export default function Setting(props: ISettingProps) {
           style={{ marginTop: 8 }}
         >
           <Form.Item label={chrome.i18n.getMessage('enable_source_map')} name="enableSourceMap">
+            <Switch />
+          </Form.Item>
+          <Form.Item label={chrome.i18n.getMessage('enable_backup')} name="enableBackup">
             <Switch />
           </Form.Item>
         </Form>

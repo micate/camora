@@ -2,6 +2,9 @@
   "description": {
     "message": "通过灵活的自定义规则代理/转发/替换网页资源的前端开发工具，支持暗黑模式和导入导出。"
   },
+  "no_results": {
+    "message": "暂无数据"
+  },
   "add_group": {
     "message": "添加分组"
   },
@@ -83,9 +86,6 @@
   "import": {
     "message": "导入"
   },
-  "import_id_tips": {
-    "message": "无需提供 id，将会自动生成或去重"
-  },
   "enable_source_map": {
     "message": "启用 Source Map"
   },
@@ -151,5 +151,77 @@
   },
   "rule_help_static_forward_title": {
     "message": "转发规则："
+  },
+  "enable_backup": {
+    "message": "启用备份"
+  },
+  "create_backup_failed": {
+    "message": "创建备份失败: $error$",
+    "placeholders": {
+      "error": {
+        "content": "$1",
+        "example": "1"
+      }
+    }
+  },
+  "fetch_backup_failed": {
+    "message": "获取备份失败: $error$",
+    "placeholders": {
+      "error": {
+        "content": "$1",
+        "example": "1"
+      }
+    }
+  },
+  "fetch_backup_list_failed": {
+    "message": "获取备份列表失败",
+    "placeholders": {
+      "error": {
+        "content": "$1",
+        "example": "1"
+      }
+    }
+  },
+  "backup_success": {
+    "message": "备份成功"
+  },
+  "delete_backup_confirm_title": {
+    "message": "确定要删除备份吗？"
+  },
+  "delete_backup_confirm_description": {
+    "message": "删除后无法恢复"
+  },
+  "delete_backup_failed": {
+    "message": "删除备份失败",
+    "placeholders": {
+      "error": {
+        "content": "$1",
+        "example": "1"
+      }
+    }
+  },
+  "backup_no_enabled": {
+    "message": "备份未启用，可在设置中开启"
+  },
+  "choose_backup": {
+    "message": "选择备份"
+  },
+  "backup_tips_auto_title": { 
+    "message": "🕥 自动备份"
+  },
+  "backup_tips_auto_description": {
+    "message": "每次规则内容变化后，Camora 都会尝试自动备份（备份间隔 5 分钟）。"
+  },
+  "backup_tips_manual_title": {
+    "message": "🔨 手动备份"
+  },
+  "backup_tips_manual_description": {
+    "message": "你也可以点击按钮手动备份。"
+  },
+  "backup_tips_note_title": {
+    "message": "⚠️ 注意"
+  },
+  "backup_tips_note_description": {
+    "message": "备份数据异步同步到 Chrome 云端，受存储容量上限或网络环境影响可能会失败。"
   }
 }

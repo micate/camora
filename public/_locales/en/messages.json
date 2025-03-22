@@ -2,6 +2,9 @@
   "description": {
     "message": "A frontend development tool that allows you to proxy/redirect/replace web resources based on user-defined rules, supports dark mode and import/export."
   },
+  "no_results": {
+    "message": "No data"
+  },
   "add_group": {
     "message": "Add Group"
   },
@@ -83,9 +86,6 @@
   "import": {
     "message": "Import"
   },
-  "import_id_tips": {
-    "message": "Missing or duplicate ids will be automatically (re)generated."
-  },
   "enable_source_map": {
     "message": "Enable Source Map"
   },
@@ -151,5 +151,77 @@
   },
   "rule_help_static_forward_title": {
     "message": "Forward rule:"
+  },
+  "enable_backup": {
+    "message": "Enable Backup"
+  },
+  "create_backup_failed": {
+    "message": "Failed to create backup: $error$",
+    "placeholders": {
+      "error": {
+        "content": "$1",
+        "example": "1"
+      }
+    }
+  },
+  "fetch_backup_failed": {
+    "message": "Failed to fetch backup: $error$",
+    "placeholders": {
+      "error": {
+        "content": "$1",
+        "example": "1"
+      }
+    }
+  },
+  "fetch_backup_list_failed": {
+    "message": "Failed to fetch backup list",
+    "placeholders": {
+      "error": {
+        "content": "$1",
+        "example": "1"
+      }
+    }
+  },
+  "backup_success": {
+    "message": "Backup successful"
+  },
+  "delete_backup_confirm_title": {
+    "message": "Are you sure you want to delete this backup?"
+  },
+  "delete_backup_confirm_description": {
+    "message": "After deletion, it cannot be recovered"
+  },
+  "delete_backup_failed": {
+    "message": "Failed to delete backup",
+    "placeholders": {
+      "error": {
+        "content": "$1",
+        "example": "1"
+      }
+    }
+  },
+  "backup_no_enabled": {
+    "message": "Backup is not enabled, you can enable it in the settings"
+  },
+  "choose_backup": {
+    "message": "Select Backup"
+  },
+  "backup_tips_auto_title": { 
+    "message": "🕥 Auto Backup"
+  },
+  "backup_tips_auto_description": {
+    "message": "Camora will try to automatically backup after each rule content change (backup interval: 5 minutes)."
+  },
+  "backup_tips_manual_title": {
+    "message": "🔨 Manual Backup"
+  },
+  "backup_tips_manual_description": {
+    "message": "You can also click the button to manually backup."
+  },
+  "backup_tips_note_title": {
+    "message": "⚠️ Note"
+  },
+  "backup_tips_note_description": {
+    "message": "Backup data will be synced to Chrome Cloud, and may fail due to storage capacity limits or network environment."
   }
 }
