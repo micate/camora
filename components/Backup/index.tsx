@@ -40,7 +40,7 @@ export default function Backup(props: IBackupProps) {
       getBackupList()
         .then((list) => {
           const newBackupList = (list || []).map((item: any) => ({
-            label: `${item.key} (${item.count}) rules`,
+            label: `${item.key.replace('backup_', '')} (${item.count})`,
             value: item.key,
           }));
           setBackupList(newBackupList);
@@ -149,6 +149,7 @@ export default function Backup(props: IBackupProps) {
           value={backupKey}
           onChange={handleBackupChange}
           notFoundContent={chrome.i18n.getMessage('no_results')}
+          allowClear
         />
         {backupKey && (
           <Popconfirm

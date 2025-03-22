@@ -40,7 +40,7 @@ export function getBackupKey() {
   return `backup_${getCurrentTime()}`;
 }
 
-export async function createBackup(groups: RuleGroup[]  ) {
+export async function createBackup(groups: RuleGroup[]) {
   try {
     const { backupItems } = await chrome.storage.sync.get('backupItems');
     const backupKey = getBackupKey();

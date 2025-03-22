@@ -222,6 +222,6 @@
     "message": "⚠️ Note"
   },
   "backup_tips_note_description": {
-    "message": "Backup data will be synced to Chrome Cloud, and may fail due to storage capacity limits or network environment."
+    "message": "Backups will be synced to Chrome Cloud, and may fail due to storage capacity limits or network environment."
   }
 }

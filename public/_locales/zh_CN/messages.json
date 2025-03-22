@@ -222,6 +222,6 @@
     "message": "⚠️ 注意"
   },
   "backup_tips_note_description": {
-    "message": "备份数据异步同步到 Chrome 云端，受存储容量上限或网络环境影响可能会失败。"
+    "message": "备份异步同步到 Chrome 云端，受存储容量上限或网络环境影响可能会失败。"
   }
 }
