@@ -13,25 +13,12 @@ export function backup() {
   }
 
   timeout = setTimeout(() => {
-    Promise.all([
-      chrome.storage.sync.get('backupItems'),
-      chrome.storage.local.get(['enableBackup', 'groups']),
-    ]).then(([{ backupItems }, { enableBackup, groups }]) => {
+    chrome.storage.local.get(['enableBackup', 'groups']).then(({ enableBackup, groups }) => {
       if (!enableBackup) {
         return;
       }
       const cleanedGroups = cleanupGroups(groups, true);
-      if (backupItems?.length) {
-        // 之前有过备份
-        const lastBackup = backupItems[backupItems.length - 1];
-        getBackupData(lastBackup.key).then((data) => {
-          if (JSON.stringify(data) !== JSON.stringify(cleanedGroups)) {
-            createBackup(cleanedGroups);
-          }
-        });
-      } else if (cleanedGroups?.length) {
-        createBackup(cleanedGroups);
-      }
+      createBackup(cleanedGroups);
     });
   }, BackupInterval);
 }
@@ -43,6 +30,16 @@ export function getBackupKey() {
 export async function createBackup(groups: RuleGroup[]) {
   try {
     const { backupItems } = await chrome.storage.sync.get('backupItems');
+
+    // 确保备份数据不重复
+    if (backupItems?.length) {
+      const lastBackup = backupItems[backupItems.length - 1];
+      const lastBackupData = await getBackupData(lastBackup.key);
+      if (JSON.stringify(lastBackupData) === JSON.stringify(groups)) {
+        return;
+      }
+    }
+
     const backupKey = getBackupKey();
     const rulesCount = getRulesCount(groups);
     await chrome.storage.sync.set({
