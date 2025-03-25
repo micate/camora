@@ -5,7 +5,7 @@ export default defineConfig({
   manifest: {
     manifest_version: 3,
     name: "Camora",
-    version: "1.3.1",
+    version: "1.4.0",
     description: "__MSG_description__",
     permissions: [
       "storage",
