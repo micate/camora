@@ -1,6 +1,6 @@
 {
   "description": {
-    "message": "A frontend development tool that allows you to proxy/redirect/replace web resources based on user-defined rules, supports dark mode and import/export."
+    "message": "A frontend development tool that allows you to proxy/redirect/replace web resources based on user-defined rules."
   },
   "no_results": {
     "message": "No data"
