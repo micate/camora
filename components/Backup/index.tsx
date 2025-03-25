@@ -91,8 +91,14 @@ export default function Backup(props: IBackupProps) {
 
   const handleCreateBackup = () => {
     exportRules().then((groups: RuleGroup[]) => {
-      createBackup(groups).then(() => {
-        messageApi.success(chrome.i18n.getMessage('backup_success'));
+      createBackup(groups).then((ret) => {
+        if (ret) {
+          messageApi.success(chrome.i18n.getMessage('backup_success'));
+        } else if (ret === false) {
+          messageApi.error(chrome.i18n.getMessage('create_backup_failed'));
+        } else {
+          messageApi.warning(chrome.i18n.getMessage('backup_same_ignore'));
+        }
       });
     });
   };
@@ -126,7 +132,8 @@ export default function Backup(props: IBackupProps) {
               <dt>{chrome.i18n.getMessage('backup_tips_manual_title')}</dt>
               <dd>{chrome.i18n.getMessage('backup_tips_manual_description')}</dd>
               <dt>{chrome.i18n.getMessage('backup_tips_note_title')}</dt>
-              <dd>{chrome.i18n.getMessage('backup_tips_note_description')}</dd>
+              <dd>{chrome.i18n.getMessage('backup_tips_note_description_1')}</dd>
+              <dd>{chrome.i18n.getMessage('backup_tips_note_description_2')}</dd>
             </dl>
           ) : chrome.i18n.getMessage('backup_no_enabled')}
           placement="topLeft"

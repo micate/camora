@@ -185,6 +185,9 @@
   "backup_success": {
     "message": "备份成功"
   },
+  "backup_same_ignore": {
+    "message": "备份内容未发生变化"
+  },
   "delete_backup_confirm_title": {
     "message": "确定要删除备份吗？"
   },
@@ -206,7 +209,7 @@
   "choose_backup": {
     "message": "选择备份"
   },
-  "backup_tips_auto_title": { 
+  "backup_tips_auto_title": {
     "message": "🕥 自动备份"
   },
   "backup_tips_auto_description": {
@@ -221,7 +224,10 @@
   "backup_tips_note_title": {
     "message": "⚠️ 注意"
   },
-  "backup_tips_note_description": {
-    "message": "备份异步同步到 Chrome 云端，受存储容量上限或网络环境影响可能会失败。"
+  "backup_tips_note_description_1": {
+    "message": "1. 备份异步同步到 Chrome 云端，受存储容量上限或网络环境影响可能会失败。"
+  },
+  "backup_tips_note_description_2": {
+    "message": "2. 当存储空间达到 80% 时（80KB），将会自动删除较早的备份。"
   }
 }
