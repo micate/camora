@@ -96,6 +96,8 @@ export default function Backup(props: IBackupProps) {
           messageApi.success(chrome.i18n.getMessage('backup_success'));
         } else if (ret === 'same') {
           messageApi.warning(chrome.i18n.getMessage('backup_same_ignore'));
+        } else if (ret && ret.includes('QUOTA_BYTES_PER_ITEM')) {
+          messageApi.error(chrome.i18n.getMessage('backup_item_quota_error'));
         } else {
           messageApi.error(ret);
         }

@@ -229,5 +229,8 @@
   },
   "backup_tips_note_description_2": {
     "message": "2. 当存储空间达到 80% 时（80KB），将会自动删除较早的备份。"
+  },
+  "backup_item_quota_error": {
+    "message": "规则数量超过备份存储限制（8192 字节），无法创建备份"
   }
 }

@@ -229,5 +229,8 @@
   },
   "backup_tips_note_description_2": {
     "message": "2. When storage space reaches 80%(80KB), older backups will be automatically deleted."
+  },
+  "backup_item_quota_error": {
+    "message": "Rules exceeds backup storage limit (8192 bytes), cannot create backup"
   }
 }
