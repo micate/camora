@@ -1,3 +1,4 @@
+import { compressToBase64, decompressFromBase64 } from "lz-string";
 import { RuleGroup } from "../types";
 import { cleanupGroups } from "./cleanupGroups";
 import { getRulesCount } from "./getRulesCount";
@@ -43,13 +44,14 @@ export async function createBackup(groups: RuleGroup[]) {
 
   try {
     const { backupItems } = await chrome.storage.sync.get("backupItems");
+    const groupStr = JSON.stringify(groups);
 
     // 确保备份数据不重复
     if (backupItems?.length) {
       const lastBackup = backupItems[backupItems.length - 1];
       const lastBackupData = await getBackupData(lastBackup.key);
-      if (JSON.stringify(lastBackupData) === JSON.stringify(groups)) {
-        return;
+      if (JSON.stringify(lastBackupData) === groupStr) {
+        return 'same';
       }
     }
 
@@ -60,7 +62,7 @@ export async function createBackup(groups: RuleGroup[]) {
         ...(backupItems || []),
         { key: backupKey, count: rulesCount },
       ],
-      [backupKey]: groups,
+      [backupKey]: compressToBase64(groupStr),
     });
     return true;
   } catch (error: any) {
@@ -77,6 +79,10 @@ export async function getBackupList() {
 
 export async function getBackupData(key: string) {
   const { [key]: data } = await chrome.storage.sync.get(key);
+  if (data && typeof data === 'string') {
+    const decompressed = decompressFromBase64(data) || data;
+    return JSON.parse(decompressed);
+  }
   return data;
 }
 
