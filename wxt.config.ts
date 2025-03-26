@@ -8,8 +8,9 @@ export default defineConfig({
     version: "1.4.0",
     description: "__MSG_description__",
     permissions: [
-      "storage",
-      "declarativeNetRequest"
+      "alarms",
+      "declarativeNetRequest",
+      "storage"
     ],
     host_permissions: [
       "<all_urls>"

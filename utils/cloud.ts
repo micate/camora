@@ -1,4 +1,3 @@
-import { message } from "antd";
 import { RuleGroup } from "../types";
 import { cleanupGroups } from "./cleanupGroups";
 import { getRulesCount } from "./getRulesCount";
@@ -67,10 +66,8 @@ export async function createBackup(groups: RuleGroup[]) {
   } catch (error: any) {
     const msg = chrome.i18n.getMessage("create_backup_failed", error.message);
     console.error(msg);
-    message.error(msg);
+    return msg;
   }
-
-  return false;
 }
 
 export async function getBackupList() {

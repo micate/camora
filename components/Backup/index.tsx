@@ -92,12 +92,12 @@ export default function Backup(props: IBackupProps) {
   const handleCreateBackup = () => {
     exportRules().then((groups: RuleGroup[]) => {
       createBackup(groups).then((ret) => {
-        if (ret) {
+        if (ret === true) {
           messageApi.success(chrome.i18n.getMessage('backup_success'));
-        } else if (ret === false) {
-          messageApi.error(chrome.i18n.getMessage('create_backup_failed'));
-        } else {
+        } else if (ret === 'same') {
           messageApi.warning(chrome.i18n.getMessage('backup_same_ignore'));
+        } else {
+          messageApi.error(ret);
         }
       });
     });
