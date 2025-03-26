@@ -213,7 +213,7 @@
     "message": "🕥 Auto Backup"
   },
   "backup_tips_auto_description": {
-    "message": "Camora will try to automatically backup after each rule content change (backup interval: 5 minutes)."
+    "message": "Camora will try to automatically backup after each rule content change (backup interval: 3 minutes)."
   },
   "backup_tips_manual_title": {
     "message": "🔨 Manual Backup"

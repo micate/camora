@@ -213,7 +213,7 @@
     "message": "🕥 自动备份"
   },
   "backup_tips_auto_description": {
-    "message": "每次规则内容变化后，Camora 都会尝试自动备份（备份间隔 5 分钟）。"
+    "message": "每次规则内容变化后，Camora 都会尝试自动备份（备份间隔 3 分钟）。"
   },
   "backup_tips_manual_title": {
     "message": "🔨 手动备份"

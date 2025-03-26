@@ -4,15 +4,12 @@ import { cleanupGroups } from "./cleanupGroups";
 import { getRulesCount } from "./getRulesCount";
 import { getCurrentTime } from "./getCurrentTime";
 
-const BackupInterval = 300000;
+const BackupDelayMinutes = 3;
 const STORAGE_LIMIT = 102400; // 100 KB
 const CLEANUP_THRESHOLD = 0.8 * STORAGE_LIMIT; // 80 KB 阈值
 
-let timeout: NodeJS.Timeout | null = null;
 export function backup(force = false) {
-  if (timeout) {
-    clearTimeout(timeout);
-  }
+  chrome.alarms.clear('backup');
 
   const execute = () => {
     chrome.storage.local
@@ -29,7 +26,12 @@ export function backup(force = false) {
   if (force) {
     execute();
   } else {
-    timeout = setTimeout(execute, BackupInterval);
+    chrome.alarms.create('backup', { delayInMinutes: BackupDelayMinutes });
+    chrome.alarms.onAlarm.addListener((alarm) => {
+      if (alarm.name === 'backup') {
+        execute();
+      }
+    });
   }
 }
 
