@@ -9,12 +9,12 @@ const STORAGE_LIMIT = 102400; // 100 KB
 const CLEANUP_THRESHOLD = 0.8 * STORAGE_LIMIT; // 80 KB 阈值
 
 let timeout: NodeJS.Timeout | null = null;
-export function backup() {
+export function backup(force = false) {
   if (timeout) {
     clearTimeout(timeout);
   }
 
-  timeout = setTimeout(() => {
+  const execute = () => {
     chrome.storage.local
       .get(["enableBackup", "groups"])
       .then(({ enableBackup, groups }) => {
@@ -24,7 +24,13 @@ export function backup() {
         const cleanedGroups = cleanupGroups(groups, true);
         createBackup(cleanedGroups);
       });
-  }, BackupInterval);
+  };
+
+  if (force) {
+    execute();
+  } else {
+    timeout = setTimeout(execute, BackupInterval);
+  }
 }
 
 export function getBackupKey() {

@@ -51,7 +51,7 @@ export default defineBackground(() => {
   // 监听消息
   chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message.action === 'doBackup') {
-      backup();
+      backup(true);
       sendResponse('Backup start');
     }
     return true;
