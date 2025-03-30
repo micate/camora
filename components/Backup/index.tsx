@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
+import { forwardRef, useEffect, useImperativeHandle, useState } from "react";
 import { Button, Popconfirm, Select, Space, Tooltip, message } from "antd";
 import { CloudUploadOutlined, DeleteOutlined } from "@ant-design/icons";
-import { getBackupList, createBackup, deleteBackup, getBackupData } from "../../utils/cloud";
+import { getBackupList, createBackup, deleteBackup, getBackupData, getBytesInUse, STORAGE_LIMIT } from "../../utils/cloud";
 import { exportRules } from "../../utils/exportRules";
 import { RuleGroup } from "../../types";
 import './index.less';
@@ -10,13 +10,24 @@ interface IBackupProps {
   onChange: (groups?: RuleGroup[]) => void;
 }
 
-export default function Backup(props: IBackupProps) {
-  const { onChange } = props; 
+export interface BackupRef {
+  clear: () => void;
+}
+
+function Backup(props: IBackupProps, ref: React.ForwardedRef<BackupRef>) {
+  const { onChange } = props;
+  const [bytesInUse, setBytesInUse] = useState<number>(0);
   const [backupLoading, setBackupLoading] = useState<boolean>(false);
   const [backupList, setBackupList] = useState<any[]>([]);
   const [backupKey, setBackupKey] = useState<string | null>(null);
   const [messageApi, contextHolder] = message.useMessage();
   const [isBackupEnabled, setIsBackupEnabled] = useState<boolean>(false);
+
+  useImperativeHandle(ref, () => ({
+    clear: () => {
+      setBackupKey(null);
+    },
+  }));
 
   useEffect(() => {
     chrome.storage.local.get('enableBackup', ({ enableBackup }) => {
@@ -33,6 +44,24 @@ export default function Backup(props: IBackupProps) {
       chrome.storage.onChanged.removeListener(tryFetchEnable);
     };
   }, []);
+
+  useEffect(() => {
+    const updateUsage = async () => {
+      const bytes = await getBytesInUse();
+      setBytesInUse(bytes);
+    };
+
+    const tryFetchUsage = (changes: any, area: string) => {
+      if (area === 'sync' && changes.backupItems) {
+        updateUsage();
+      }
+    };
+    
+    chrome.storage.onChanged.addListener(tryFetchUsage);
+    return () => {
+      chrome.storage.onChanged.removeListener(tryFetchUsage);
+    };
+  }, [isBackupEnabled]);
 
   useEffect(() => {
     const fetchBackupList = () => {
@@ -174,3 +203,5 @@ export default function Backup(props: IBackupProps) {
     </div>
   );
 }
+
+export default forwardRef(Backup);

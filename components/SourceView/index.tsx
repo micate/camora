@@ -5,7 +5,7 @@ import { LoadingOutlined } from '@ant-design/icons';
 import { exportRules } from "../../utils/exportRules";
 import { correctIds } from "../../utils/correctIds";
 import CodeView from "../CodeView";
-import Backup from "../Backup";
+import Backup, { BackupRef } from "../Backup";
 import { RuleGroup } from "../../types";
 import './index.less';
 
@@ -21,10 +21,14 @@ export default function SourceView(props: ISourceViewProps) {
   const [ruleSource, setRuleSource] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(true);
   const [messageApi, contextHolder] = message.useMessage();
+  const backupRef = useRef<BackupRef>(null);
 
   useEffect(() => {
     if (visible) {
       updateEditorState();
+
+      // 清空选择的备份，因为默认选择的是当前备份
+      backupRef.current?.clear();
     }
   }, [visible]);
 

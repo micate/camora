@@ -4,8 +4,9 @@ import { cleanupGroups } from "./cleanupGroups";
 import { getRulesCount } from "./getRulesCount";
 import { getCurrentTime } from "./getCurrentTime";
 
+export const STORAGE_LIMIT = 102400; // 100 KB
+
 const BackupDelayMinutes = 3;
-const STORAGE_LIMIT = 102400; // 100 KB
 const CLEANUP_THRESHOLD = 0.8 * STORAGE_LIMIT; // 80 KB 阈值
 
 export function backup(force = false) {
@@ -97,8 +98,12 @@ export async function deleteBackup(key: string) {
   return true;
 }
 
+export async function getBytesInUse() {
+  return await chrome.storage.sync.getBytesInUse(null);
+}
+
 async function checkAndCleanStorage() {
-  const bytesInUse = await chrome.storage.sync.getBytesInUse(null);
+  const bytesInUse = await getBytesInUse();
   console.log(`当前已使用存储：${bytesInUse} 字节`);
 
   if (bytesInUse < CLEANUP_THRESHOLD) {
