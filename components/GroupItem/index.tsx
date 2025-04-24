@@ -89,6 +89,9 @@ export default function GroupItem(props: GroupItemProps) {
         <span
           className="group-name-text"
           onClick={onClick}
+          onDoubleClick={() => {
+            onToggleGroup(!item.enabled);
+          }}
           {...attributes}
           {...listeners}
         >
