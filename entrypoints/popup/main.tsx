@@ -3,10 +3,16 @@ import ReactDOM from 'react-dom/client'
 import { ConfigProvider, theme } from 'antd'
 import zhCN from 'antd/locale/zh_CN';
 import enUS from 'antd/locale/en_US';
+import jaJP from 'antd/locale/ja_JP';
 import App from './App'
 import { useDarkMode } from '../../hooks/useDarkMode';
 
 const language = chrome.i18n.getUILanguage();
+const locales: Record<string, any> = {
+  "zh-CN": zhCN,
+  "en-US": enUS,
+  "ja": jaJP,
+}
 
 function Main() {
   const darkMode = useDarkMode();
@@ -35,7 +41,7 @@ function Main() {
           "algorithm": darkMode ? [theme.darkAlgorithm, theme.compactAlgorithm] : theme.compactAlgorithm
           // "algorithm": theme.compactAlgorithm
         }}
-        locale={language === 'zh-CN' ? zhCN : enUS}
+        locale={locales[language] || enUS}
       >
         <App />
       </ConfigProvider>

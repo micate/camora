@@ -1,0 +1,237 @@
+{
+    "description": {
+      "message": "柔軟なカスタムルールでウェブリソースをプロキシ/転送/置換するフロントエンド開発ツール、ダークモードとインポート/エクスポートをサポートします。"
+    },
+    "no_results": {
+      "message": "データがありません"
+    },
+    "add_group": {
+      "message": "グループを追加"
+    },
+    "group_name": {
+      "message": "グループ名"
+    },
+    "group_name_cloned": {
+      "message": "$name$をコピー",
+      "placeholders": {
+        "name": {
+          "content": "$1",
+          "example": "名称未設定グループ"
+        }
+      }
+    },
+    "group_name_required": {
+      "message": "グループ名は空にできません"
+    },
+    "group_default_name": {
+      "message": "名称未設定グループ"
+    },
+    "group_edit": {
+      "message": "編集"
+    },
+    "group_copy": {
+      "message": "コピー"
+    },
+    "group_delete": {
+      "message": "削除"
+    },
+    "dynamic_rules": {
+      "message": "動的ルール"
+    },
+    "regex_rules": {
+      "message": "正規表現ルール"
+    },
+    "group_delete_title": {
+      "message": "このグループを削除してもよろしいですか？"
+    },
+    "group_delete_confirm": {
+      "message": "グループ内のすべてのルールも削除され、復元できません"
+    },
+    "copy_rule": {
+      "message": "ルールをコピー"
+    },
+    "delete_rule": {
+      "message": "ルールを削除"
+    },
+    "delete_rule_confirmation": {
+      "message": "このルールを削除してもよろしいですか？"
+    },
+    "import_error_title": {
+      "message": "インポート失敗"
+    },
+    "import_error_content_invalid": {
+      "message": "ルール内容が空または形式が正しくありません $error$",
+      "placeholders": {
+        "error": {
+          "content": "$1",
+          "example": "1"
+        }
+      }
+    },
+    "search_placeholder": {
+      "message": "検索"
+    },
+    "import_export": {
+      "message": "インポート/エクスポート"
+    },
+    "import_not_changed": {
+      "message": "ルールに変更はありません"
+    },
+    "import_success": {
+      "message": "インポート成功、しばらくお待ちください"
+    },
+    "close": {
+      "message": "閉じる"
+    },
+    "import": {
+      "message": "インポート"
+    },
+    "enable_source_map": {
+      "message": "ソースマップを有効にする"
+    },
+    "add_source_map": {
+      "message": "ソースマップを追加"
+    },
+    "common": {
+      "message": "一般"
+    },
+    "advanced": {
+      "message": "詳細"
+    },
+    "source_map_source_placeholder": {
+      "message": "例：https://mycdn.com/path/to/file.js"
+    },
+    "source_map_url_placeholder": {
+      "message": "例：https://mycdn.com/path/to/file.js.map"
+    },
+    "redirect_source_placeholder": {
+      "message": "例：^https://(dev.)?mycdn.com/my-project/([^/+])/(.*)"
+    },
+    "redirect_target_placeholder": {
+      "message": "例：http://127.0.0.1:3000/\\3"
+    },
+    "rule_help_title": {
+      "message": "ルール説明"
+    },
+    "rule_help_tip_1": {
+      "message": "より詳細なルール説明はGoogle Chromeの公式ドキュメントを参照してください："
+    },
+    "rule_help_tip_2": {
+      "message": "URLマッチング"
+    },
+    "rule_help_regex_title": {
+      "message": "正規表現ルールの使用"
+    },
+    "rule_help_regex_match_title": {
+      "message": "マッチングルール（^で始まることに注意）："
+    },
+    "rule_help_regex_forward_title": {
+      "message": "転送ルール（\\番号で捕捉内容を参照）："
+    },
+    "rule_help_wildcard_title": {
+      "message": "ワイルドカードルールの使用"
+    },
+    "rule_help_wildcard_match_title": {
+      "message": "マッチングルール："
+    },
+    "rule_help_wildcard_forward_title": {
+      "message": "転送ルール（マッチング内容を参照できません）："
+    },
+    "rule_help_wildcard_match_ok": {
+      "message": "一致"
+    },
+    "rule_help_wildcard_match_not_ok": {
+      "message": "不一致"
+    },
+    "rule_help_static_title": {
+      "message": "静的ルールの使用"
+    },
+    "rule_help_static_match_title": {
+      "message": "マッチングルール："
+    },
+    "rule_help_static_forward_title": {
+      "message": "転送ルール："
+    },
+    "enable_backup": {
+      "message": "バックアップを有効にする"
+    },
+    "create_backup_failed": {
+      "message": "バックアップの作成に失敗しました: $error$",
+      "placeholders": {
+        "error": {
+          "content": "$1",
+          "example": "1"
+        }
+      }
+    },
+    "fetch_backup_failed": {
+      "message": "バックアップの取得に失敗しました: $error$",
+      "placeholders": {
+        "error": {
+          "content": "$1",
+          "example": "1"
+        }
+      }
+    },
+    "fetch_backup_list_failed": {
+      "message": "バックアップリストの取得に失敗しました",
+      "placeholders": {
+        "error": {
+          "content": "$1",
+          "example": "1"
+        }
+      }
+    },
+    "backup_success": {
+      "message": "バックアップ成功"
+    },
+    "backup_same_ignore": {
+      "message": "バックアップ内容に変更はありません"
+    },
+    "delete_backup_confirm_title": {
+      "message": "バックアップを削除してもよろしいですか？"
+    },
+    "delete_backup_confirm_description": {
+      "message": "削除後は復元できません"
+    },
+    "delete_backup_failed": {
+      "message": "バックアップの削除に失敗しました",
+      "placeholders": {
+        "error": {
+          "content": "$1",
+          "example": "1"
+        }
+      }
+    },
+    "backup_no_enabled": {
+      "message": "バックアップが有効になっていません、設定で有効にできます"
+    },
+    "choose_backup": {
+      "message": "バックアップを選択"
+    },
+    "backup_tips_auto_title": {
+      "message": "🕥 自動バックアップ"
+    },
+    "backup_tips_auto_description": {
+      "message": "ルール内容が変更されるたびに、Camoraは自動的にバックアップを試みます（バックアップ間隔は3分）。"
+    },
+    "backup_tips_manual_title": {
+      "message": "🔨 手動バックアップ"
+    },
+    "backup_tips_manual_description": {
+      "message": "ボタンをクリックして手動でバックアップすることもできます。"
+    },
+    "backup_tips_note_title": {
+      "message": "⚠️ 注意"
+    },
+    "backup_tips_note_description_1": {
+      "message": "1. バックアップはChromeクラウドに非同期で同期され、ストレージ容量の制限やネットワーク環境の影響で失敗する可能性があります。"
+    },
+    "backup_tips_note_description_2": {
+      "message": "2. ストレージ容量が80%（80KB）に達すると、古いバックアップが自動的に削除されます。"
+    },
+    "backup_item_quota_error": {
+      "message": "ルール数がバックアップストレージ制限（8192バイト）を超えているため、バックアップを作成できません"
+    }
+  }
+  
