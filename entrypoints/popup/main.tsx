@@ -21,7 +21,8 @@ function Main() {
             "fontSize": 14,
             "sizeStep": 4,
             "borderRadius": 4,
-            "wireframe": false
+            "wireframe": false,
+            "controlInteractiveSize": 16,
           },
           "components": {
             "Modal": {
