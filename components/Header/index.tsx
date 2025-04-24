@@ -17,11 +17,27 @@ export default function Header(props: IHeaderProps) {
   const [completeOptions, setCompleteOptions] = useState<{ label: string, value: string }[]>([]);
   const [inputValue, setInputValue] = useState<string>('');
   const [helpVisible, setHelpVisible] = useState<boolean>(false);
+  const searchRef = useRef<any>(null);
+  const searchCmdTips = navigator.userAgent.includes('Mac OS X') ? 'Cmd+K' : 'Ctrl+K';
 
   useEffect(() => {
     chrome.storage.local.get(['enabled']).then(({ enabled: savedEnabled }) => {
       setEnabled(savedEnabled);
     });
+  }, []);
+
+  // cmd + k / ctrl + k 键盘快捷键
+  useEffect(() => {
+    const handler = (event: KeyboardEvent) => {
+      if (event.key === 'k' && (event.metaKey || event.ctrlKey)) {
+        event.preventDefault();
+        searchRef.current?.focus?.();
+      }
+    }
+    window.addEventListener('keydown', handler);
+    return () => {
+      window.removeEventListener('keydown', handler);
+    }
   }, []);
 
   const handleToggleRule = () => {
@@ -35,8 +51,9 @@ export default function Header(props: IHeaderProps) {
       <div className="app-header-main">
         <div className="app-search">
           <AutoComplete
+            ref={searchRef}
             size="small"
-            placeholder={chrome.i18n.getMessage('search_placeholder')}
+            placeholder={`${chrome.i18n.getMessage('search_placeholder')} (${searchCmdTips})`}
             allowClear
             popupMatchSelectWidth={false}
             notFoundContent={chrome.i18n.getMessage('no_results')}
@@ -61,6 +78,7 @@ export default function Header(props: IHeaderProps) {
               setInputValue('');
             }}
             style={{ width: '100%' }}
+            defaultActiveFirstOption
           />
         </div>
         <Tooltip title={chrome.i18n.getMessage('add_group')} placement="bottom">
