@@ -3,9 +3,8 @@ import { defineConfig } from 'wxt';
 // See https://wxt.dev/api/config.html
 export default defineConfig({
   manifest: {
-    manifest_version: 3,
     name: "Camora",
-    version: "1.4.1",
+    version: "1.4.2",
     description: "__MSG_description__",
     permissions: [
       "alarms",
