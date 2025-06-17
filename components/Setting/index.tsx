@@ -15,10 +15,11 @@ export default function Setting(props: ISettingProps) {
   useEffect(() => {
     if (visible) {
       chrome.storage.local.get(
-        ['enableSourceMap', 'enableBackup'],
-        ({ enableSourceMap, enableBackup }) => {
+        ['enableSourceMap', 'enableCors', 'enableBackup'],
+        ({ enableSourceMap, enableCors, enableBackup }) => {
           form.setFieldsValue({
             enableSourceMap: enableSourceMap || false,
+            enableCors: enableCors || false,
             enableBackup: enableBackup || false,
           });
         }
@@ -27,9 +28,12 @@ export default function Setting(props: ISettingProps) {
   }, [visible]);
 
   const handleFormChange = (values: any) => {
-    const { enableSourceMap, enableBackup } = values || {};
+    const { enableSourceMap, enableCors, enableBackup } = values || {};
     if (enableSourceMap !== undefined) {
       chrome.storage.local.set({ enableSourceMap });
+    }
+    if (enableCors !== undefined) {
+      chrome.storage.local.set({ enableCors });
     }
     if (enableBackup !== undefined) {
       chrome.storage.local.set({ enableBackup });
@@ -72,6 +76,9 @@ export default function Setting(props: ISettingProps) {
           style={{ marginTop: 8 }}
         >
           <Form.Item label={chrome.i18n.getMessage('enable_source_map')} name="enableSourceMap">
+            <Switch />
+          </Form.Item>
+          <Form.Item label="Enable CORS" name="enableCors">
             <Switch />
           </Form.Item>
           <Form.Item label={chrome.i18n.getMessage('enable_backup')} name="enableBackup">

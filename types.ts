@@ -11,6 +11,7 @@ export enum TargetType {
 export enum RuleType {
   Redirect = 'redirect',
   SourceMap = 'sourceMap',
+  CORS = 'cors',
 }
 
 export interface BaseRule {
@@ -30,7 +31,15 @@ export interface SourceMapRule extends BaseRule {
   sourceMapUrl: string
 }
 
-export type Rule = RedirectRule | SourceMapRule
+export interface CorsRule extends BaseRule {
+  allowOrigin?: string;
+  allowCredentials?: boolean;
+  allowMethods?: string;
+  allowHeaders?: string;
+  maxAge?: number;
+}
+
+export type Rule = RedirectRule | SourceMapRule | CorsRule;
 
 export interface RuleGroup {
   id: string

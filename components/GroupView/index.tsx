@@ -3,7 +3,8 @@ import { Space, Empty, Dropdown, MenuProps, Button } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import RedirectRuleView from '../RuleViews/RedirectRuleView';
 import SourceMapRuleView from '../RuleViews/SourceMapRuleView';
-import { RedirectRule, Rule, RuleGroup, RuleType, SourceMapRule } from '../../types';
+import CorsRuleView from '../RuleViews/CorsRuleView';
+import { CorsRule, RedirectRule, Rule, RuleGroup, RuleType, SourceMapRule } from '../../types';
 import { createRule } from '../../utils/createRule';
 import './index.less';
 
@@ -16,10 +17,12 @@ export default function GroupView(props: IGroupViewProps) {
   const { group, onChange } = props;
   const { rules } = group || {};
   const [showSourceMap, setShowSourceMap] = useState(false);
+  const [showCors, setShowCors] = useState(false);
 
   useEffect(() => {
-    chrome.storage.local.get(['enableSourceMap'], ({ enableSourceMap }) => {
+    chrome.storage.local.get(['enableSourceMap', 'enableCors'], ({ enableSourceMap, enableCors }) => {
       setShowSourceMap(enableSourceMap)
+      setShowCors(enableCors)
     });
 
     const onChange = (changes: { [key: string]: chrome.storage.StorageChange }) => {
@@ -44,6 +47,15 @@ export default function GroupView(props: IGroupViewProps) {
         });
       },
     } : null,
+    showCors ? {
+      key: 'addCors',
+      label: 'CORS',
+      onClick: () => {
+        handleAddRule({
+          type: RuleType.CORS,
+        });
+      },
+    } : null
   ].filter(Boolean);
 
   const handleAddRule = (data?: Partial<Rule>) => {
@@ -106,6 +118,17 @@ export default function GroupView(props: IGroupViewProps) {
                 <SourceMapRuleView
                   key={rule.id}
                   rule={rule as SourceMapRule}
+                  onChange={handleRuleChange}
+                  onCopyRule={handleCopyRule}
+                  onDelete={() => handleDeleteRule(rule.id)}
+                />
+              );
+            }
+            if (rule.type === RuleType.CORS) {
+              return (
+                <CorsRuleView
+                  key={rule.id}
+                  rule={rule as CorsRule}
                   onChange={handleRuleChange}
                   onCopyRule={handleCopyRule}
                   onDelete={() => handleDeleteRule(rule.id)}
