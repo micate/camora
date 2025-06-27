@@ -45,6 +45,11 @@ export default defineBackground(() => {
     }
   });
 
+  // 添加扩展启动时的处理
+  chrome.runtime.onStartup.addListener(() => {
+    getAndApplyRules();
+  });
+
   // 初始化规则
   getAndApplyRules();
 
