@@ -9,7 +9,7 @@ export async function updateDynamicRules(ruleGroups: RuleGroup[]) {
   console.log('Enabled input rules', rules)
 
   // 移除所有现有规则
-  const existingRules = await chrome.declarativeNetRequest.getDynamicRules()
+  const existingRules = await chrome.declarativeNetRequest.getDynamicRules() || [];
   const existingRuleIds = existingRules.map(rule => rule.id)
 
   // 转化为 Chrome 声明性网络请求规则
