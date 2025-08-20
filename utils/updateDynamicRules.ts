@@ -1,6 +1,7 @@
 import { Rule, RuleGroup, RuleType, RedirectRule, SourceMapRule } from '../types'
 import { getEnabledRules } from './getEnabledRules'
 import { updateCount } from './updateCount'
+import { uniqueId } from './uniqueId'
 
 // 更新动态规则
 export async function updateDynamicRules(ruleGroups: RuleGroup[]) {
@@ -19,7 +20,7 @@ export async function updateDynamicRules(ruleGroups: RuleGroup[]) {
     if (type === RuleType.SourceMap) {
       const { sourceMapUrl } = rule as SourceMapRule;
       return {
-        id: index + 1,
+        id: uniqueId('rule'),
         priority: 1,
         action: {
           type: chrome.declarativeNetRequest.RuleActionType.MODIFY_HEADERS,
