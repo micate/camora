@@ -50,6 +50,22 @@ const App: React.FC = () => {
   }, [activeGroup])
 
   useEffect(() => {
+    if (!groups.length) {
+      if (activeGroup !== null) {
+        setActiveGroup(null);
+      }
+      return;
+    }
+
+    const matchedGroup = activeGroup ? groups.find((group) => group.id === activeGroup.id) : null;
+    const nextActiveGroup = matchedGroup || groups[0];
+
+    if (nextActiveGroup.id !== activeGroup?.id) {
+      setActiveGroup(nextActiveGroup);
+    }
+  }, [groups, activeGroup])
+
+  useEffect(() => {
     if (editGroup) {
       form.setFieldsValue({ name: editGroup.name })
     }
@@ -90,12 +106,12 @@ const App: React.FC = () => {
     setGroups(updatedGroups)
 
     const index = groups.findIndex((g: RuleGroup) => g.id === group?.id);
-    if (groups[index + 1]) {
-      setActiveGroup(groups[index + 1])
-    } else if (groups[index - 1]) {
-      setActiveGroup(groups[index - 1])
+    if (updatedGroups[index]) {
+      setActiveGroup(updatedGroups[index])
+    } else if (updatedGroups[index - 1]) {
+      setActiveGroup(updatedGroups[index - 1])
     } else {
-      setActiveGroup(updatedGroups[0])
+      setActiveGroup(null)
     }
   }
 
@@ -184,7 +200,7 @@ const App: React.FC = () => {
         </Form>
       </Modal>
 
-      <Landing visible={landing} />
+      <Landing open={landing} />
     </Layout>
   )
 }

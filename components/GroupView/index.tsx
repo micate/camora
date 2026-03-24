@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Space, Empty, Dropdown, MenuProps, Button } from 'antd';
-import { PlusOutlined } from '@ant-design/icons';
+import { PlusOutlined, DownOutlined } from '@ant-design/icons';
 import RedirectRuleView from '../RuleViews/RedirectRuleView';
 import SourceMapRuleView from '../RuleViews/SourceMapRuleView';
 import CorsRuleView from '../RuleViews/CorsRuleView';
@@ -87,17 +87,23 @@ export default function GroupView(props: IGroupViewProps) {
   };
 
   const addBtn = menuItems.length ? (
-    <Dropdown.Button
-      menu={{ items: menuItems }}
-      placement="bottom"
-      autoAdjustOverflow
-      size="small"
-      onClick={() => {
-        handleAddRule({ type: RuleType.Redirect });
-      }}
-    >
-      <PlusOutlined />
-    </Dropdown.Button>
+    <Space.Compact size="small">
+      <Button
+        size="small"
+        onClick={() => {
+          handleAddRule({ type: RuleType.Redirect });
+        }}
+      >
+        <PlusOutlined />
+      </Button>
+      <Dropdown
+        menu={{ items: menuItems }}
+        placement="bottom"
+        autoAdjustOverflow
+      >
+        <Button size="small" icon={<DownOutlined />} />
+      </Dropdown>
+    </Space.Compact>
   ) : (
     <Button size="small" onClick={() => handleAddRule({ type: RuleType.Redirect })}>
       <PlusOutlined />

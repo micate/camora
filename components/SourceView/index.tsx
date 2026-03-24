@@ -1,6 +1,6 @@
 import { CSSProperties, useEffect, useRef, useState } from "react";
 import { json } from "@codemirror/lang-json"
-import { Button, message, Modal, Spin } from "antd";
+import { App, Button, Modal, Spin } from "antd";
 import { LoadingOutlined } from '@ant-design/icons';
 import { exportRules } from "../../utils/exportRules";
 import { correctIds } from "../../utils/correctIds";
@@ -11,26 +11,26 @@ import './index.less';
 
 interface ISourceViewProps {
   style?: CSSProperties;
-  visible?: boolean;
+  open?: boolean;
   onClose?: () => void;
 }
 
 export default function SourceView(props: ISourceViewProps) {
-  const { style, visible, onClose } = props;
+  const { style, open, onClose } = props;
   const initialSource = useRef<string>('');
   const [ruleSource, setRuleSource] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(true);
-  const [messageApi, contextHolder] = message.useMessage();
   const backupRef = useRef<BackupRef>(null);
+  const { message, modal } = App.useApp();
 
   useEffect(() => {
-    if (visible) {
+    if (open) {
       updateEditorState();
 
       // 清空选择的备份，因为默认选择的是当前备份
       backupRef.current?.clear();
     }
-  }, [visible]);
+  }, [open]);
 
   const buildRuleSource = (groups: RuleGroup[]) => {
     return JSON.stringify({
@@ -71,21 +71,19 @@ export default function SourceView(props: ISourceViewProps) {
       if (newDataSource !== initialSource.current) {
         const groups = correctIds(newData.groups)
         chrome.storage.local.set({ groups });
-        messageApi.open({
-          type: 'success',
+        message.success({
           content: chrome.i18n.getMessage('import_success'),
           onClose: () => {
             location.reload();
           },
         });
       } else {
-        messageApi.open({
-          type: 'warning',
+        message.warning({
           content: chrome.i18n.getMessage('import_not_changed'),
         });
       }
     } catch (e: any) {
-      Modal.error({
+      modal.error({
         title: chrome.i18n.getMessage('import_error_title'),
         content: chrome.i18n.getMessage('import_error_content_invalid', e.message),
       });
@@ -102,13 +100,13 @@ export default function SourceView(props: ISourceViewProps) {
       centered
       width={680}
       wrapClassName="app-source-view-modal"
-      open={visible}
+      open={open}
       onCancel={handleClose}
       footer={false}
     >
       <Spin indicator={<LoadingOutlined spin />} spinning={loading}>
         <div className="app-source-view" style={style}>
-          {visible ? (
+          {open ? (
             <CodeView
               className="app-source-view-content"
               height="100%"
@@ -134,7 +132,6 @@ export default function SourceView(props: ISourceViewProps) {
           </div>
         </div>
       </Spin>
-      {contextHolder}
     </Modal>
   );
 }

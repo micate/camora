@@ -2,12 +2,12 @@ import { Alert, Collapse, Drawer, Space } from "antd";
 import "./index.less";
 
 interface IHelpProps {
-  visible?: boolean;
+  open?: boolean;
   onClose?: () => void;
 }
 
 export default function Help(props: IHelpProps) {
-  const { visible, onClose } = props;
+  const { open, onClose } = props;
 
   const handleClose = () => {
     onClose?.();
@@ -144,9 +144,9 @@ export default function Help(props: IHelpProps) {
   return (
     <Drawer
       title={chrome.i18n.getMessage("rule_help_title")}
-      open={visible}
+      open={open}
       placement="bottom"
-      height="calc(100vh - 30px)"
+      size="calc(100vh - 30px)"
       onClose={handleClose}
     >
       <div className="app-help-content">

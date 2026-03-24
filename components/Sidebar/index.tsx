@@ -1,4 +1,4 @@
-import { createRef, useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { Layout, Empty } from 'antd';
 import {
   DndContext,
@@ -41,8 +41,8 @@ export default function Sidebar(props: ISidebarProps) {
     activeGroup,
     onChangeActiveGroup,
   } = props;
-  const sidebarRef = createRef<HTMLDivElement>();
-  const itemsListRef = createRef<HTMLDivElement>();
+  const sidebarRef = useRef<HTMLDivElement>(null);
+  const itemsListRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const checkOverflow = () => {
@@ -68,7 +68,7 @@ export default function Sidebar(props: ISidebarProps) {
         itemsListRef.current.removeEventListener('scroll', checkOverflow);
       }
     }
-  }, [sidebarRef, itemsListRef]);
+  }, []);
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -96,7 +96,10 @@ export default function Sidebar(props: ISidebarProps) {
   const handleDragEnd = (event: any) => {
     const {active, over} = event;
 
-    if (active.id !== over.id) {
+    if (!over || active.id !== over.id) {
+      if (!over) {
+        return;
+      }
       const oldIndex = groups.findIndex(group => group.id === active.id);
       const newIndex = groups.findIndex(group => group.id === over.id);
       const updatedGroups = arrayMove(groups, oldIndex, newIndex);
@@ -123,7 +126,7 @@ export default function Sidebar(props: ISidebarProps) {
               onDragEnd={handleDragEnd}
             >
               <SortableContext
-                items={groups}
+                items={groups.map(group => group.id)}
                 strategy={verticalListSortingStrategy}
               >
                 {groups.map((group: any) => (

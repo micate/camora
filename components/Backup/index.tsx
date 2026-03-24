@@ -1,5 +1,5 @@
 import { forwardRef, useEffect, useImperativeHandle, useState } from "react";
-import { Button, Popconfirm, Select, Space, Tooltip, message } from "antd";
+import { App, Button, Popconfirm, Select, Space, Tooltip } from "antd";
 import { CloudUploadOutlined, DeleteOutlined } from "@ant-design/icons";
 import { getBackupList, createBackup, deleteBackup, getBackupData, getBytesInUse, STORAGE_LIMIT } from "../../utils/cloud";
 import { exportRules } from "../../utils/exportRules";
@@ -20,8 +20,8 @@ function Backup(props: IBackupProps, ref: React.ForwardedRef<BackupRef>) {
   const [backupLoading, setBackupLoading] = useState<boolean>(false);
   const [backupList, setBackupList] = useState<any[]>([]);
   const [backupKey, setBackupKey] = useState<string | null>(null);
-  const [messageApi, contextHolder] = message.useMessage();
   const [isBackupEnabled, setIsBackupEnabled] = useState<boolean>(false);
+  const { message } = App.useApp();
 
   useImperativeHandle(ref, () => ({
     clear: () => {
@@ -81,7 +81,7 @@ function Backup(props: IBackupProps, ref: React.ForwardedRef<BackupRef>) {
         })
         .catch((error) => {
           console.error(error);
-          messageApi.error(chrome.i18n.getMessage('fetch_backup_list_failed', error.message));
+          message.error(chrome.i18n.getMessage('fetch_backup_list_failed', error.message));
         })
         .finally(() => {
           setTimeout(() => {
@@ -111,7 +111,7 @@ function Backup(props: IBackupProps, ref: React.ForwardedRef<BackupRef>) {
         })
         .catch((error) => {
           console.error(error);
-          messageApi.error(chrome.i18n.getMessage('fetch_backup_failed', error.message));
+          message.error(chrome.i18n.getMessage('fetch_backup_failed', error.message));
         });
     } else {
       onChange();
@@ -122,13 +122,13 @@ function Backup(props: IBackupProps, ref: React.ForwardedRef<BackupRef>) {
     exportRules().then((groups: RuleGroup[]) => {
       createBackup(groups).then((ret) => {
         if (ret === true) {
-          messageApi.success(chrome.i18n.getMessage('backup_success'));
+          message.success(chrome.i18n.getMessage('backup_success'));
         } else if (ret === 'same') {
-          messageApi.warning(chrome.i18n.getMessage('backup_same_ignore'));
+          message.warning(chrome.i18n.getMessage('backup_same_ignore'));
         } else if (ret && ret.includes('QUOTA_BYTES_PER_ITEM')) {
-          messageApi.error(chrome.i18n.getMessage('backup_item_quota_error'));
+          message.error(chrome.i18n.getMessage('backup_item_quota_error'));
         } else {
-          messageApi.error(ret);
+          message.error(ret);
         }
       });
     });
@@ -146,14 +146,13 @@ function Backup(props: IBackupProps, ref: React.ForwardedRef<BackupRef>) {
         })
         .catch((error) => {
           console.error(error);
-          messageApi.error(chrome.i18n.getMessage('delete_backup_failed', error.message));
+          message.error(chrome.i18n.getMessage('delete_backup_failed', error.message));
         });
     }
   };
 
   return (
     <div className="app-backup">
-      {contextHolder}
       <Space size="small" direction="horizontal">
         <Tooltip
           title={isBackupEnabled ?(

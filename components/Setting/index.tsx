@@ -3,17 +3,17 @@ import { Divider, Form, Modal, Segmented, Switch } from "antd";
 import "./index.less";
 
 interface ISettingProps {
-  visible: boolean;
+  open: boolean;
   onClose: () => void;
 }
 
 export default function Setting(props: ISettingProps) {
-  const { visible, onClose } = props;
+  const { open, onClose } = props;
   const [currentTab, setCurrentTab] = useState('common');
   const [form] = Form.useForm();
 
   useEffect(() => {
-    if (visible) {
+    if (open) {
       chrome.storage.local.get(
         ['enableSourceMap', 'enableCors', 'enableBackup'],
         ({ enableSourceMap, enableCors, enableBackup }) => {
@@ -25,7 +25,7 @@ export default function Setting(props: ISettingProps) {
         }
       );
     }
-  }, [visible]);
+  }, [open]);
 
   const handleFormChange = (values: any) => {
     const { enableSourceMap, enableCors, enableBackup } = values || {};
@@ -46,7 +46,7 @@ export default function Setting(props: ISettingProps) {
   return (
     <Modal
       title={null}
-      open={visible}
+      open={open}
       centered
       onCancel={onClose}
       footer={null}

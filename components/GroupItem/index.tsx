@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import classnames from 'classnames';
-import { Checkbox, Dropdown, Button, Modal, MenuProps } from 'antd';
+import { App, Checkbox, Dropdown, Button, MenuProps } from 'antd';
 import { MenuOutlined } from '@ant-design/icons';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
@@ -21,6 +21,7 @@ interface GroupItemProps {
 export default function GroupItem(props: GroupItemProps) {
   const { item, onToggleGroup, onEditGroup, onDeleteGroup, onCopyGroup, active, onClick } = props;
   const [hover, setHover] = useState(false);
+  const { modal } = App.useApp();
 
   const {
     attributes,
@@ -60,7 +61,7 @@ export default function GroupItem(props: GroupItemProps) {
       danger: true,
       label: chrome.i18n.getMessage('group_delete'),
       onClick: () => {
-        Modal.confirm({
+        modal.confirm({
           title: chrome.i18n.getMessage('group_delete_title'),
           content: chrome.i18n.getMessage('group_delete_confirm'),
           onOk: () => {

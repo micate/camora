@@ -74,11 +74,11 @@ export default function Footer() {
         </div>
       </div>
       <SourceView
-        visible={sourceViewVisible}
+        open={sourceViewVisible}
         onClose={() => setSourceViewVisible(false)}
       />
       <Setting
-        visible={settingVisible}
+        open={settingVisible}
         onClose={() => setSettingVisible(false)}
       />
     </div>

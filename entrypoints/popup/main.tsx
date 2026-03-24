@@ -1,6 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import { ConfigProvider, theme } from 'antd'
+import { App as AntdApp, ConfigProvider, theme } from 'antd'
 import zhCN from 'antd/locale/zh_CN';
 import enUS from 'antd/locale/en_US';
 import jaJP from 'antd/locale/ja_JP';
@@ -22,7 +22,7 @@ function Main() {
       <ConfigProvider
         componentSize="small"
         theme={{
-          "cssVar": true,
+          "cssVar": { key: "camora" },
           "token": {
             "fontSize": 14,
             "sizeStep": 4,
@@ -43,7 +43,9 @@ function Main() {
         }}
         locale={locales[language] || enUS}
       >
-        <App />
+        <AntdApp>
+          <App />
+        </AntdApp>
       </ConfigProvider>
     </React.StrictMode>
   );

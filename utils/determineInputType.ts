@@ -2,16 +2,16 @@ import { SourceType, TargetType } from "../types";
 
 function isValidUrl(input: string) {
   try {
-    return new URL(input).toString() === input;
-  } catch (e) {
-    return false; // 否则不是有效的 URL
+    new URL(input);
+    return true;
+  } catch {
+    return false;
   }
 }
 
 function containsRegexMetaChars(input: string) {
-  // 检查输入是否包含常见的正则表达式元字符
-  const regexMetaChars = ['.', '*', '+', '?', '(', ')', '[', ']', '{', '}', '^', '$', '|', '\\'];
-  return regexMetaChars.some(char => input.includes(char));
+  // '.'、'?' 等字符在普通 URL 中很常见，不能据此直接判定为正则。
+  return /(^\^)|(\$$)|(\[[^\]]*\])|(\([^?][^)]*\))|(\(\?:)|(\|)|\\[dDsSwWbBtrnvf\\/.+*?()[\]{}|$^]/.test(input);
 }
 
 function containsCaptureGroups(input: string) {
@@ -21,7 +21,7 @@ function containsCaptureGroups(input: string) {
 
 export function determineRedirectType(userInput: string) {
   if (isValidUrl(userInput)) {
-    // 如果是有效的 URL，使用 url 参数
+    // 对绝对 URL 使用组件级重写，便于保留原始 query/hash。
     return { type: TargetType.URL, value: userInput };
   } else if (containsRegexMetaChars(userInput) || containsCaptureGroups(userInput)) {
     // 如果包含正则元字符或捕获组，使用 regexSubstitution 参数

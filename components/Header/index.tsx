@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button, Space, Switch, AutoComplete, Badge, Tooltip } from "antd";
 import { PlusOutlined, QuestionCircleOutlined } from "@ant-design/icons";
 import Help from "../Help";
@@ -61,7 +61,7 @@ export default function Header(props: IHeaderProps) {
             filterOption={(inputValue, option) =>
               option?.label.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1
             }
-            onDropdownVisibleChange={(open) => {
+            onOpenChange={(open) => {
               if (open) {
                 chrome.storage.local.get('groups').then(({ groups }) => {
                   const options = groups.map((group: RuleGroup) => ({ label: group.name, value: group.id }));
@@ -103,7 +103,7 @@ export default function Header(props: IHeaderProps) {
             }}
           />
           <Help
-            visible={helpVisible}
+            open={helpVisible}
             onClose={() => setHelpVisible(false)}
           />
         </div>

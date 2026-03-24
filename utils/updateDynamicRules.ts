@@ -1,7 +1,56 @@
 import { Rule, RuleGroup, RuleType, RedirectRule, SourceMapRule } from '../types'
 import { getEnabledRules } from './getEnabledRules'
 import { updateCount } from './updateCount'
-import { uniqueId } from './uniqueId'
+
+function createRedirectAction(rule: RedirectRule) {
+  const { target, targetType } = rule;
+
+  if ((targetType || 'url') === 'regexSubstitution') {
+    return {
+      type: chrome.declarativeNetRequest.RuleActionType.REDIRECT,
+      redirect: { regexSubstitution: target },
+    };
+  }
+
+  try {
+    const url = new URL(target);
+    const transform: chrome.declarativeNetRequest.URLTransform = {
+      scheme: url.protocol.replace(':', ''),
+      host: url.hostname,
+      path: url.pathname,
+    };
+
+    if (url.port) {
+      transform.port = url.port;
+    }
+
+    if (url.search) {
+      transform.query = url.search.slice(1);
+    }
+
+    if (url.hash) {
+      transform.fragment = url.hash.slice(1);
+    }
+
+    if (url.username) {
+      transform.username = url.username;
+    }
+
+    if (url.password) {
+      transform.password = url.password;
+    }
+
+    return {
+      type: chrome.declarativeNetRequest.RuleActionType.REDIRECT,
+      redirect: { transform },
+    };
+  } catch {
+    return {
+      type: chrome.declarativeNetRequest.RuleActionType.REDIRECT,
+      redirect: { url: target },
+    };
+  }
+}
 
 // 更新动态规则
 export async function updateDynamicRules(ruleGroups: RuleGroup[]) {
@@ -20,7 +69,7 @@ export async function updateDynamicRules(ruleGroups: RuleGroup[]) {
     if (type === RuleType.SourceMap) {
       const { sourceMapUrl } = rule as SourceMapRule;
       return {
-        id: uniqueId('rule'),
+        id: index + 1,
         priority: 1,
         action: {
           type: chrome.declarativeNetRequest.RuleActionType.MODIFY_HEADERS,
@@ -45,14 +94,11 @@ export async function updateDynamicRules(ruleGroups: RuleGroup[]) {
       };
     }
 
-    const { target, targetType } = rule as RedirectRule;
+    const redirectRule = rule as RedirectRule;
     return {
       id: index + 1,
       priority: 1,
-      action: {
-        type: chrome.declarativeNetRequest.RuleActionType.REDIRECT,
-        redirect: { [targetType || 'url']: target }
-      },
+      action: createRedirectAction(redirectRule),
       condition: {
         [sourceType || 'urlFilter']: source,
         resourceTypes: [
