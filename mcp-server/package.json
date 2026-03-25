@@ -1,0 +1,29 @@
+{
+  "name": "camora-mcp-server",
+  "version": "0.1.3",
+  "description": "MCP Server for Camora Chrome Extension",
+  "type": "module",
+  "main": "dist/index.js",
+  "bin": {
+    "camora-mcp": "dist/index.js",
+    "camora-install": "scripts/install.js",
+    "camora-uninstall": "scripts/uninstall.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "start": "node dist/index.js",
+    "postinstall": "node scripts/install.js",
+    "preuninstall": "node scripts/uninstall.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.9.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "^5.9.3"
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org"
+  }
+}

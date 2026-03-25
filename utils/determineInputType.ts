@@ -20,12 +20,13 @@ function containsCaptureGroups(input: string) {
 }
 
 export function determineRedirectType(userInput: string) {
-  if (isValidUrl(userInput)) {
+  // 捕获组（如 \1、\2）必须优先判断，因为含捕获组的 URL（如 http://host/\1）
+  // 能通过 new URL() 解析，但 \1 会被当作路径字符丢失，导致替换失效。
+  if (containsCaptureGroups(userInput) || containsRegexMetaChars(userInput)) {
+    return { type: TargetType.REGEX_SUBSTITUTION, value: userInput };
+  } else if (isValidUrl(userInput)) {
     // 对绝对 URL 使用组件级重写，便于保留原始 query/hash。
     return { type: TargetType.URL, value: userInput };
-  } else if (containsRegexMetaChars(userInput) || containsCaptureGroups(userInput)) {
-    // 如果包含正则元字符或捕获组，使用 regexSubstitution 参数
-    return { type: TargetType.REGEX_SUBSTITUTION, value: userInput };
   } else {
     // 如果输入不符合上述条件，可以认为它是一个普通的字符串（例如相对路径）
     return { type: TargetType.URL, value: userInput };
