@@ -7,13 +7,13 @@ export function getAndApplyRules() {
     const isEnabled = enabled === undefined ? false : enabled;
     const ruleGroups = groups || [];
     
-    // 传递规则组以便统计启用规则数量
-    updateStatus(isEnabled, ruleGroups);
+    // 先更新状态为启用/禁用，具体规则数量由 updateDynamicRules 完成后更新
+    updateStatus(isEnabled);
 
     if (isEnabled) {
       updateDynamicRules(ruleGroups);
     } else {
-      // 即使禁用状态，也需要更新徽标显示（显示 OFF 或清空数字）
+      // 即使禁用状态，也需要更新规则（清空）和徽标显示
       updateDynamicRules([]);
     }
 

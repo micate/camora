@@ -10,8 +10,11 @@ export function updateCount(groups: RuleGroup[]) {
   updateTimeout = setTimeout(() => {
     chrome.storage.local.get('enabled').then(({ enabled }) => {
       const isEnabled = enabled === undefined ? false : enabled;
-      // 直接使用传入的规则组统计启用规则数量，而不是依赖动态规则
-      updateStatus(isEnabled, groups);
+      // 如果启用状态，由 updateDynamicRules 通过 getDynamicRules 获取实际生效的规则数更新徽标
+      // 这里只需要在禁用时更新为 OFF 状态
+      if (!isEnabled) {
+        updateStatus(false);
+      }
     });
   }, 100);
 };

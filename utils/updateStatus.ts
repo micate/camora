@@ -1,18 +1,12 @@
 import { RuleGroup } from '../types';
 
-export function updateStatus(enabled: boolean, groups?: RuleGroup[]) {
-  if (enabled && groups) {
-    // 统计启用规则数量
-    const enabledRulesCount = groups.reduce((count, group) => {
-      if (!group.enabled) return count;
-      return count + (group.rules?.filter(rule => rule.enabled).length || 0);
-    }, 0);
-
-    if (enabledRulesCount > 0) {
-      chrome.action.setBadgeText({ text: enabledRulesCount.toString() });
-    } else {
-      chrome.action.setBadgeText({ text: '' });
-    }
+export function updateStatus(enabled: boolean, count?: number) {
+  if (enabled && count !== undefined && count > 0) {
+    chrome.action.setBadgeText({ text: count.toString() });
+    chrome.action.setBadgeBackgroundColor({ color: "rgb(22, 104, 220)" });
+  } else if (enabled) {
+    // 启用状态但没有规则
+    chrome.action.setBadgeText({ text: '' });
     chrome.action.setBadgeBackgroundColor({ color: "rgb(22, 104, 220)" });
   } else {
     chrome.action.setBadgeText({ text: "OFF" });
