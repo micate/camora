@@ -127,5 +127,5 @@ export async function updateDynamicRules(ruleGroups: RuleGroup[]) {
     console.error("Failed to add dynamic rules:", error);
   }
 
-  updateCount();
+  updateCount(ruleGroups);
 }

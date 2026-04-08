@@ -207,22 +207,30 @@ export default defineBackground(() => {
     if (area === 'local') {
       // 总开关改变
       if (changes.enabled) {
-        updateStatus(changes.enabled.newValue)
-        if (changes.enabled.newValue) {
-          // 设置动态规则
-          chrome.storage.local.get(['groups']).then(({ groups }) => {
-            updateDynamicRules(groups)
-          })
-        } else {
-          // 清空动态规则
-          updateDynamicRules([])
-        }
+        const isEnabled = changes.enabled.newValue;
+        // 获取规则组以便统计启用规则数量
+        chrome.storage.local.get(['groups']).then(({ groups }) => {
+          updateStatus(isEnabled, groups || []);
+          if (isEnabled) {
+            // 设置动态规则
+            updateDynamicRules(groups || []);
+          } else {
+            // 清空动态规则
+            updateDynamicRules([]);
+          }
+        });
         return;
       }
 
       // 规则改变
       if (changes.groups) {
-        updateDynamicRules(changes.groups.newValue)
+        const newGroups = changes.groups.newValue || [];
+        // 获取当前启用状态以更新徽标
+        chrome.storage.local.get(['enabled']).then(({ enabled }) => {
+          const isEnabled = enabled === undefined ? false : enabled;
+          updateStatus(isEnabled, newGroups);
+          updateDynamicRules(newGroups);
+        });
       }
 
       backup();
@@ -234,7 +242,7 @@ export default defineBackground(() => {
     if (details.reason === 'install') {
       // 新安装时设置默认状态
       chrome.storage.local.set({ enabled: false, groups: [] });
-      updateStatus(false);
+      updateStatus(false, []);
     } else if (details.reason === 'update') {
       // 更新时确保状态正确
       getAndApplyRules();

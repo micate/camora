@@ -5,12 +5,18 @@ import { updateStatus } from './updateStatus';
 export function getAndApplyRules() {
   return chrome.storage.local.get(['enabled', 'groups']).then(({ enabled, groups }) => {
     const isEnabled = enabled === undefined ? false : enabled;
-    updateStatus(isEnabled);
+    const ruleGroups = groups || [];
+    
+    // 传递规则组以便统计启用规则数量
+    updateStatus(isEnabled, ruleGroups);
 
     if (isEnabled) {
-      updateDynamicRules(groups || []);
+      updateDynamicRules(ruleGroups);
+    } else {
+      // 即使禁用状态，也需要更新徽标显示（显示 OFF 或清空数字）
+      updateDynamicRules([]);
     }
 
-    return { isEnabled, groups: groups || [] };
+    return { isEnabled, groups: ruleGroups };
   });
 };

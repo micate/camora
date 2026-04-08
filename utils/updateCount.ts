@@ -1,22 +1,17 @@
+import { RuleGroup } from '../types';
 import { updateStatus } from './updateStatus';
 
 let updateTimeout: NodeJS.Timeout | null = null;
 
-export function updateCount() {
+export function updateCount(groups: RuleGroup[]) {
   if (updateTimeout) {
     clearTimeout(updateTimeout);
   }
   updateTimeout = setTimeout(() => {
-    Promise.all([
-      chrome.storage.local.get('enabled'),
-      chrome.declarativeNetRequest.getDynamicRules(),
-    ]).then(([{ enabled }, rules]) => {
-      if (enabled) {
-        chrome.action.setBadgeText({ text: rules.length.toString() });
-        chrome.action.setBadgeBackgroundColor({ color: "rgb(22, 104, 220)" });
-      } else {
-        updateStatus(false);
-      }
+    chrome.storage.local.get('enabled').then(({ enabled }) => {
+      const isEnabled = enabled === undefined ? false : enabled;
+      // 直接使用传入的规则组统计启用规则数量，而不是依赖动态规则
+      updateStatus(isEnabled, groups);
     });
-  }, 1000);
+  }, 100);
 };
