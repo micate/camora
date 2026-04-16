@@ -253,12 +253,14 @@ export default defineBackground(() => {
   // 添加扩展启动时的处理
   chrome.runtime.onStartup.addListener(() => {
     getAndApplyRules();
+    // Check for sync updates after 5 seconds delay
+    setTimeout(checkForUpdates, 5000);
   });
 
-  // 初始化规则
+  // Initialize rules
   getAndApplyRules();
 
-  // 监听来自 Popup 等内部页面的消息
+  // Listen for messages from Popup
   chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message.action === 'doBackup') {
       backup(true);
@@ -266,18 +268,14 @@ export default defineBackground(() => {
     } else if (message.action === 'manualSync') {
       handleManualSync().then(sendResponse);
       return true; // Keep channel open for async response
-    } else if (message.action === 'startSyncCheck') {
-      startSyncCheck();
-      sendResponse({ success: true });
-    } else if (message.action === 'stopSyncCheck') {
-      stopSyncCheck();
+    } else if (message.action === 'clearSyncBadge') {
+      clearSyncBadge();
       sendResponse({ success: true });
     }
     return true;
   });
 
-  // 监听来自 MCP Server 的 Native Messaging 连接
-  // MCP Server 通过 chrome.runtime.connectNative 建立长连接后发送命令
+  // Listen for connections from MCP Server
   chrome.runtime.onConnectExternal.addListener((port) => {
     if (port.name !== 'camora-mcp') return
 
@@ -292,8 +290,8 @@ export default defineBackground(() => {
   })
 
 });
+
 // Sync functionality
-let syncCheckInterval: number | null = null;
 
 async function handleManualSync(): Promise<{ success: boolean; message: string }> {
   const { syncUrl, syncMode } = await chrome.storage.local.get(['syncUrl', 'syncMode']);
@@ -311,45 +309,52 @@ async function handleManualSync(): Promise<{ success: boolean; message: string }
   }
 }
 
-async function checkForUpdates(): Promise<void> {
+/**
+ * Check for remote updates without syncing
+ * Returns true if there are updates available
+ */
+async function checkForUpdates(): Promise<boolean> {
   const { syncEnabled, syncUrl, syncMode } = await chrome.storage.local.get(['syncEnabled', 'syncUrl', 'syncMode']);
   
   if (!syncEnabled || !syncUrl) {
-    return;
+    return false;
   }
   
   try {
-    const { performSync } = await import('../utils/sync');
-    const result = await performSync(syncUrl, syncMode || 'merge_remote');
+    const { fetchRemoteRules, calculateDiff } = await import('../utils/sync');
+    const remoteGroups = await fetchRemoteRules(syncUrl);
     
-    // Notify popup about sync result
-    chrome.runtime.sendMessage({ 
-      action: 'syncResult', 
-      success: result.success, 
-      message: result.message 
+    // Get local groups
+    const { groups: localGroups = [] } = await chrome.storage.local.get(['groups']);
+    
+    // Calculate diff
+    const diff = calculateDiff(localGroups, remoteGroups);
+    
+    const hasUpdates = diff.added > 0 || diff.deleted > 0 || diff.updated > 0;
+    
+    // Store update status
+    await chrome.storage.local.set({ 
+      syncUpdateAvailable: hasUpdates,
+      syncLastChecked: Date.now(),
+      syncDiff: diff
     });
+    
+    // Notify popup about update availability
+    if (hasUpdates) {
+      chrome.runtime.sendMessage({ 
+        action: 'syncUpdateAvailable',
+        hasUpdates: true,
+        diff: diff
+      });
+    }
+    
+    return hasUpdates;
   } catch (error) {
     console.error('Sync check failed:', error);
+    return false;
   }
 }
 
-function startSyncCheck() {
-  if (syncCheckInterval) {
-    clearInterval(syncCheckInterval);
-  }
-  
-  // Check every 30 minutes
-  syncCheckInterval = window.setInterval(() => {
-    checkForUpdates();
-  }, 30 * 60 * 1000);
-  
-  // Also do an initial check
-  checkForUpdates();
-}
-
-function stopSyncCheck() {
-  if (syncCheckInterval) {
-    clearInterval(syncCheckInterval);
-    syncCheckInterval = null;
-  }
+function clearSyncBadge() {
+  chrome.storage.local.set({ syncUpdateAvailable: false });
 }

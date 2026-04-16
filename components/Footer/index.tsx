@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { App, Button, Modal, Progress, Space, Tooltip } from "antd";
+import { App, Badge, Button, Modal, Progress, Space, Tooltip } from "antd";
 import { CodeOutlined, FullscreenOutlined, SettingOutlined, SyncOutlined } from "@ant-design/icons";
 import SourceView from "../SourceView";
 import Setting from "../Setting";
@@ -12,10 +12,15 @@ export default function Footer() {
   const [settingVisible, setSettingVisible] = useState<boolean>(false)
   const [syncing, setSyncing] = useState<boolean>(false);
   const [syncProgress, setSyncProgress] = useState<number>(0);
+  const [hasUpdateAvailable, setHasUpdateAvailable] = useState<boolean>(false);
   const { message } = App.useApp();
 
-  // Listen for sync results from background script
+  // Check for update availability on mount and listen for updates
   useEffect(() => {
+    chrome.storage.local.get(['syncUpdateAvailable']).then(({ syncUpdateAvailable }) => {
+      setHasUpdateAvailable(!!syncUpdateAvailable);
+    });
+
     const listener = (msg: any) => {
       if (msg.action === 'syncResult') {
         if (msg.success) {
@@ -23,6 +28,8 @@ export default function Footer() {
         } else {
           message.error(msg.message || '同步失败');
         }
+      } else if (msg.action === 'syncUpdateAvailable' && msg.hasUpdates) {
+        setHasUpdateAvailable(true);
       }
     };
     
@@ -50,6 +57,9 @@ export default function Footer() {
       
       if (response?.success) {
         message.success(response.message || '同步成功');
+        setHasUpdateAvailable(false);
+        // Clear the update badge in storage
+        chrome.runtime.sendMessage({ action: "clearSyncBadge" });
       } else {
         message.error(response?.message || '同步失败');
       }
@@ -69,14 +79,16 @@ export default function Footer() {
           />
         </div>
         <Tooltip title={chrome.i18n.getMessage('sync_now') || '同步'} placement="bottom">
-          <Button
-            size="small"
-            color="default"
-            variant="filled"
-            icon={<SyncOutlined spin={syncing} />}
-            onClick={handleSync}
-            loading={syncing}
-          />
+          <Badge dot={hasUpdateAvailable} color="red">
+            <Button
+              size="small"
+              color="default"
+              variant="filled"
+              icon={<SyncOutlined spin={syncing} />}
+              onClick={handleSync}
+              loading={syncing}
+            />
+          </Badge>
         </Tooltip>
         <Tooltip title={chrome.i18n.getMessage('import_export')} placement="bottom">
           <Button

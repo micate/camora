@@ -232,6 +232,59 @@
     },
     "backup_item_quota_error": {
       "message": "ルール数がバックアップストレージ制限（8192バイト）を超えているため、バックアップを作成できません"
-    }
+  },
+  "sync": {
+    "message": "同期設定"
+  },
+  "sync_enabled": {
+    "message": "同期を有効にする"
+  },
+  "sync_url": {
+    "message": "リモート URL"
+  },
+  "sync_url_help": {
+    "message": "Camora のインポート/エクスポート形式に従ってください：{ vendor: \"Camora\", version: 1, groups: [...] }"
+  },
+  "sync_url_empty": {
+    "message": "URL は空にできません"
+  },
+  "validate": {
+    "message": "検証"
+  },
+  "sync_validate_vendor_error": {
+    "message": "vendor フィールドがないか、Camora ではありません"
+  },
+  "sync_validate_version_error": {
+    "message": "version フィールドがありません"
+  },
+  "sync_validate_groups_error": {
+    "message": "groups 配列がありません"
+  },
+  "sync_validate_success": {
+    "message": "URL 形式の検証に成功しました！"
+  },
+  "sync_validate_failed": {
+    "message": "検証に失敗しました："
+  },
+  "sync_mode": {
+    "message": "同期モード"
+  },
+  "sync_mode_overwrite": {
+    "message": "ローカルを上書き"
+  },
+  "sync_mode_merge_remote": {
+    "message": "ローカルにマージ（リモート優先）"
+  },
+  "sync_mode_merge_local": {
+    "message": "ローカルにマージ（ローカル優先）"
+  },
+  "sync_now": {
+    "message": "今すぐ同期"
+  },
+  "sync_failed": {
+    "message": "同期に失敗しました"
+  },
+  "sync_update_available": {
+    "message": "更新があります"
   }
-  
+}
