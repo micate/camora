@@ -207,22 +207,31 @@ export default defineBackground(() => {
     if (area === 'local') {
       // 总开关改变
       if (changes.enabled) {
-        updateStatus(changes.enabled.newValue)
-        if (changes.enabled.newValue) {
-          // 设置动态规则
+        const isEnabled = changes.enabled.newValue;
+        if (isEnabled) {
+          // 获取规则组并设置动态规则，updateDynamicRules 完成后会更新徽标
           chrome.storage.local.get(['groups']).then(({ groups }) => {
-            updateDynamicRules(groups)
-          })
+            updateDynamicRules(groups || []);
+          });
         } else {
-          // 清空动态规则
-          updateDynamicRules([])
+          // 禁用状态：清空动态规则并显示 OFF
+          updateDynamicRules([]);
         }
         return;
       }
 
       // 规则改变
       if (changes.groups) {
-        updateDynamicRules(changes.groups.newValue)
+        const newGroups = changes.groups.newValue || [];
+        // 获取当前启用状态，updateDynamicRules 完成后会更新徽标
+        chrome.storage.local.get(['enabled']).then(({ enabled }) => {
+          const isEnabled = enabled === undefined ? false : enabled;
+          if (isEnabled) {
+            updateDynamicRules(newGroups);
+          } else {
+            updateDynamicRules([]);
+          }
+        });
       }
 
       backup();

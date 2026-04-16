@@ -5,12 +5,18 @@ import { updateStatus } from './updateStatus';
 export function getAndApplyRules() {
   return chrome.storage.local.get(['enabled', 'groups']).then(({ enabled, groups }) => {
     const isEnabled = enabled === undefined ? false : enabled;
+    const ruleGroups = groups || [];
+    
+    // 先更新状态为启用/禁用，具体规则数量由 updateDynamicRules 完成后更新
     updateStatus(isEnabled);
 
     if (isEnabled) {
-      updateDynamicRules(groups || []);
+      updateDynamicRules(ruleGroups);
+    } else {
+      // 即使禁用状态，也需要更新规则（清空）和徽标显示
+      updateDynamicRules([]);
     }
 
-    return { isEnabled, groups: groups || [] };
+    return { isEnabled, groups: ruleGroups };
   });
 };
