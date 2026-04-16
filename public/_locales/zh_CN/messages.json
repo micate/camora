@@ -156,7 +156,7 @@
     "message": "启用备份"
   },
   "create_backup_failed": {
-    "message": "创建备份失败: $error$",
+    "message": "创建备份失败：$error$",
     "placeholders": {
       "error": {
         "content": "$1",
@@ -165,7 +165,7 @@
     }
   },
   "fetch_backup_failed": {
-    "message": "获取备份失败: $error$",
+    "message": "获取备份失败：$error$",
     "placeholders": {
       "error": {
         "content": "$1",
@@ -232,5 +232,35 @@
   },
   "backup_item_quota_error": {
     "message": "规则数量超过备份存储限制（8192 字节），无法创建备份"
+  },
+  "sync": {
+    "message": "同步配置"
+  },
+  "sync_enabled": {
+    "message": "启用同步"
+  },
+  "sync_url": {
+    "message": "远程 URL"
+  },
+  "sync_url_help": {
+    "message": "请遵循 Camora 导入导出格式：{ vendor: \"Camora\", version: 1, groups: [...] }"
+  },
+  "validate": {
+    "message": "校验"
+  },
+  "sync_mode": {
+    "message": "同步模式"
+  },
+  "sync_mode_overwrite": {
+    "message": "覆盖本地"
+  },
+  "sync_mode_merge_remote": {
+    "message": "合并到本地（以远程为准）"
+  },
+  "sync_mode_merge_local": {
+    "message": "合并到本地（以本地为准）"
+  },
+  "sync_now": {
+    "message": "立即同步"
   }
 }

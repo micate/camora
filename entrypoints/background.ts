@@ -263,6 +263,15 @@ export default defineBackground(() => {
     if (message.action === 'doBackup') {
       backup(true);
       sendResponse('Backup start');
+    } else if (message.action === 'manualSync') {
+      handleManualSync().then(sendResponse);
+      return true; // Keep channel open for async response
+    } else if (message.action === 'startSyncCheck') {
+      startSyncCheck();
+      sendResponse({ success: true });
+    } else if (message.action === 'stopSyncCheck') {
+      stopSyncCheck();
+      sendResponse({ success: true });
     }
     return true;
   });
@@ -283,3 +292,64 @@ export default defineBackground(() => {
   })
 
 });
+// Sync functionality
+let syncCheckInterval: number | null = null;
+
+async function handleManualSync(): Promise<{ success: boolean; message: string }> {
+  const { syncUrl, syncMode } = await chrome.storage.local.get(['syncUrl', 'syncMode']);
+  
+  if (!syncUrl) {
+    return { success: false, message: '请先配置同步 URL' };
+  }
+  
+  try {
+    const { performSync } = await import('../utils/sync');
+    const result = await performSync(syncUrl, syncMode || 'merge_remote');
+    return result;
+  } catch (error: any) {
+    return { success: false, message: error.message };
+  }
+}
+
+async function checkForUpdates(): Promise<void> {
+  const { syncEnabled, syncUrl, syncMode } = await chrome.storage.local.get(['syncEnabled', 'syncUrl', 'syncMode']);
+  
+  if (!syncEnabled || !syncUrl) {
+    return;
+  }
+  
+  try {
+    const { performSync } = await import('../utils/sync');
+    const result = await performSync(syncUrl, syncMode || 'merge_remote');
+    
+    // Notify popup about sync result
+    chrome.runtime.sendMessage({ 
+      action: 'syncResult', 
+      success: result.success, 
+      message: result.message 
+    });
+  } catch (error) {
+    console.error('Sync check failed:', error);
+  }
+}
+
+function startSyncCheck() {
+  if (syncCheckInterval) {
+    clearInterval(syncCheckInterval);
+  }
+  
+  // Check every 30 minutes
+  syncCheckInterval = window.setInterval(() => {
+    checkForUpdates();
+  }, 30 * 60 * 1000);
+  
+  // Also do an initial check
+  checkForUpdates();
+}
+
+function stopSyncCheck() {
+  if (syncCheckInterval) {
+    clearInterval(syncCheckInterval);
+    syncCheckInterval = null;
+  }
+}
