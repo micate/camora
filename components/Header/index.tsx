@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Button, Space, Switch, AutoComplete, Badge, Tooltip } from "antd";
 import { PlusOutlined, QuestionCircleOutlined } from "@ant-design/icons";
 import Help from "../Help";
@@ -18,6 +18,7 @@ export default function Header(props: IHeaderProps) {
   const [enabledSaving, setEnabledSaving] = useState<boolean>(false);
   const [completeOptions, setCompleteOptions] = useState<{ label: string, value: string }[]>([]);
   const [inputValue, setInputValue] = useState<string>('');
+  const [searchOpen, setSearchOpen] = useState<boolean>(false);
   const [helpVisible, setHelpVisible] = useState<boolean>(false);
   const searchRef = useRef<any>(null);
   const enabledRevisionRef = useRef(0);
@@ -62,19 +63,29 @@ export default function Header(props: IHeaderProps) {
     };
   }, []);
 
+  const openSearch = useCallback(() => {
+    searchRef.current?.focus?.();
+    chrome.storage.local.get('groups').then(({ groups = [] }) => {
+      setCompleteOptions(
+        groups.map((group: RuleGroup) => ({ label: group.name, value: group.id })),
+      );
+      setSearchOpen(true);
+    });
+  }, []);
+
   // cmd + k / ctrl + k 键盘快捷键
   useEffect(() => {
     const handler = (event: KeyboardEvent) => {
       if (event.key === 'k' && (event.metaKey || event.ctrlKey)) {
         event.preventDefault();
-        searchRef.current?.focus?.();
+        openSearch();
       }
     }
     window.addEventListener('keydown', handler);
     return () => {
       window.removeEventListener('keydown', handler);
     }
-  }, []);
+  }, [openSearch]);
 
   const handleToggleRule = async (checked: boolean) => {
     const previousEnabled = enabled;
@@ -103,16 +114,15 @@ export default function Header(props: IHeaderProps) {
             popupMatchSelectWidth={false}
             notFoundContent={chrome.i18n.getMessage('no_results')}
             options={completeOptions}
+            open={searchOpen}
             filterOption={(inputValue, option) =>
               option?.label.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1
             }
             onOpenChange={(open) => {
               if (open) {
-                chrome.storage.local.get('groups').then(({ groups }) => {
-                  const options = groups.map((group: RuleGroup) => ({ label: group.name, value: group.id }));
-                  setCompleteOptions(options);
-                });
+                openSearch();
               } else {
+                setSearchOpen(false);
                 setCompleteOptions([]);
               }
             }}
@@ -121,6 +131,7 @@ export default function Header(props: IHeaderProps) {
             onSelect={(value) => {
               onChangeActiveGroup(value);
               setInputValue('');
+              setSearchOpen(false);
             }}
             style={{ width: '100%' }}
             defaultActiveFirstOption
