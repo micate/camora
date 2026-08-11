@@ -1,9 +1,26 @@
 import { useEffect, useState } from 'react';
 import { Space, Empty, Dropdown, MenuProps, Button } from 'antd';
 import { PlusOutlined, DownOutlined } from '@ant-design/icons';
+import {
+  closestCenter,
+  DndContext,
+  DragEndEvent,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core';
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
+import { restrictToVerticalAxis } from '@dnd-kit/modifiers';
 import RedirectRuleView from '../RuleViews/RedirectRuleView';
 import SourceMapRuleView from '../RuleViews/SourceMapRuleView';
 import CorsRuleView from '../RuleViews/CorsRuleView';
+import SortableRule from '../SortableRule';
 import { CorsRule, RedirectRule, Rule, RuleGroup, RuleType, SourceMapRule } from '../../types';
 import { createRule } from '../../utils/createRule';
 import './index.less';
@@ -18,6 +35,14 @@ export default function GroupView(props: IGroupViewProps) {
   const { rules } = group || {};
   const [showSourceMap, setShowSourceMap] = useState(false);
   const [showCors, setShowCors] = useState(false);
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: { distance: 4 },
+    }),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    }),
+  );
 
   useEffect(() => {
     chrome.storage.local.get(['enableSourceMap', 'enableCors'], ({ enableSourceMap, enableCors }) => {
@@ -28,6 +53,9 @@ export default function GroupView(props: IGroupViewProps) {
     const onChange = (changes: { [key: string]: chrome.storage.StorageChange }) => {
       if (changes.enableSourceMap) {
         setShowSourceMap(!!changes.enableSourceMap.newValue);
+      }
+      if (changes.enableCors) {
+        setShowCors(!!changes.enableCors.newValue);
       }
     };
 
@@ -86,6 +114,19 @@ export default function GroupView(props: IGroupViewProps) {
     });
   };
 
+  const handleDragEnd = ({ active, over }: DragEndEvent) => {
+    if (!over || active.id === over.id) return;
+
+    const oldIndex = rules.findIndex((rule) => rule.id === active.id);
+    const newIndex = rules.findIndex((rule) => rule.id === over.id);
+    if (oldIndex < 0 || newIndex < 0) return;
+
+    onChange({
+      ...group,
+      rules: arrayMove(rules, oldIndex, newIndex),
+    });
+  };
+
   const addBtn = menuItems.length ? (
     <Space.Compact size="small">
       <Button
@@ -113,48 +154,60 @@ export default function GroupView(props: IGroupViewProps) {
   return (
     <div className="group-view">
       {rules?.length ? (
-        <Space
-          className="group-view-content"
-          size="large"
-          direction="vertical"
-        >
-          {(rules || []).map((rule) => {
-            if (rule.type === RuleType.SourceMap) {
-              return (
-                <SourceMapRuleView
-                  key={rule.id}
-                  rule={rule as SourceMapRule}
-                  onChange={handleRuleChange}
-                  onCopyRule={handleCopyRule}
-                  onDelete={() => handleDeleteRule(rule.id)}
-                />
-              );
-            }
-            if (rule.type === RuleType.CORS) {
-              return (
-                <CorsRuleView
-                  key={rule.id}
-                  rule={rule as CorsRule}
-                  onChange={handleRuleChange}
-                  onCopyRule={handleCopyRule}
-                  onDelete={() => handleDeleteRule(rule.id)}
-                />
-              );
-            }
-            return (
-              <RedirectRuleView
-                key={rule.id}
-                rule={rule as RedirectRule}
-                onChange={handleRuleChange}
-                onCopyRule={handleCopyRule}
-                onDelete={() => handleDeleteRule(rule.id)}
-              />
-            );
-          })}
+        <div className="group-view-content group-view-rules">
+          <DndContext
+            sensors={sensors}
+            collisionDetection={closestCenter}
+            modifiers={[restrictToVerticalAxis]}
+            onDragEnd={handleDragEnd}
+          >
+            <SortableContext
+              items={rules.map((rule) => rule.id)}
+              strategy={verticalListSortingStrategy}
+            >
+              {(rules || []).map((rule) => (
+                <SortableRule key={rule.id} id={rule.id}>
+                  {(dragHandle) => {
+                    if (rule.type === RuleType.SourceMap) {
+                      return (
+                        <SourceMapRuleView
+                          rule={rule as SourceMapRule}
+                          dragHandle={dragHandle}
+                          onChange={handleRuleChange}
+                          onCopyRule={handleCopyRule}
+                          onDelete={() => handleDeleteRule(rule.id)}
+                        />
+                      );
+                    }
+                    if (rule.type === RuleType.CORS) {
+                      return (
+                        <CorsRuleView
+                          rule={rule as CorsRule}
+                          dragHandle={dragHandle}
+                          onChange={handleRuleChange}
+                          onCopyRule={handleCopyRule}
+                          onDelete={() => handleDeleteRule(rule.id)}
+                        />
+                      );
+                    }
+                    return (
+                      <RedirectRuleView
+                        rule={rule as RedirectRule}
+                        dragHandle={dragHandle}
+                        onChange={handleRuleChange}
+                        onCopyRule={handleCopyRule}
+                        onDelete={() => handleDeleteRule(rule.id)}
+                      />
+                    );
+                  }}
+                </SortableRule>
+              ))}
+            </SortableContext>
+          </DndContext>
           <div className="group-view-actions">
             {addBtn}
           </div>
-        </Space>
+        </div>
       ) : (
         <Space className="group-view-content group-view-empty" size="small" direction="vertical">
           <Empty description={false}>

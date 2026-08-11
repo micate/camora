@@ -14,16 +14,52 @@ interface IHeaderProps {
 export default function Header(props: IHeaderProps) {
   const { activeGroup, onAddGroup, onChangeActiveGroup } = props;
   const [enabled, setEnabled] = useState<boolean>(false);
+  const [enabledLoading, setEnabledLoading] = useState<boolean>(true);
+  const [enabledSaving, setEnabledSaving] = useState<boolean>(false);
   const [completeOptions, setCompleteOptions] = useState<{ label: string, value: string }[]>([]);
   const [inputValue, setInputValue] = useState<string>('');
   const [helpVisible, setHelpVisible] = useState<boolean>(false);
   const searchRef = useRef<any>(null);
+  const enabledRevisionRef = useRef(0);
   const searchCmdTips = navigator.userAgent.includes('Mac OS X') ? 'Cmd+K' : 'Ctrl+K';
 
   useEffect(() => {
-    chrome.storage.local.get(['enabled']).then(({ enabled: savedEnabled }) => {
-      setEnabled(savedEnabled);
-    });
+    let mounted = true;
+
+    const handleStorageChange = (
+      changes: Record<string, chrome.storage.StorageChange>,
+      areaName: string,
+    ) => {
+      if (areaName === 'local' && changes.enabled && mounted) {
+        enabledRevisionRef.current += 1;
+        setEnabled(Boolean(changes.enabled.newValue));
+        setEnabledLoading(false);
+      }
+    };
+
+    // Register before the initial read so a startup-time storage change cannot
+    // happen between reading the value and subscribing to future updates.
+    chrome.storage.onChanged.addListener(handleStorageChange);
+    const revisionAtRead = enabledRevisionRef.current;
+    chrome.storage.local.get(['enabled'])
+      .then(({ enabled: savedEnabled }) => {
+        if (mounted && enabledRevisionRef.current === revisionAtRead) {
+          setEnabled(Boolean(savedEnabled));
+        }
+      })
+      .catch((error) => {
+        console.error('Failed to read extension enabled state:', error);
+      })
+      .finally(() => {
+        if (mounted) {
+          setEnabledLoading(false);
+        }
+      });
+
+    return () => {
+      mounted = false;
+      chrome.storage.onChanged.removeListener(handleStorageChange);
+    };
   }, []);
 
   // cmd + k / ctrl + k 键盘快捷键
@@ -40,10 +76,19 @@ export default function Header(props: IHeaderProps) {
     }
   }, []);
 
-  const handleToggleRule = () => {
-    const newEnabled = !enabled
-    setEnabled(newEnabled);
-    chrome.storage.local.set({ enabled: newEnabled });
+  const handleToggleRule = async (checked: boolean) => {
+    const previousEnabled = enabled;
+    setEnabled(checked);
+    setEnabledSaving(true);
+
+    try {
+      await chrome.storage.local.set({ enabled: checked });
+    } catch (error) {
+      console.error('Failed to save extension enabled state:', error);
+      setEnabled(previousEnabled);
+    } finally {
+      setEnabledSaving(false);
+    }
   };
 
   return (
@@ -122,7 +167,13 @@ export default function Header(props: IHeaderProps) {
           </div>
         </div>
         <div className="app-switch">
-          <Switch size="default" checked={enabled} onChange={handleToggleRule} />
+          <Switch
+            size="default"
+            checked={enabled}
+            loading={enabledLoading || enabledSaving}
+            disabled={enabledLoading || enabledSaving}
+            onChange={handleToggleRule}
+          />
         </div>
       </div>
     </div>

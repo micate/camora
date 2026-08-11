@@ -1,30 +1,76 @@
-.rule-view {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
+.cors-rule-view {
+  width: 100%;
 
-  // background-color: var(--ant-color-bg-container);
-  // border: 1px solid var(--ant-color-split);
-  // padding: 8px;
-  // border-radius: 4px;
-
-  &-disabled {
-    // background-color: var(--ant-color-bg-container-disabled);
-    opacity: 0.5;
-  }
-
-  &-content {
+  .cors-rule-content {
+    display: flex;
     flex: 1;
-    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 0;
   }
 
-  &-target {
-    display: flex;
+  .cors-rule-source,
+  .cors-rule-field {
+    min-width: 0;
   }
 
-  &-actions {
+  .cors-rule-field {
+    .ant-input-group-addon {
+      width: 100px;
+      padding-inline: 10px;
+      color: var(--ant-color-text-secondary);
+      text-align: left;
+    }
+  }
+
+  .cors-rule-toolbar {
     display: flex;
-    margin-left: 4px;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .cors-rule-options,
+  .cors-rule-option,
+  .cors-rule-actions {
+    display: flex;
+    align-items: center;
+  }
+
+  .cors-rule-options {
+    gap: 16px;
+    min-width: 0;
+  }
+
+  .cors-rule-option {
+    gap: 8px;
+    white-space: nowrap;
+  }
+
+  .cors-rule-option-label {
+    color: var(--ant-color-text-secondary);
+    font-size: 12px;
+  }
+
+  .cors-rule-actions {
+    flex-shrink: 0;
+    margin-left: auto;
+  }
+
+  &.rule-view-disabled {
+    opacity: 0.55;
+  }
+}
+
+@media (max-width: 620px) {
+  .cors-rule-view .cors-rule-toolbar {
+    align-items: stretch;
+    flex-direction: column;
+
+    .cors-rule-actions {
+      width: 100%;
+      margin-left: 0;
+      justify-content: flex-end;
+    }
   }
 }

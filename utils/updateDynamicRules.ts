@@ -1,6 +1,14 @@
-import { Rule, RuleGroup, RuleType, RedirectRule, SourceMapRule } from '../types'
+import { CorsRule, Rule, RuleGroup, RuleType, RedirectRule, SourceMapRule } from '../types'
 import { getEnabledRules } from './getEnabledRules'
 import { updateCount } from './updateCount'
+import {
+  CREDENTIAL_CORS_ALLOW_HEADERS,
+  CREDENTIAL_CORS_ALLOW_METHODS,
+  DEFAULT_CORS_ALLOW_HEADERS,
+  DEFAULT_CORS_ALLOW_METHODS,
+  DEFAULT_CORS_ALLOW_ORIGIN,
+  DEFAULT_CORS_MAX_AGE,
+} from './corsDefaults'
 
 function createRedirectAction(rule: RedirectRule) {
   const { target, targetType } = rule;
@@ -52,8 +60,41 @@ function createRedirectAction(rule: RedirectRule) {
   }
 }
 
-// 更新动态规则
-export async function updateDynamicRules(ruleGroups: RuleGroup[]) {
+function createCorsAction(rule: CorsRule): chrome.declarativeNetRequest.RuleAction {
+  const responseHeaders: chrome.declarativeNetRequest.ModifyHeaderInfo[] = [];
+  const addHeader = (header: string, value: string | number | undefined) => {
+    if (value === undefined || value === '') return;
+    responseHeaders.push({
+      header,
+      operation: chrome.declarativeNetRequest.HeaderOperation.SET,
+      value: String(value),
+    });
+  };
+
+  addHeader(
+    'Access-Control-Allow-Origin',
+    rule.allowCredentials ? rule.allowOrigin : DEFAULT_CORS_ALLOW_ORIGIN,
+  );
+  if (rule.allowCredentials) {
+    addHeader('Access-Control-Allow-Credentials', 'true');
+  }
+  addHeader(
+    'Access-Control-Allow-Methods',
+    rule.allowCredentials ? CREDENTIAL_CORS_ALLOW_METHODS : DEFAULT_CORS_ALLOW_METHODS,
+  );
+  addHeader(
+    'Access-Control-Allow-Headers',
+    rule.allowCredentials ? CREDENTIAL_CORS_ALLOW_HEADERS : DEFAULT_CORS_ALLOW_HEADERS,
+  );
+  addHeader('Access-Control-Max-Age', rule.maxAge ?? DEFAULT_CORS_MAX_AGE);
+
+  return {
+    type: chrome.declarativeNetRequest.RuleActionType.MODIFY_HEADERS,
+    responseHeaders,
+  };
+}
+
+async function applyDynamicRules(ruleGroups: RuleGroup[]) {
   // 找到所有启用的规则
   const rules = getEnabledRules(ruleGroups)
   console.log('Enabled input rules', rules)
@@ -91,6 +132,27 @@ export async function updateDynamicRules(ruleGroups: RuleGroup[]) {
             chrome.declarativeNetRequest.ResourceType.XMLHTTPREQUEST,
           ]
         }
+      };
+    }
+
+    if (type === RuleType.CORS) {
+      return {
+        id: index + 1,
+        priority: 1,
+        action: createCorsAction(rule as CorsRule),
+        condition: {
+          [sourceType || 'urlFilter']: source,
+          resourceTypes: [
+            chrome.declarativeNetRequest.ResourceType.MAIN_FRAME,
+            chrome.declarativeNetRequest.ResourceType.SUB_FRAME,
+            chrome.declarativeNetRequest.ResourceType.STYLESHEET,
+            chrome.declarativeNetRequest.ResourceType.SCRIPT,
+            chrome.declarativeNetRequest.ResourceType.IMAGE,
+            chrome.declarativeNetRequest.ResourceType.FONT,
+            chrome.declarativeNetRequest.ResourceType.XMLHTTPREQUEST,
+            chrome.declarativeNetRequest.ResourceType.MEDIA,
+          ],
+        },
       };
     }
 
@@ -154,4 +216,16 @@ export async function updateDynamicRules(ruleGroups: RuleGroup[]) {
   }
 
   updateCount(ruleGroups);
+}
+
+// Service worker can receive several storage events before a DNR update finishes.
+// Serialize them so an older snapshot can never overwrite a newer one.
+let updateQueue: Promise<void> = Promise.resolve();
+
+export function updateDynamicRules(ruleGroups: RuleGroup[]) {
+  updateQueue = updateQueue.then(
+    () => applyDynamicRules(ruleGroups),
+    () => applyDynamicRules(ruleGroups),
+  );
+  return updateQueue;
 }

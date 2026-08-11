@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Space, Input, Button, Divider, Switch, Popconfirm, Tooltip } from 'antd';
+import { ReactNode, useState } from 'react';
+import { Space, Input, Button, Switch, Popconfirm, Tooltip } from 'antd';
 import { SearchOutlined, CopyOutlined, DeleteOutlined, ReadOutlined } from '@ant-design/icons';
 import { SourceMapRule } from '../../../types';
 import { uniqueId } from '../../../utils/uniqueId';
@@ -11,10 +11,11 @@ interface IRuleViewProps {
   onChange: (rule: SourceMapRule) => void;
   onCopyRule: (rule: SourceMapRule) => void;
   onDelete: () => void;
+  dragHandle: ReactNode;
 }
 
 export default function SourceMapRuleView(props: IRuleViewProps) {
-  const { rule, onChange, onCopyRule, onDelete } = props;
+  const { rule, onChange, onCopyRule, onDelete, dragHandle } = props;
   const { source, sourceMapUrl } = rule || {};
   const [draftSource, setDraftSource] = useState(source);
   const [draftSourceMapUrl, setDraftSourceMapUrl] = useState(sourceMapUrl);
@@ -103,7 +104,7 @@ export default function SourceMapRuleView(props: IRuleViewProps) {
                 <Button size="small" icon={<DeleteOutlined />} />
               </Tooltip>
             </Popconfirm>
-            <Divider type="vertical" />
+            {dragHandle}
             <Switch checked={rule.enabled} onChange={handleToggleRule} />
           </Space>
         </div>

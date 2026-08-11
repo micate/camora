@@ -1,9 +1,17 @@
-import { useState } from 'react';
-import { Space, Input, Button, Divider, Switch, Popconfirm, Tooltip } from 'antd';
-import { SearchOutlined, CopyOutlined, DeleteOutlined, ReadOutlined } from '@ant-design/icons';
+import { ReactNode, useState } from 'react';
+import { Space, Input, Button, Switch, Popconfirm, Tooltip } from 'antd';
+import { SearchOutlined, CopyOutlined, DeleteOutlined } from '@ant-design/icons';
 import { CorsRule } from '../../../types';
 import { uniqueId } from '../../../utils/uniqueId';
 import { determineFilterType } from '../../../utils/determineInputType';
+import {
+  CREDENTIAL_CORS_ALLOW_HEADERS,
+  CREDENTIAL_CORS_ALLOW_METHODS,
+  DEFAULT_CORS_ALLOW_HEADERS,
+  DEFAULT_CORS_ALLOW_METHODS,
+  DEFAULT_CORS_ALLOW_ORIGIN,
+  DEFAULT_CORS_MAX_AGE,
+} from '../../../utils/corsDefaults';
 import './index.less';
 
 interface IRuleViewProps {
@@ -11,17 +19,19 @@ interface IRuleViewProps {
   onChange: (rule: CorsRule) => void;
   onCopyRule: (rule: CorsRule) => void;
   onDelete: () => void;
+  dragHandle: ReactNode;
 }
 
 export default function CorsRuleView(props: IRuleViewProps) {
-  const { rule, onChange, onCopyRule, onDelete } = props;
-  const { source, allowOrigin, allowCredentials, allowMethods, allowHeaders, maxAge } = rule || {};
-  const [draftSource, setDraftSource] = useState(source);
-  const [draftAllowOrigin, setDraftAllowOrigin] = useState(allowOrigin);
-  const [draftAllowCredentials, setDraftAllowCredentials] = useState(allowCredentials);
-  const [draftAllowMethods, setDraftAllowMethods] = useState(allowMethods);
-  const [draftAllowHeaders, setDraftAllowHeaders] = useState(allowHeaders);
-  const [draftMaxAge, setDraftMaxAge] = useState(maxAge);
+  const { rule, onChange, onCopyRule, onDelete, dragHandle } = props;
+  const { source, allowOrigin, allowCredentials } = rule || {};
+  const [draftSource, setDraftSource] = useState(source ?? '');
+  const [draftAllowOrigin, setDraftAllowOrigin] = useState(
+    allowCredentials && allowOrigin !== DEFAULT_CORS_ALLOW_ORIGIN
+      ? allowOrigin ?? ''
+      : DEFAULT_CORS_ALLOW_ORIGIN,
+  );
+  const [draftAllowCredentials, setDraftAllowCredentials] = useState(Boolean(allowCredentials));
 
   const handleSourceChange = () => {
     if (draftSource === source) {
@@ -29,6 +39,34 @@ export default function CorsRuleView(props: IRuleViewProps) {
     }
     const sourceType = determineFilterType(draftSource).type;
     onChange({ ...rule, source: draftSource, sourceType })
+  };
+
+  const saveOrigin = () => {
+    onChange({
+      ...rule,
+      allowOrigin: draftAllowOrigin || undefined,
+      allowCredentials: true,
+      allowMethods: CREDENTIAL_CORS_ALLOW_METHODS,
+      allowHeaders: CREDENTIAL_CORS_ALLOW_HEADERS,
+      maxAge: DEFAULT_CORS_MAX_AGE,
+    });
+  };
+
+  const handleCredentialsChange = (checked: boolean) => {
+    const nextOrigin = checked
+      ? (draftAllowOrigin === DEFAULT_CORS_ALLOW_ORIGIN ? '' : draftAllowOrigin)
+      : DEFAULT_CORS_ALLOW_ORIGIN;
+
+    setDraftAllowCredentials(checked);
+    setDraftAllowOrigin(nextOrigin);
+    onChange({
+      ...rule,
+      allowOrigin: nextOrigin || undefined,
+      allowCredentials: checked || undefined,
+      allowMethods: checked ? CREDENTIAL_CORS_ALLOW_METHODS : DEFAULT_CORS_ALLOW_METHODS,
+      allowHeaders: checked ? CREDENTIAL_CORS_ALLOW_HEADERS : DEFAULT_CORS_ALLOW_HEADERS,
+      maxAge: DEFAULT_CORS_MAX_AGE,
+    });
   };
 
   const handleCopyRule = () => {
@@ -42,9 +80,9 @@ export default function CorsRuleView(props: IRuleViewProps) {
   };
 
   return (
-    <div className={`rule-view ${rule.enabled ? 'rule-view-enabled' : 'rule-view-disabled'}`}>
-      <Space className="rule-view-content" size="small" direction="vertical">
-        <div className="rule-view-source">
+    <div className={`rule-view cors-rule-view ${rule.enabled ? 'rule-view-enabled' : 'rule-view-disabled'}`}>
+      <div className="rule-view-content cors-rule-content">
+        <div className="rule-view-source cors-rule-source">
           <Input
             addonBefore={(
               <a
@@ -63,35 +101,32 @@ export default function CorsRuleView(props: IRuleViewProps) {
             onBlur={handleSourceChange}
           />
         </div>
-        <div className="rule-view-allow-origin">
-          <Input
-            addonBefore="origin"
-            size="small"
-            placeholder="Allow Origin, e.g. https://www.example.com"
-            value={draftAllowOrigin}
-            onChange={(e) => setDraftAllowOrigin(e.target.value)}
-          />
-        </div>
-        <div className="rule-view-allow-methods">
-          <Input
-            addonBefore="origin"
-            size="small"
-            placeholder="Allow Methods, e.g. GET, POST, PUT, DELETE, PATCH or *"
-            value={draftAllowMethods}
-            onChange={(e) => setDraftAllowMethods(e.target.value)}
-          />
-        </div>
-        <div className="rule-view-allow-headers">
-          <Input
-            addonBefore="origin"
-            size="small"
-            placeholder="Allow Headers, e.g. Content-Type or *"
-            value={draftAllowHeaders}
-            onChange={(e) => setDraftAllowHeaders(e.target.value)}
-          />
-        </div>
-        <div className="rule-view-target">
-          <Space className="rule-view-actions" size="small" direction="horizontal">
+        {draftAllowCredentials ? (
+          <div className="cors-rule-field cors-rule-field-origin">
+            <Input
+              addonBefore="Allow Origin"
+              size="small"
+              status={!draftAllowOrigin || draftAllowOrigin === DEFAULT_CORS_ALLOW_ORIGIN ? 'error' : undefined}
+              placeholder="https://app.example.com"
+              value={draftAllowOrigin}
+              onChange={(e) => setDraftAllowOrigin(e.target.value)}
+              onPressEnter={saveOrigin}
+              onBlur={saveOrigin}
+            />
+          </div>
+        ) : null}
+        <div className="cors-rule-toolbar">
+          <div className="cors-rule-options">
+            <div className="cors-rule-option">
+              <span className="cors-rule-option-label">Credentials</span>
+              <Switch
+                size="small"
+                checked={draftAllowCredentials}
+                onChange={handleCredentialsChange}
+              />
+            </div>
+          </div>
+          <Space className="rule-view-actions cors-rule-actions" size="small" direction="horizontal">
             <Tooltip title={chrome.i18n.getMessage('copy_rule')} placement="top">
               <Button size="small" icon={<CopyOutlined />} onClick={handleCopyRule} />
             </Tooltip>
@@ -105,11 +140,11 @@ export default function CorsRuleView(props: IRuleViewProps) {
                 <Button size="small" icon={<DeleteOutlined />} />
               </Tooltip>
             </Popconfirm>
-            <Divider type="vertical" />
-            <Switch checked={rule.enabled} onChange={handleToggleRule} />
+            {dragHandle}
+            <Switch size="small" checked={rule.enabled} onChange={handleToggleRule} />
           </Space>
         </div>
-      </Space>
+      </div>
     </div>
   );
 }

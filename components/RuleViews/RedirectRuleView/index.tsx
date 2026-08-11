@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Space, Input, Button, Divider, Switch, Popconfirm, Tooltip } from 'antd';
+import { ReactNode, useState } from 'react';
+import { Space, Input, Button, Switch, Popconfirm, Tooltip } from 'antd';
 import { SearchOutlined, CopyOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
 import { RedirectRule } from '../../../types';
 import { uniqueId } from '../../../utils/uniqueId';
@@ -11,10 +11,11 @@ interface IRuleViewProps {
   onChange: (rule: RedirectRule) => void;
   onCopyRule: (rule: RedirectRule) => void;
   onDelete: () => void;
+  dragHandle: ReactNode;
 }
 
 export default function RedirectRuleView(props: IRuleViewProps) {
-  const { rule, onChange, onCopyRule, onDelete } = props;
+  const { rule, onChange, onCopyRule, onDelete, dragHandle } = props;
   const { source, target } = rule || {};
   const [draftSource, setDraftSource] = useState(source);
   const [draftTarget, setDraftTarget] = useState(target);
@@ -109,7 +110,7 @@ export default function RedirectRuleView(props: IRuleViewProps) {
                 <Button size="small" icon={<DeleteOutlined />} />
               </Tooltip>
             </Popconfirm>
-            <Divider type="vertical" />
+            {dragHandle}
             <Switch checked={rule.enabled} onChange={handleToggleRule} />
           </Space>
         </div>

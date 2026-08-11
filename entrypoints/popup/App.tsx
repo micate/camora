@@ -18,16 +18,17 @@ const App: React.FC = () => {
   const [editGroup, setEditGroup] = useState<RuleGroup | null>(null)
   const [landing, setLanding] = useState(true)
   const [form] = Form.useForm()
-  const inputRef = React.createRef<any>()
+  const inputRef = useRef<any>(null)
   const fromCopy = useRef<boolean>(false)
 
   useEffect(() => {
-    chrome.storage.local.get(['activeGroupId', 'groups']).then(({ activeGroupId, groups = [] }) => {
+    chrome.storage.local.get(['activeGroupId', 'groups']).then(async ({ activeGroupId, groups = [] }) => {
       if (groups?.length) {
         setGroups(groups)
         setActiveGroup(groups.find((g: RuleGroup) => g.id === activeGroupId) || groups[0])
       } else {
         const group = createGroup(chrome.i18n.getMessage('group_default_name'));
+        await chrome.storage.local.set({ groups: [group] });
         setGroups([group]);
         setActiveGroup(group);
       }
@@ -130,9 +131,11 @@ const App: React.FC = () => {
 
   const handleGroupChange = async (group: RuleGroup) => {
     const updatedGroups = groups.map((g) => (g.id === group.id ? group : g))
-    await chrome.storage.local.set({ groups: updatedGroups })
+    // Update the sortable UI immediately. Waiting for storage first makes a
+    // dropped item briefly render at its previous index and appear to bounce.
     setGroups(updatedGroups)
     setActiveGroup(group)
+    await chrome.storage.local.set({ groups: updatedGroups })
   }
 
   return (

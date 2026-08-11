@@ -1,9 +1,0 @@
-{
-  "name": "com.camora.mcp",
-  "description": "Camora MCP Server - Native Messaging Host for AI rule management",
-  "path": "CAMORA_MCP_SERVER_PATH",
-  "type": "stdio",
-  "allowed_origins": [
-    "chrome-extension://CAMORA_EXTENSION_ID/"
-  ]
-}

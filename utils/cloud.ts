@@ -9,29 +9,27 @@ export const STORAGE_LIMIT = 102400; // 100 KB
 const BackupDelayMinutes = 3;
 const CLEANUP_THRESHOLD = 0.8 * STORAGE_LIMIT; // 80 KB 阈值
 
+function executeBackup() {
+  return chrome.storage.local
+    .get(["enableBackup", "groups"])
+    .then(({ enableBackup, groups = [] }) => {
+      if (!enableBackup) return;
+      return createBackup(cleanupGroups(groups, true));
+    });
+}
+
+export function handleBackupAlarm(alarm: chrome.alarms.Alarm) {
+  if (alarm.name === 'backup') {
+    void executeBackup();
+  }
+}
+
 export function backup(force = false) {
-  chrome.alarms.clear('backup');
-
-  const execute = () => {
-    chrome.storage.local
-      .get(["enableBackup", "groups"])
-      .then(({ enableBackup, groups }) => {
-        if (!enableBackup) {
-          return;
-        }
-        const cleanedGroups = cleanupGroups(groups, true);
-        createBackup(cleanedGroups);
-      });
-  };
-
   if (force) {
-    execute();
+    return chrome.alarms.clear('backup').then(() => executeBackup());
   } else {
-    chrome.alarms.create('backup', { delayInMinutes: BackupDelayMinutes });
-    chrome.alarms.onAlarm.addListener((alarm) => {
-      if (alarm.name === 'backup') {
-        execute();
-      }
+    return chrome.alarms.clear('backup').then(() => {
+      chrome.alarms.create('backup', { delayInMinutes: BackupDelayMinutes });
     });
   }
 }
