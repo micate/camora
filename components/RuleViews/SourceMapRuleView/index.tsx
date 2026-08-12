@@ -1,8 +1,7 @@
 import { ReactNode, useState } from 'react';
 import { Space, Input, Button, Switch, Popconfirm, Tooltip } from 'antd';
-import { SearchOutlined, CopyOutlined, DeleteOutlined, ReadOutlined } from '@ant-design/icons';
+import { SearchOutlined, CopyOutlined, DeleteOutlined, ReadOutlined, PlusSquareOutlined } from '@ant-design/icons';
 import { SourceMapRule } from '../../../types';
-import { uniqueId } from '../../../utils/uniqueId';
 import { determineFilterType } from '../../../utils/determineInputType';
 import './index.less';
 
@@ -10,12 +9,13 @@ interface IRuleViewProps {
   rule: SourceMapRule;
   onChange: (rule: SourceMapRule) => void;
   onCopyRule: (rule: SourceMapRule) => void;
+  onDuplicateRule: (rule: SourceMapRule) => void;
   onDelete: () => void;
   dragHandle: ReactNode;
 }
 
 export default function SourceMapRuleView(props: IRuleViewProps) {
-  const { rule, onChange, onCopyRule, onDelete, dragHandle } = props;
+  const { rule, onChange, onCopyRule, onDuplicateRule, onDelete, dragHandle } = props;
   const { source, sourceMapUrl } = rule || {};
   const [draftSource, setDraftSource] = useState(source);
   const [draftSourceMapUrl, setDraftSourceMapUrl] = useState(sourceMapUrl);
@@ -46,10 +46,13 @@ export default function SourceMapRuleView(props: IRuleViewProps) {
     onChange({ ...rule, sourceMapUrl: draftSourceMapUrl });
   };
 
-  const handleCopyRule = () => {
-    const newRule = { ...rule };
-    newRule.id = uniqueId('rule');
-    onCopyRule(newRule);
+  const getRuleSnapshot = () => {
+    return {
+      ...rule,
+      source: draftSource,
+      sourceType: determineFilterType(draftSource).type,
+      sourceMapUrl: draftSourceMapUrl,
+    };
   };
 
   const handleToggleRule = (checked: boolean) => {
@@ -92,7 +95,10 @@ export default function SourceMapRuleView(props: IRuleViewProps) {
           />
           <Space className="rule-view-actions" size="small" direction="horizontal">
             <Tooltip title={chrome.i18n.getMessage('copy_rule')} placement="top">
-              <Button size="small" icon={<CopyOutlined />} onClick={handleCopyRule} />
+              <Button size="small" icon={<CopyOutlined />} onClick={() => onCopyRule(getRuleSnapshot())} />
+            </Tooltip>
+            <Tooltip title={chrome.i18n.getMessage('duplicate_rule')} placement="top">
+              <Button size="small" icon={<PlusSquareOutlined />} onClick={() => onDuplicateRule(getRuleSnapshot())} />
             </Tooltip>
             <Popconfirm
               title={chrome.i18n.getMessage('delete_rule')}

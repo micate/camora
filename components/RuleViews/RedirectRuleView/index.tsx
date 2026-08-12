@@ -1,8 +1,7 @@
 import { ReactNode, useState } from 'react';
 import { Space, Input, Button, Switch, Popconfirm, Tooltip } from 'antd';
-import { SearchOutlined, CopyOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
+import { SearchOutlined, CopyOutlined, DeleteOutlined, EditOutlined, PlusSquareOutlined } from '@ant-design/icons';
 import { RedirectRule } from '../../../types';
-import { uniqueId } from '../../../utils/uniqueId';
 import { determineFilterType, determineRedirectType } from '../../../utils/determineInputType';
 import './index.less';
 
@@ -10,12 +9,13 @@ interface IRuleViewProps {
   rule: RedirectRule;
   onChange: (rule: RedirectRule) => void;
   onCopyRule: (rule: RedirectRule) => void;
+  onDuplicateRule: (rule: RedirectRule) => void;
   onDelete: () => void;
   dragHandle: ReactNode;
 }
 
 export default function RedirectRuleView(props: IRuleViewProps) {
-  const { rule, onChange, onCopyRule, onDelete, dragHandle } = props;
+  const { rule, onChange, onCopyRule, onDuplicateRule, onDelete, dragHandle } = props;
   const { source, target } = rule || {};
   const [draftSource, setDraftSource] = useState(source);
   const [draftTarget, setDraftTarget] = useState(target);
@@ -46,10 +46,20 @@ export default function RedirectRuleView(props: IRuleViewProps) {
     onChange({ ...rule, target: newTarget, targetType });
   };
 
-  const handleCopyRule = () => {
-    const newRule = { ...rule };
-    newRule.id = uniqueId('rule');
-    onCopyRule(newRule);
+  const getRuleSnapshot = () => {
+    const nextSource = draftSource.includes('(') && !draftSource.startsWith('^')
+      ? `^${draftSource}`
+      : draftSource;
+    const nextTarget = draftTarget.includes('$')
+      ? draftTarget.replace(/\$(\d+)/g, '\\$1')
+      : draftTarget;
+    return {
+      ...rule,
+      source: nextSource,
+      sourceType: determineFilterType(nextSource).type,
+      target: nextTarget,
+      targetType: determineRedirectType(nextTarget).type,
+    };
   };
 
   const handleToggleRule = (checked: boolean) => {
@@ -98,7 +108,10 @@ export default function RedirectRuleView(props: IRuleViewProps) {
           />
           <Space className="rule-view-actions" size="small" direction="horizontal">
             <Tooltip title={chrome.i18n.getMessage('copy_rule')} placement="top">
-              <Button size="small" icon={<CopyOutlined />} onClick={handleCopyRule} />
+              <Button size="small" icon={<CopyOutlined />} onClick={() => onCopyRule(getRuleSnapshot())} />
+            </Tooltip>
+            <Tooltip title={chrome.i18n.getMessage('duplicate_rule')} placement="top">
+              <Button size="small" icon={<PlusSquareOutlined />} onClick={() => onDuplicateRule(getRuleSnapshot())} />
             </Tooltip>
             <Popconfirm
               title={chrome.i18n.getMessage('delete_rule')}

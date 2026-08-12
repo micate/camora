@@ -27,7 +27,7 @@ export default function SortableRule({ id, children }: SortableRuleProps) {
     <span
       ref={setActivatorNodeRef}
       className="rule-drag-handle"
-      aria-label="Reorder rule"
+      aria-label={chrome.i18n.getMessage('reorder_rule')}
       {...attributes}
       {...listeners}
     >

@@ -43,7 +43,7 @@ export default function Footer() {
       </div>
       <div className="app-footer-secondary">
         <div className="app-quick-actions">
-          <Space size="small" direction="horizontal">
+          <Space size="small" direction="horizontal" align="center">
             <Progress
               type="circle"
               size={16}

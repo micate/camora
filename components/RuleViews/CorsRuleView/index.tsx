@@ -1,8 +1,7 @@
 import { ReactNode, useState } from 'react';
 import { Space, Input, Button, Switch, Popconfirm, Tooltip } from 'antd';
-import { SearchOutlined, CopyOutlined, DeleteOutlined } from '@ant-design/icons';
+import { SearchOutlined, CopyOutlined, DeleteOutlined, PlusSquareOutlined } from '@ant-design/icons';
 import { CorsRule } from '../../../types';
-import { uniqueId } from '../../../utils/uniqueId';
 import { determineFilterType } from '../../../utils/determineInputType';
 import {
   CREDENTIAL_CORS_ALLOW_HEADERS,
@@ -18,12 +17,13 @@ interface IRuleViewProps {
   rule: CorsRule;
   onChange: (rule: CorsRule) => void;
   onCopyRule: (rule: CorsRule) => void;
+  onDuplicateRule: (rule: CorsRule) => void;
   onDelete: () => void;
   dragHandle: ReactNode;
 }
 
 export default function CorsRuleView(props: IRuleViewProps) {
-  const { rule, onChange, onCopyRule, onDelete, dragHandle } = props;
+  const { rule, onChange, onCopyRule, onDuplicateRule, onDelete, dragHandle } = props;
   const { source, allowOrigin, allowCredentials } = rule || {};
   const [draftSource, setDraftSource] = useState(source ?? '');
   const [draftAllowOrigin, setDraftAllowOrigin] = useState(
@@ -69,10 +69,17 @@ export default function CorsRuleView(props: IRuleViewProps) {
     });
   };
 
-  const handleCopyRule = () => {
-    const newRule = { ...rule };
-    newRule.id = uniqueId('rule');
-    onCopyRule(newRule);
+  const getRuleSnapshot = () => {
+    return {
+      ...rule,
+      source: draftSource,
+      sourceType: determineFilterType(draftSource).type,
+      allowOrigin: draftAllowCredentials ? draftAllowOrigin || undefined : DEFAULT_CORS_ALLOW_ORIGIN,
+      allowCredentials: draftAllowCredentials || undefined,
+      allowMethods: draftAllowCredentials ? CREDENTIAL_CORS_ALLOW_METHODS : DEFAULT_CORS_ALLOW_METHODS,
+      allowHeaders: draftAllowCredentials ? CREDENTIAL_CORS_ALLOW_HEADERS : DEFAULT_CORS_ALLOW_HEADERS,
+      maxAge: DEFAULT_CORS_MAX_AGE,
+    };
   };
 
   const handleToggleRule = (checked: boolean) => {
@@ -104,7 +111,7 @@ export default function CorsRuleView(props: IRuleViewProps) {
         {draftAllowCredentials ? (
           <div className="cors-rule-field cors-rule-field-origin">
             <Input
-              addonBefore="Allow Origin"
+              addonBefore={chrome.i18n.getMessage('cors_allow_origin')}
               size="small"
               status={!draftAllowOrigin || draftAllowOrigin === DEFAULT_CORS_ALLOW_ORIGIN ? 'error' : undefined}
               placeholder="https://app.example.com"
@@ -118,7 +125,9 @@ export default function CorsRuleView(props: IRuleViewProps) {
         <div className="cors-rule-toolbar">
           <div className="cors-rule-options">
             <div className="cors-rule-option">
-              <span className="cors-rule-option-label">Credentials</span>
+              <span className="cors-rule-option-label">
+                {chrome.i18n.getMessage('cors_credentials')}
+              </span>
               <Switch
                 size="small"
                 checked={draftAllowCredentials}
@@ -128,7 +137,10 @@ export default function CorsRuleView(props: IRuleViewProps) {
           </div>
           <Space className="rule-view-actions cors-rule-actions" size="small" direction="horizontal">
             <Tooltip title={chrome.i18n.getMessage('copy_rule')} placement="top">
-              <Button size="small" icon={<CopyOutlined />} onClick={handleCopyRule} />
+              <Button size="small" icon={<CopyOutlined />} onClick={() => onCopyRule(getRuleSnapshot())} />
+            </Tooltip>
+            <Tooltip title={chrome.i18n.getMessage('duplicate_rule')} placement="top">
+              <Button size="small" icon={<PlusSquareOutlined />} onClick={() => onDuplicateRule(getRuleSnapshot())} />
             </Tooltip>
             <Popconfirm
               title={chrome.i18n.getMessage('delete_rule')}

@@ -50,6 +50,51 @@
   "copy_rule": {
     "message": "复制规则"
   },
+  "duplicate_rule": {
+    "message": "在当前分组创建副本"
+  },
+  "copy_rule_success": {
+    "message": "规则已复制"
+  },
+  "copy_rule_internal_success": {
+    "message": "已复制到 Camora，可在其他分组粘贴"
+  },
+  "copy_rule_failed": {
+    "message": "复制规则失败"
+  },
+  "paste_rule": {
+    "message": "粘贴规则"
+  },
+  "paste_rule_shortcut_tip": {
+    "message": "粘贴规则，也可按 $shortcut$",
+    "placeholders": {
+      "shortcut": {
+        "content": "$1",
+        "example": "Cmd + V"
+      }
+    }
+  },
+  "paste_rule_empty": {
+    "message": "暂无已复制的规则，也可以按 $shortcut$ 粘贴外部规则",
+    "placeholders": {
+      "shortcut": {
+        "content": "$1",
+        "example": "Cmd + V"
+      }
+    }
+  },
+  "paste_rule_invalid": {
+    "message": "剪贴板中没有有效的 Camora 规则"
+  },
+  "paste_rule_success": {
+    "message": "已粘贴 $count$ 条规则",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "1"
+      }
+    }
+  },
   "delete_rule": {
     "message": "删除规则"
   },
@@ -104,6 +149,9 @@
   "enable_source_map_description": { "message": "为匹配的资源添加 Source Map 响应头。" },
   "enable_cors": { "message": "启用 CORS" },
   "enable_cors_description": { "message": "为匹配的请求添加跨域访问响应头。" },
+  "cors_allow_origin": { "message": "允许的源" },
+  "cors_credentials": { "message": "携带凭据" },
+  "reorder_rule": { "message": "调整规则顺序" },
   "enable_backup_description": { "message": "自动将规则备份到 Chrome 同步存储。" },
   "coming_soon": { "message": "即将推出" },
   "settings_advanced_empty": { "message": "高级设置仍在完善中，后续版本会在这里提供更多控制项。" },
@@ -183,7 +231,7 @@
     }
   },
   "fetch_backup_list_failed": {
-    "message": "获取备份列表失败",
+    "message": "获取备份列表失败: $error$",
     "placeholders": {
       "error": {
         "content": "$1",
@@ -204,7 +252,7 @@
     "message": "删除后无法恢复"
   },
   "delete_backup_failed": {
-    "message": "删除备份失败",
+    "message": "删除备份失败: $error$",
     "placeholders": {
       "error": {
         "content": "$1",

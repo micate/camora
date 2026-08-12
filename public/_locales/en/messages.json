@@ -50,6 +50,51 @@
   "copy_rule": {
     "message": "Copy Rule"
   },
+  "duplicate_rule": {
+    "message": "Create a copy in this group"
+  },
+  "copy_rule_success": {
+    "message": "Rule copied"
+  },
+  "copy_rule_internal_success": {
+    "message": "Copied in Camora and ready to paste into another group"
+  },
+  "copy_rule_failed": {
+    "message": "Failed to copy rule"
+  },
+  "paste_rule": {
+    "message": "Paste Rule"
+  },
+  "paste_rule_shortcut_tip": {
+    "message": "Paste rule, or press $shortcut$",
+    "placeholders": {
+      "shortcut": {
+        "content": "$1",
+        "example": "Cmd + V"
+      }
+    }
+  },
+  "paste_rule_empty": {
+    "message": "No copied rule yet. You can also press $shortcut$ to paste an external rule",
+    "placeholders": {
+      "shortcut": {
+        "content": "$1",
+        "example": "Cmd + V"
+      }
+    }
+  },
+  "paste_rule_invalid": {
+    "message": "The clipboard does not contain a valid Camora rule"
+  },
+  "paste_rule_success": {
+    "message": "Pasted $count$ rule(s)",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "1"
+      }
+    }
+  },
   "delete_rule": {
     "message": "Delete Rule"
   },
@@ -104,6 +149,9 @@
   "enable_source_map_description": { "message": "Add Source Map response headers to matching resources." },
   "enable_cors": { "message": "Enable CORS" },
   "enable_cors_description": { "message": "Add cross-origin access headers to matching requests." },
+  "cors_allow_origin": { "message": "Allow Origin" },
+  "cors_credentials": { "message": "Credentials" },
+  "reorder_rule": { "message": "Reorder rule" },
   "enable_backup_description": { "message": "Automatically back up rules to Chrome sync storage." },
   "coming_soon": { "message": "Coming soon" },
   "settings_advanced_empty": { "message": "Advanced settings are in progress. More controls will appear here in a future release." },
@@ -183,7 +231,7 @@
     }
   },
   "fetch_backup_list_failed": {
-    "message": "Failed to fetch backup list",
+    "message": "Failed to fetch backup list: $error$",
     "placeholders": {
       "error": {
         "content": "$1",
@@ -204,7 +252,7 @@
     "message": "After deletion, it cannot be recovered"
   },
   "delete_backup_failed": {
-    "message": "Failed to delete backup",
+    "message": "Failed to delete backup: $error$",
     "placeholders": {
       "error": {
         "content": "$1",

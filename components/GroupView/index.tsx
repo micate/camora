@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import { Space, Empty, Dropdown, MenuProps, Button } from 'antd';
-import { PlusOutlined, DownOutlined } from '@ant-design/icons';
+import { App, Space, Empty, Dropdown, MenuProps, Button, Tooltip } from 'antd';
+import { PlusOutlined, DownOutlined, SnippetsOutlined } from '@ant-design/icons';
 import {
   closestCenter,
   DndContext,
@@ -23,6 +23,12 @@ import CorsRuleView from '../RuleViews/CorsRuleView';
 import SortableRule from '../SortableRule';
 import { CorsRule, RedirectRule, Rule, RuleGroup, RuleType, SourceMapRule } from '../../types';
 import { createRule } from '../../utils/createRule';
+import {
+  copyRulesToClipboard,
+  getInternalClipboardRules,
+  parseRulesFromClipboard,
+  saveInternalRuleClipboard,
+} from '../../utils/ruleClipboard';
 import './index.less';
 
 interface IGroupViewProps {
@@ -30,11 +36,20 @@ interface IGroupViewProps {
   onChange: (group: RuleGroup) => void;
 }
 
+function isEditableTarget(target: EventTarget | null) {
+  if (!(target instanceof HTMLElement)) return false;
+  return target.isContentEditable
+    || ['INPUT', 'TEXTAREA', 'SELECT'].includes(target.tagName)
+    || Boolean(target.closest('[contenteditable="true"]'));
+}
+
 export default function GroupView(props: IGroupViewProps) {
   const { group, onChange } = props;
   const { rules } = group || {};
   const [showSourceMap, setShowSourceMap] = useState(false);
   const [showCors, setShowCors] = useState(false);
+  const { message } = App.useApp();
+  const pasteShortcut = navigator.userAgent.includes('Mac OS X') ? 'Cmd + V' : 'Ctrl + V';
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: { distance: 4 },
@@ -99,12 +114,25 @@ export default function GroupView(props: IGroupViewProps) {
     });
   };
 
-  const handleCopyRule = (rule: Rule) => {
-    rule.type = rule.type || RuleType.Redirect;
-    onChange({
-      ...group,
-      rules: [...rules, rule],
-    });
+  const handleCopyRule = async (rule: Rule) => {
+    try {
+      const result = await copyRulesToClipboard([{
+        ...rule,
+        type: rule.type || RuleType.Redirect,
+      }]);
+      if (result.system) {
+        message.success(chrome.i18n.getMessage('copy_rule_success'));
+      } else {
+        message.warning(chrome.i18n.getMessage('copy_rule_internal_success'));
+      }
+    } catch {
+      message.error(chrome.i18n.getMessage('copy_rule_failed'));
+    }
+  };
+
+  const handleDuplicateRule = (rule: Rule) => {
+    const newRule = createRule({ type: rule.type || RuleType.Redirect });
+    onChange({ ...group, rules: [...rules, { ...rule, id: newRule.id }] });
   };
 
   const handleDeleteRule = (ruleId: string) => {
@@ -127,16 +155,51 @@ export default function GroupView(props: IGroupViewProps) {
     });
   };
 
+  const appendPastedRules = (pastedRules: Rule[]) => {
+    if (!pastedRules.length) return;
+    onChange({ ...group, rules: [...rules, ...pastedRules] });
+    message.success(chrome.i18n.getMessage('paste_rule_success', String(pastedRules.length)));
+  };
+
+  const handlePasteRule = async () => {
+    try {
+      const pastedRules = await getInternalClipboardRules();
+      if (!pastedRules.length) {
+        message.warning(chrome.i18n.getMessage('paste_rule_empty', pasteShortcut));
+        return;
+      }
+      appendPastedRules(pastedRules);
+    } catch {
+      message.error(chrome.i18n.getMessage('paste_rule_invalid'));
+    }
+  };
+
+  useEffect(() => {
+    const handleSystemPaste = (event: ClipboardEvent) => {
+      if (isEditableTarget(event.target)) return;
+
+      const text = event.clipboardData?.getData('text/plain') || '';
+      const pastedRules = parseRulesFromClipboard(text);
+      if (!pastedRules.length) return;
+
+      event.preventDefault();
+      void saveInternalRuleClipboard(text).catch(() => undefined);
+      appendPastedRules(pastedRules);
+    };
+
+    window.addEventListener('paste', handleSystemPaste);
+    return () => window.removeEventListener('paste', handleSystemPaste);
+  }, [group, rules, onChange]);
+
   const addBtn = menuItems.length ? (
     <Space.Compact size="small">
       <Button
         size="small"
+        icon={<PlusOutlined />}
         onClick={() => {
           handleAddRule({ type: RuleType.Redirect });
         }}
-      >
-        <PlusOutlined />
-      </Button>
+      />
       <Dropdown
         menu={{ items: menuItems }}
         placement="bottom"
@@ -146,9 +209,23 @@ export default function GroupView(props: IGroupViewProps) {
       </Dropdown>
     </Space.Compact>
   ) : (
-    <Button size="small" onClick={() => handleAddRule({ type: RuleType.Redirect })}>
-      <PlusOutlined />
-    </Button>
+    <Button
+      size="small"
+      icon={<PlusOutlined />}
+      onClick={() => handleAddRule({ type: RuleType.Redirect })}
+    />
+  );
+
+  const groupActions = (
+    <Space size={4}>
+      {addBtn}
+      <Tooltip
+        title={chrome.i18n.getMessage('paste_rule_shortcut_tip', pasteShortcut)}
+        placement="top"
+      >
+        <Button size="small" icon={<SnippetsOutlined />} onClick={handlePasteRule} />
+      </Tooltip>
+    </Space>
   );
 
   return (
@@ -175,6 +252,7 @@ export default function GroupView(props: IGroupViewProps) {
                           dragHandle={dragHandle}
                           onChange={handleRuleChange}
                           onCopyRule={handleCopyRule}
+                          onDuplicateRule={handleDuplicateRule}
                           onDelete={() => handleDeleteRule(rule.id)}
                         />
                       );
@@ -186,6 +264,7 @@ export default function GroupView(props: IGroupViewProps) {
                           dragHandle={dragHandle}
                           onChange={handleRuleChange}
                           onCopyRule={handleCopyRule}
+                          onDuplicateRule={handleDuplicateRule}
                           onDelete={() => handleDeleteRule(rule.id)}
                         />
                       );
@@ -196,6 +275,7 @@ export default function GroupView(props: IGroupViewProps) {
                         dragHandle={dragHandle}
                         onChange={handleRuleChange}
                         onCopyRule={handleCopyRule}
+                        onDuplicateRule={handleDuplicateRule}
                         onDelete={() => handleDeleteRule(rule.id)}
                       />
                     );
@@ -205,13 +285,13 @@ export default function GroupView(props: IGroupViewProps) {
             </SortableContext>
           </DndContext>
           <div className="group-view-actions">
-            {addBtn}
+            {groupActions}
           </div>
         </div>
       ) : (
         <Space className="group-view-content group-view-empty" size="small" direction="vertical">
           <Empty description={false}>
-            {addBtn}
+            {groupActions}
           </Empty>
         </Space>
       )}

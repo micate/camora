@@ -50,6 +50,51 @@
     "copy_rule": {
       "message": "ルールをコピー"
     },
+    "duplicate_rule": {
+      "message": "このグループに複製"
+    },
+    "copy_rule_success": {
+      "message": "ルールをコピーしました"
+    },
+    "copy_rule_internal_success": {
+      "message": "Camora にコピーしました。別のグループに貼り付けできます"
+    },
+    "copy_rule_failed": {
+      "message": "ルールをコピーできませんでした"
+    },
+    "paste_rule": {
+      "message": "ルールを貼り付け"
+    },
+    "paste_rule_shortcut_tip": {
+      "message": "ルールを貼り付け（$shortcut$ でも実行できます）",
+      "placeholders": {
+        "shortcut": {
+          "content": "$1",
+          "example": "Cmd + V"
+        }
+      }
+    },
+    "paste_rule_empty": {
+      "message": "コピー済みのルールがありません。$shortcut$ で外部ルールを貼り付けることもできます",
+      "placeholders": {
+        "shortcut": {
+          "content": "$1",
+          "example": "Cmd + V"
+        }
+      }
+    },
+    "paste_rule_invalid": {
+      "message": "クリップボードに有効な Camora ルールがありません"
+    },
+    "paste_rule_success": {
+      "message": "$count$ 件のルールを貼り付けました",
+      "placeholders": {
+        "count": {
+          "content": "$1",
+          "example": "1"
+        }
+      }
+    },
     "delete_rule": {
       "message": "ルールを削除"
     },
@@ -104,6 +149,9 @@
     "enable_source_map_description": { "message": "一致するリソースに Source Map レスポンスヘッダーを追加します。" },
     "enable_cors": { "message": "CORS を有効にする" },
     "enable_cors_description": { "message": "一致するリクエストにクロスオリジンアクセスヘッダーを追加します。" },
+    "cors_allow_origin": { "message": "許可するオリジン" },
+    "cors_credentials": { "message": "資格情報" },
+    "reorder_rule": { "message": "ルールの順序を変更" },
     "enable_backup_description": { "message": "ルールを Chrome の同期ストレージに自動バックアップします。" },
     "coming_soon": { "message": "近日公開" },
     "settings_advanced_empty": { "message": "高度な設定は準備中です。今後のリリースでより多くの項目が追加されます。" },
@@ -183,7 +231,7 @@
       }
     },
     "fetch_backup_list_failed": {
-      "message": "バックアップリストの取得に失敗しました",
+      "message": "バックアップリストの取得に失敗しました: $error$",
       "placeholders": {
         "error": {
           "content": "$1",
@@ -204,7 +252,7 @@
       "message": "削除後は復元できません"
     },
     "delete_backup_failed": {
-      "message": "バックアップの削除に失敗しました",
+      "message": "バックアップの削除に失敗しました: $error$",
       "placeholders": {
         "error": {
           "content": "$1",
