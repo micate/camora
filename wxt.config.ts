@@ -4,7 +4,7 @@ import { defineConfig } from 'wxt';
 export default defineConfig({
   manifest: {
     name: "Camora",
-    version: "1.4.2",
+    version: "1.5.0",
     description: "__MSG_description__",
     permissions: [
       "alarms",
