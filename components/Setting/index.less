@@ -1,15 +1,209 @@
-.app-setting-header {
-  position: sticky;
-  top: 0;
+.app-setting-modal {
+  width: calc(100vw - 32px) !important;
+  max-width: 660px;
+
+  .ant-modal-container {
+    padding: 0 !important;
+  }
+
+  .ant-modal-content {
+    padding: 0 !important;
+    overflow: hidden;
+    border: 1px solid var(--ant-color-border-secondary);
+    border-radius: 14px;
+    box-shadow: 0 18px 48px rgba(0, 0, 0, 0.2);
+  }
+
+  .ant-modal-close {
+    top: 14px;
+    right: 14px;
+    z-index: 2;
+    border-radius: 8px;
+  }
+
+  .ant-modal-body {
+    height: 100%;
+  }
 }
 
-.app-setting-tabs {
+.app-setting-shell {
+  display: grid;
+  grid-template-columns: 164px minmax(0, 1fr);
+  height: min(420px, calc(100vh - 48px));
+  min-height: 360px;
+}
+
+.app-setting-sidebar {
+  padding: 18px 10px;
+  background: color-mix(in srgb, var(--ant-color-fill-quaternary) 78%, var(--ant-color-bg-container));
+  border-right: 1px solid var(--ant-color-split);
+}
+
+.app-setting-nav-label {
+  padding: 0 8px 8px;
+  color: var(--ant-color-text-tertiary);
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.app-setting-nav {
   display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
+  flex-direction: column;
+  gap: 3px;
 }
 
-.app-setting-content {
-  padding-top: 8px;
+.app-setting-nav-item {
+  display: flex;
+  width: 100%;
+  height: 32px;
+  padding: 0 10px;
+  align-items: center;
+  gap: 9px;
+  color: color-mix(in srgb, var(--ant-color-text-secondary) 88%, transparent);
+  font: inherit;
+  text-align: left;
+  background: transparent;
+  border: 0;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: color 0.16s ease, background-color 0.16s ease;
+
+  &:hover {
+    color: var(--ant-color-text);
+    background: var(--ant-color-fill-secondary);
+  }
+
+  &.is-active {
+    color: var(--ant-color-text);
+    font-weight: 400;
+    background: var(--ant-color-fill-secondary);
+  }
+}
+
+.app-setting-nav-badge {
+  margin-left: auto;
+  padding: 1px 5px;
+  color: var(--ant-color-text-tertiary);
+  font-size: 9px;
+  line-height: 15px;
+  background: var(--ant-color-fill-secondary);
+  border-radius: 5px;
+}
+
+.app-setting-main {
+  min-width: 0;
+  padding: 22px 24px;
+  overflow-y: auto;
+  background: var(--ant-color-bg-container);
+}
+
+.app-setting-section {
+  h3 {
+    margin: 0 0 8px;
+    color: var(--ant-color-text);
+    font-size: 13px;
+    font-weight: 600;
+  }
+}
+
+.app-setting-card {
+  overflow: hidden;
+  background: var(--ant-color-bg-container);
+  border: 1px solid var(--ant-color-border-secondary);
+  border-radius: 12px;
+}
+
+.app-setting-card-body {
+  display: flex;
+  flex-direction: column;
+}
+
+.app-setting-row {
+  display: flex;
+  min-height: 54px;
+  padding: 0 12px;
+  align-items: center;
+  gap: 12px;
+
+  & + & {
+    border-top: 1px solid var(--ant-color-split);
+  }
+}
+
+.app-setting-row-icon {
+  display: grid;
+  width: 26px;
+  height: 26px;
+  flex: 0 0 26px;
+  place-items: center;
+  color: var(--ant-color-text-secondary);
+  font-size: 13px;
+  background: var(--ant-color-fill-secondary);
+  border-radius: 8px;
+}
+
+.app-setting-row-copy {
+  min-width: 0;
+  flex: 1;
+}
+
+.app-setting-row-title {
+  margin-bottom: 1px;
+  color: var(--ant-color-text);
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.35;
+}
+
+.app-setting-row-description {
+  color: var(--ant-color-text-secondary);
+  font-size: 10px;
+  line-height: 1.4;
+}
+
+.app-setting-empty {
+  display: flex;
+  min-height: 210px;
+  padding: 28px;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 8px;
+  color: var(--ant-color-text-tertiary);
+  text-align: center;
+  background: var(--ant-color-fill-quaternary);
+  border: 1px dashed var(--ant-color-border);
+  border-radius: 12px;
+
+  > .anticon {
+    margin-bottom: 4px;
+    font-size: 24px;
+  }
+
+  strong {
+    color: var(--ant-color-text-secondary);
+    font-size: 13px;
+  }
+
+  span {
+    max-width: 280px;
+    font-size: 11px;
+    line-height: 1.5;
+  }
+}
+
+@media (max-width: 560px) {
+  .app-setting-shell {
+    grid-template-columns: 132px minmax(0, 1fr);
+  }
+
+  .app-setting-main {
+    padding: 20px 18px;
+  }
+
+  .app-setting-row-icon {
+    display: none;
+  }
 }

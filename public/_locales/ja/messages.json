@@ -98,6 +98,15 @@
     "advanced": {
       "message": "詳細"
     },
+    "settings": { "message": "設定" },
+    "settings_category": { "message": "環境設定" },
+    "rule_features": { "message": "機能" },
+    "enable_source_map_description": { "message": "一致するリソースに Source Map レスポンスヘッダーを追加します。" },
+    "enable_cors": { "message": "CORS を有効にする" },
+    "enable_cors_description": { "message": "一致するリクエストにクロスオリジンアクセスヘッダーを追加します。" },
+    "enable_backup_description": { "message": "ルールを Chrome の同期ストレージに自動バックアップします。" },
+    "coming_soon": { "message": "近日公開" },
+    "settings_advanced_empty": { "message": "高度な設定は準備中です。今後のリリースでより多くの項目が追加されます。" },
     "source_map_source_placeholder": {
       "message": "例：https://mycdn.com/path/to/file.js"
     },
@@ -234,4 +243,3 @@
       "message": "ルール数がバックアップストレージ制限（8192バイト）を超えているため、バックアップを作成できません"
     }
   }
-  

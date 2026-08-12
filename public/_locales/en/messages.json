@@ -98,6 +98,15 @@
   "advanced": {
     "message": "Advanced"
   },
+  "settings": { "message": "Settings" },
+  "settings_category": { "message": "Preferences" },
+  "rule_features": { "message": "Features" },
+  "enable_source_map_description": { "message": "Add Source Map response headers to matching resources." },
+  "enable_cors": { "message": "Enable CORS" },
+  "enable_cors_description": { "message": "Add cross-origin access headers to matching requests." },
+  "enable_backup_description": { "message": "Automatically back up rules to Chrome sync storage." },
+  "coming_soon": { "message": "Coming soon" },
+  "settings_advanced_empty": { "message": "Advanced settings are in progress. More controls will appear here in a future release." },
   "source_map_source_placeholder": {
     "message": "Example: https://mycdn.com/path/to/file.js"
   },

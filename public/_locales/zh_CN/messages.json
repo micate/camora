@@ -98,6 +98,15 @@
   "advanced": {
     "message": "高级"
   },
+  "settings": { "message": "设置" },
+  "settings_category": { "message": "偏好设置" },
+  "rule_features": { "message": "功能" },
+  "enable_source_map_description": { "message": "为匹配的资源添加 Source Map 响应头。" },
+  "enable_cors": { "message": "启用 CORS" },
+  "enable_cors_description": { "message": "为匹配的请求添加跨域访问响应头。" },
+  "enable_backup_description": { "message": "自动将规则备份到 Chrome 同步存储。" },
+  "coming_soon": { "message": "即将推出" },
+  "settings_advanced_empty": { "message": "高级设置仍在完善中，后续版本会在这里提供更多控制项。" },
   "source_map_source_placeholder": {
     "message": "例如 https://mycdn.com/path/to/file.js"
   },
