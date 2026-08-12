@@ -1,7 +1,15 @@
 import { forwardRef, useEffect, useImperativeHandle, useState } from "react";
 import { App, Button, Popconfirm, Select, Space, Tooltip } from "antd";
 import { CloudUploadOutlined, DeleteOutlined } from "@ant-design/icons";
-import { getBackupList, createBackup, deleteBackup, getBackupData, getBytesInUse, STORAGE_LIMIT } from "../../utils/cloud";
+import {
+  BACKUP_ITEM_QUOTA_ERROR,
+  createBackup,
+  deleteBackup,
+  getBackupData,
+  getBackupList,
+  getBytesInUse,
+  STORAGE_LIMIT,
+} from "../../utils/cloud";
 import { exportRules } from "../../utils/exportRules";
 import { RuleGroup } from "../../types";
 import './index.less';
@@ -125,7 +133,7 @@ function Backup(props: IBackupProps, ref: React.ForwardedRef<BackupRef>) {
           message.success(chrome.i18n.getMessage('backup_success'));
         } else if (ret === 'same') {
           message.warning(chrome.i18n.getMessage('backup_same_ignore'));
-        } else if (ret && ret.includes('QUOTA_BYTES_PER_ITEM')) {
+        } else if (ret === BACKUP_ITEM_QUOTA_ERROR) {
           message.error(chrome.i18n.getMessage('backup_item_quota_error'));
         } else {
           message.error(ret);

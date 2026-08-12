@@ -5,6 +5,7 @@ import { getRulesCount } from "./getRulesCount";
 import { getCurrentTime } from "./getCurrentTime";
 
 export const STORAGE_LIMIT = 102400; // 100 KB
+export const BACKUP_ITEM_QUOTA_ERROR = 'backup_item_quota_error';
 
 const BackupDelayMinutes = 3;
 const CLEANUP_THRESHOLD = 0.8 * STORAGE_LIMIT; // 80 KB 阈值
@@ -64,8 +65,17 @@ export async function createBackup(groups: RuleGroup[]) {
       [backupKey]: compressToBase64(groupStr),
     });
     return true;
-  } catch (error: any) {
-    const msg = chrome.i18n.getMessage("create_backup_failed", error.message);
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : String(error);
+
+    // QUOTA_BYTES_PER_ITEM is an expected storage limitation for larger rule
+    // sets. Logging it as an error makes Chrome surface it to users on the
+    // extension management page, even though the failure is already handled.
+    if (/quota.?bytes.?per.?item|kQuotaBytesPerItem/i.test(errorMessage)) {
+      return BACKUP_ITEM_QUOTA_ERROR;
+    }
+
+    const msg = chrome.i18n.getMessage("create_backup_failed", errorMessage);
     console.error(msg);
     return msg;
   }
