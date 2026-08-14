@@ -9,6 +9,7 @@ export default defineConfig({
     permissions: [
       "alarms",
       "declarativeNetRequest",
+      "nativeMessaging",
       "storage"
     ],
     host_permissions: [

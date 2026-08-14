@@ -7,6 +7,7 @@ import { correctIds } from "../../utils/correctIds";
 import CodeView from "../CodeView";
 import Backup, { BackupRef } from "../Backup";
 import { RuleGroup } from "../../types";
+import { writeGroups } from '../../utils/writeGroups';
 import './index.less';
 
 interface ISourceViewProps {
@@ -70,7 +71,7 @@ export default function SourceView(props: ISourceViewProps) {
       const newDataSource = JSON.stringify(newData, null, 2);
       if (newDataSource !== initialSource.current) {
         const groups = correctIds(newData.groups)
-        chrome.storage.local.set({ groups });
+        void writeGroups(groups);
         message.success({
           content: chrome.i18n.getMessage('import_success'),
           onClose: () => {

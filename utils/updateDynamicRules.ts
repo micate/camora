@@ -1,6 +1,7 @@
 import { CorsRule, Rule, RuleGroup, RuleType, RedirectRule, SourceMapRule } from '../types'
 import { getEnabledRules } from './getEnabledRules'
 import { updateCount } from './updateCount'
+import { updateStatus } from './updateStatus'
 import {
   CREDENTIAL_CORS_ALLOW_HEADERS,
   CREDENTIAL_CORS_ALLOW_METHODS,
@@ -95,6 +96,7 @@ function createCorsAction(rule: CorsRule): chrome.declarativeNetRequest.RuleActi
 }
 
 async function applyDynamicRules(ruleGroups: RuleGroup[]) {
+  let applied = true;
   // 找到所有启用的规则
   const rules = getEnabledRules(ruleGroups)
   console.log('Enabled input rules', rules)
@@ -199,6 +201,7 @@ async function applyDynamicRules(ruleGroups: RuleGroup[]) {
       updateStatus(isEnabled, 0);
     }
   } catch (error) {
+    applied = false;
     console.error("Failed to add dynamic rules:", error);
     // 发生错误时也尝试获取当前规则数以保持状态准确
     try {
@@ -216,11 +219,12 @@ async function applyDynamicRules(ruleGroups: RuleGroup[]) {
   }
 
   updateCount(ruleGroups);
+  return applied;
 }
 
 // Service worker can receive several storage events before a DNR update finishes.
 // Serialize them so an older snapshot can never overwrite a newer one.
-let updateQueue: Promise<void> = Promise.resolve();
+let updateQueue: Promise<boolean> = Promise.resolve(true);
 
 export function updateDynamicRules(ruleGroups: RuleGroup[]) {
   updateQueue = updateQueue.then(

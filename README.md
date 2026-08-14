@@ -10,6 +10,26 @@ A Chrome extension for replacing web resources based on user-defined rules.
 - Modern UI built with Ant Design
 - Built with TypeScript and Vite
 
+## Codex skill integration
+
+Camora includes a local Codex skill and CLI for querying, creating, updating,
+deleting, and enabling rules without MCP. The CLI talks to the extension through
+Chrome Native Messaging and a current-user-only Unix socket.
+
+1. Build and load Camora from `.output/chrome-mv3` in `chrome://extensions`.
+2. Copy the extension ID shown by Chrome.
+3. Install the Native Messaging host and the `camora-rules` skill:
+
+   ```bash
+   node native-host/install.mjs EXTENSION_ID
+   ```
+
+4. Reload Camora in `chrome://extensions`, then start a new Codex task.
+
+Example requests include “list my Camora rules”, “redirect this resource to
+localhost”, and “disable rule X”. Writes use revisions to prevent concurrent
+Popup and Agent changes from silently overwriting each other.
+
 ## Development
 
 1. Install dependencies:
@@ -30,7 +50,7 @@ npm run build
 4. Load the extension in Chrome:
 - Open Chrome and navigate to `chrome://extensions`
 - Enable "Developer mode"
-- Click "Load unpacked" and select the `dist` directory
+- Click "Load unpacked" and select the `.output/chrome-mv3` directory
 
 ## License
 

@@ -11,6 +11,8 @@
     "zip": "wxt zip",
     "zip:firefox": "wxt zip -b firefox",
     "compile": "tsc --noEmit",
+    "install:agent": "node native-host/install.mjs",
+    "test:native-host": "node native-host/smoke-test.mjs",
     "postinstall": "wxt prepare"
   },
   "dependencies": {
