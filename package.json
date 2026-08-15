@@ -28,7 +28,7 @@
     "@dnd-kit/modifiers": "^9.0.0",
     "@dnd-kit/sortable": "^10.0.0",
     "@dnd-kit/utilities": "^3.2.2",
-    "@wxt-dev/auto-icons": "^1.1.1",
+    "@wxt-dev/auto-icons": "^1.1.2",
     "antd": "^6.3.0",
     "classnames": "^2.5.1",
     "codemirror": "^6.0.2",
@@ -40,9 +40,10 @@
     "@types/chrome": "^0.0.289",
     "@types/react": "^18.3.28",
     "@types/react-dom": "^18.3.7",
-    "@wxt-dev/module-react": "1.1.5",
-    "less": "^4.5.1",
+    "@wxt-dev/module-react": "1.2.2",
+    "less": "^4.9.0",
     "typescript": "^5.9.3",
-    "wxt": "^0.19.29"
+    "vite": "^8.2.1",
+    "wxt": "^0.21.4"
   }
 }
