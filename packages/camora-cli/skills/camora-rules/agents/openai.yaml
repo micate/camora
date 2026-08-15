@@ -1,0 +1,4 @@
+interface:
+  display_name: "Camora Rules"
+  short_description: "Manage Camora proxy rules from an agent"
+  default_prompt: "Use $camora-rules to list and manage my Camora rules safely."

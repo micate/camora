@@ -155,6 +155,16 @@
   "enable_backup_description": { "message": "Automatically back up rules to Chrome sync storage." },
   "coming_soon": { "message": "Coming soon" },
   "settings_advanced_empty": { "message": "Advanced settings are in progress. More controls will appear here in a future release." },
+  "agent_integration": { "message": "Agent integration" },
+  "copy_agent_prompt_title": { "message": "Copy Agent setup prompt" },
+  "copy_agent_prompt_description": { "message": "Copy a ready-to-use prompt with Camora rule skill setup and safety guidance, then paste it into your agent." },
+  "copy_agent_prompt": { "message": "Copy prompt" },
+  "copy_agent_prompt_success": { "message": "Agent prompt copied" },
+  "copy_agent_prompt_failed": { "message": "Copy failed. Please copy it manually." },
+  "agent_prompt_intro": { "message": "Please use the Camora Agent skill to query and manage rules for the Camora Chrome extension. Do not read or modify Chrome profile files directly; operate only through the camora CLI." },
+  "agent_prompt_setup_title": { "message": "If the camora command is unavailable, run the following setup commands first, then ask me to restart Chrome or toggle Camora off and on in chrome://extensions:" },
+  "agent_prompt_usage_title": { "message": "Before making changes, read the current state and revision:" },
+  "agent_prompt_safety": { "message": "All writes must use the latest revision. Ask me for confirmation before deleting a rule or group. On REVISION_CONFLICT, re-read state and reconsider the change; do not retry blindly." },
   "source_map_source_placeholder": {
     "message": "Example: https://mycdn.com/path/to/file.js"
   },

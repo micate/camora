@@ -7,6 +7,7 @@ import Sidebar from '../../components/Sidebar';
 import Footer from '../../components/Footer';
 import type { RuleGroup } from '../../types'
 import { createGroup } from '../../utils/createGroup';
+import { writeGroups } from '../../utils/writeGroups';
 import './App.less';
 
 const { Content } = Layout
@@ -28,13 +29,30 @@ const App: React.FC = () => {
         setActiveGroup(groups.find((g: RuleGroup) => g.id === activeGroupId) || groups[0])
       } else {
         const group = createGroup(chrome.i18n.getMessage('group_default_name'));
-        await chrome.storage.local.set({ groups: [group] });
+        await writeGroups([group]);
         setGroups([group]);
         setActiveGroup(group);
       }
 
       setLanding(false)
     })
+  }, [])
+
+  useEffect(() => {
+    const handleStorageChange = (
+      changes: { [key: string]: chrome.storage.StorageChange },
+      area: string,
+    ) => {
+      if (area !== 'local' || !changes.groups) return;
+      const nextGroups = Array.isArray(changes.groups.newValue) ? changes.groups.newValue : [];
+      setGroups(nextGroups);
+      setActiveGroup((current) => {
+        if (!nextGroups.length) return null;
+        return nextGroups.find((group: RuleGroup) => group.id === current?.id) || nextGroups[0];
+      });
+    };
+    chrome.storage.onChanged.addListener(handleStorageChange);
+    return () => chrome.storage.onChanged.removeListener(handleStorageChange);
   }, [])
 
   useEffect(() => {
@@ -93,7 +111,7 @@ const App: React.FC = () => {
       newGroup = createGroup(values.name)
       updatedGroups = [...groups, newGroup]
     }
-    await chrome.storage.local.set({ groups: updatedGroups })
+    await writeGroups(updatedGroups)
     setGroups(updatedGroups)
     setActiveGroup(newGroup);
     setEditGroup(null)
@@ -103,7 +121,7 @@ const App: React.FC = () => {
 
   const handleDeleteGroup = async (group: RuleGroup) => {
     const updatedGroups = groups.filter((g) => g.id !== group.id)
-    await chrome.storage.local.set({ groups: updatedGroups })
+    await writeGroups(updatedGroups)
     setGroups(updatedGroups)
 
     const index = groups.findIndex((g: RuleGroup) => g.id === group?.id);
@@ -123,7 +141,7 @@ const App: React.FC = () => {
     const sourceIndex = groups.findIndex((g) => g.id === group.id)
     const updatedGroups = [...groups]
     updatedGroups.splice(sourceIndex + 1, 0, newGroup)
-    await chrome.storage.local.set({ groups: updatedGroups })
+    await writeGroups(updatedGroups)
     setGroups(updatedGroups)
     fromCopy.current = true
     setActiveGroup(newGroup)
@@ -135,7 +153,7 @@ const App: React.FC = () => {
     // dropped item briefly render at its previous index and appear to bounce.
     setGroups(updatedGroups)
     setActiveGroup(group)
-    await chrome.storage.local.set({ groups: updatedGroups })
+    await writeGroups(updatedGroups)
   }
 
   return (

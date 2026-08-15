@@ -53,3 +53,26 @@ export interface ISyncStatus {
   success?: string
   error?: string
 }
+
+export interface RuleStoreSnapshot {
+  enabled: boolean
+  groups: RuleGroup[]
+  revision: number
+}
+
+export interface RuleMutationResult {
+  success: true
+  revision: number
+  before: RuleStoreSnapshot
+  after: RuleStoreSnapshot
+  dnrApplied: boolean
+  auditId: string
+}
+
+export interface RuleServiceCommand {
+  action: string
+  requestId?: string
+  expectedRevision?: number
+  confirm?: boolean
+  [key: string]: unknown
+}

@@ -17,6 +17,7 @@ import {
 import { restrictToVerticalAxis } from '@dnd-kit/modifiers';
 import { RuleGroup } from "@/types";
 import GroupItem from "../GroupItem";
+import { writeGroups } from '../../utils/writeGroups';
 import './index.less';
 
 const { Sider } = Layout
@@ -85,7 +86,7 @@ export default function Sidebar(props: ISidebarProps) {
     const updatedGroups = groups.map(group =>
       group.id === groupId ? { ...group, enabled } : group
     )
-    await chrome.storage.local.set({ groups: updatedGroups })
+    await writeGroups(updatedGroups)
     onChangeGroups(updatedGroups)
     const activeGroup = updatedGroups.find(group => group.id === groupId)
     if (activeGroup) {
@@ -103,7 +104,7 @@ export default function Sidebar(props: ISidebarProps) {
       const oldIndex = groups.findIndex(group => group.id === active.id);
       const newIndex = groups.findIndex(group => group.id === over.id);
       const updatedGroups = arrayMove(groups, oldIndex, newIndex);
-      chrome.storage.local.set({ groups: updatedGroups })
+      void writeGroups(updatedGroups)
       onChangeGroups(updatedGroups);
     }
   }

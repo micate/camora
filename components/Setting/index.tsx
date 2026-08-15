@@ -2,11 +2,13 @@ import { useEffect, useState } from "react";
 import {
   CloudSyncOutlined,
   CodeOutlined,
+  CopyOutlined,
   ExperimentOutlined,
   GlobalOutlined,
+  RobotOutlined,
   SettingOutlined,
 } from "@ant-design/icons";
-import { Form, Modal, Switch } from "antd";
+import { Button, Form, Modal, Switch, message } from "antd";
 import "./index.less";
 
 interface ISettingProps {
@@ -57,6 +59,34 @@ export default function Setting(props: ISettingProps) {
       );
     }
   }, [form, open]);
+
+  const buildAgentPrompt = () => [
+    chrome.i18n.getMessage("agent_prompt_intro"),
+    "",
+    chrome.i18n.getMessage("agent_prompt_setup_title"),
+    "```bash",
+    "npm install -g camora-cli",
+    `camora install-native-host ${chrome.runtime.id}`,
+    "```",
+    "",
+    chrome.i18n.getMessage("agent_prompt_usage_title"),
+    "```bash",
+    "camora app get",
+    "camora group list",
+    "camora rule list",
+    "```",
+    "",
+    chrome.i18n.getMessage("agent_prompt_safety"),
+  ].join("\n");
+
+  const handleCopyAgentPrompt = async () => {
+    try {
+      await navigator.clipboard.writeText(buildAgentPrompt());
+      message.success(chrome.i18n.getMessage("copy_agent_prompt_success"));
+    } catch {
+      message.error(chrome.i18n.getMessage("copy_agent_prompt_failed"));
+    }
+  };
 
   const handleFormChange = (values: Record<string, boolean>) => {
     const { enableSourceMap, enableCors, enableBackup } = values || {};
@@ -143,11 +173,26 @@ export default function Setting(props: ISettingProps) {
               </Form>
             </section>
           ) : (
-            <div className="app-setting-empty">
-              <ExperimentOutlined />
-              <strong>{chrome.i18n.getMessage("coming_soon")}</strong>
-              <span>{chrome.i18n.getMessage("settings_advanced_empty")}</span>
-            </div>
+            <section className="app-setting-section">
+              <h3>{chrome.i18n.getMessage("agent_integration")}</h3>
+              <div className="app-setting-card app-setting-agent-card">
+                <div className="app-setting-agent-icon" aria-hidden="true">
+                  <RobotOutlined />
+                </div>
+                <div className="app-setting-agent-content">
+                  <div className="app-setting-agent-title">
+                    {chrome.i18n.getMessage("copy_agent_prompt_title")}
+                  </div>
+                  <div className="app-setting-agent-description">
+                    {chrome.i18n.getMessage("copy_agent_prompt_description")}
+                  </div>
+                  <pre className="app-setting-agent-preview">{buildAgentPrompt()}</pre>
+                  <Button type="primary" icon={<CopyOutlined />} onClick={handleCopyAgentPrompt}>
+                    {chrome.i18n.getMessage("copy_agent_prompt")}
+                  </Button>
+                </div>
+              </div>
+            </section>
           )}
         </main>
       </div>
