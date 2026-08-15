@@ -1,7 +1,7 @@
 {
   "name": "camora",
   "private": true,
-  "version": "1.5.0",
+  "version": "1.6.0",
   "type": "module",
   "scripts": {
     "dev": "wxt",
@@ -11,9 +11,11 @@
     "zip": "wxt zip",
     "zip:firefox": "wxt zip -b firefox",
     "compile": "tsc --noEmit",
-    "install:agent": "node native-host/install.mjs",
+    "install:agent": "node packages/camora-cli/native-host/install.mjs",
     "test:native-host": "node native-host/smoke-test.mjs",
-    "postinstall": "wxt prepare"
+    "postinstall": "wxt prepare",
+    "build:cli": "cd packages/camora-cli && npm pack",
+    "publish:cli": "cd packages/camora-cli && npm publish --registry=https://registry.npmjs.com"
   },
   "dependencies": {
     "@ant-design/colors": "^7.2.1",

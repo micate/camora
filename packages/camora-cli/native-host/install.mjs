@@ -8,12 +8,13 @@ import { fileURLToPath } from 'node:url';
 
 const extensionId = process.argv[2];
 if (!extensionId || !/^[a-p]{32}$/.test(extensionId)) {
-  console.error('Usage: node native-host/install.mjs <32-character-extension-id>');
+  console.error('Usage: camora install-native-host <32-character-extension-id>');
   process.exit(1);
 }
 
 const sourceHostPath = path.resolve(path.dirname(fileURLToPath(import.meta.url)), 'camora-native-host.mjs');
-const repositoryRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+// When installed via npm, the package root is the parent of the native-host directory
+const packageRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
 let manifestDirectory;
 let installDirectory;
@@ -50,9 +51,10 @@ fs.writeFileSync(manifestPath, `${JSON.stringify({
   allowed_origins: [`chrome-extension://${extensionId}/`],
 }, null, 2)}\n`, { mode: 0o600 });
 
-const codexRoot = process.env.CODEX_HOME || path.join(os.homedir(), '.codex');
-const skillSourcePath = path.join(repositoryRoot, 'skills/camora-rules');
-const skillPath = path.join(codexRoot, 'skills/camora-rules');
+const skillSourcePath = path.join(packageRoot, 'skills/camora-rules');
+const skillRoot = process.env.CAMORA_SKILLS_HOME
+  || path.join(os.homedir(), '.agents', 'skills');
+const skillPath = path.join(skillRoot, 'camora-rules');
 fs.mkdirSync(path.dirname(skillPath), { recursive: true });
 fs.cpSync(skillSourcePath, skillPath, { recursive: true, force: true });
 
@@ -62,5 +64,5 @@ console.log(JSON.stringify({
   hostPath: installedHostPath,
   launcherPath,
   skillPath,
-  nextStep: 'Reload Camora in chrome://extensions and start a new Codex task.',
+  nextStep: 'Restart Chrome, or toggle Camora off and on in chrome://extensions, then start an agent session that loads skills from ~/.agents/skills.',
 }, null, 2));

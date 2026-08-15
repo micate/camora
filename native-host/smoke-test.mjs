@@ -10,7 +10,7 @@ import { fileURLToPath } from 'node:url';
 const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'camora-host-test-'));
 const socketPath = path.join(directory, 'rules.sock');
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const host = spawn(process.execPath, [path.join(root, 'native-host/camora-native-host.mjs')], {
+const host = spawn(process.execPath, [path.join(root, 'packages/camora-cli/native-host/camora-native-host.mjs')], {
   env: { ...process.env, CAMORA_RULES_SOCKET: socketPath },
   stdio: ['pipe', 'pipe', 'inherit'],
 });
@@ -37,7 +37,7 @@ for (let attempt = 0; attempt < 100 && !fs.existsSync(socketPath); attempt += 1)
 }
 assert.ok(fs.existsSync(socketPath), 'Native host socket was not created');
 
-const cli = spawn(process.execPath, [path.join(root, 'skills/camora-rules/scripts/camora.mjs'), 'app', 'get'], {
+const cli = spawn(process.execPath, [path.join(root, 'packages/camora-cli/skills/camora-rules/scripts/camora.mjs'), 'app', 'get'], {
   env: { ...process.env, CAMORA_RULES_SOCKET: socketPath },
 });
 let output = '';

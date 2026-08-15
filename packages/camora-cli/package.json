@@ -1,0 +1,34 @@
+{
+  "name": "camora-cli",
+  "version": "0.0.1",
+  "description": "CLI tool and native host for Camora Chrome extension rule management",
+  "type": "module",
+  "main": "./skills/camora-rules/scripts/camora.mjs",
+  "bin": {
+    "camora": "./skills/camora-rules/scripts/camora.mjs"
+  },
+  "files": [
+    "native-host/",
+    "skills/"
+  ],
+  "scripts": {
+    "install-native-host": "node native-host/install.mjs",
+    "postinstall": "echo 'To install the native host, run: camora install-native-host <EXTENSION_ID>'"
+  },
+  "keywords": [
+    "camora",
+    "chrome-extension",
+    "proxy",
+    "rules",
+    "cli"
+  ],
+  "author": "",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "os": [
+    "darwin",
+    "linux"
+  ]
+}

@@ -155,6 +155,16 @@
   "enable_backup_description": { "message": "自动将规则备份到 Chrome 同步存储。" },
   "coming_soon": { "message": "即将推出" },
   "settings_advanced_empty": { "message": "高级设置仍在完善中，后续版本会在这里提供更多控制项。" },
+  "agent_integration": { "message": "Agent 集成" },
+  "copy_agent_prompt_title": { "message": "复制给 Agent 的引导提示词" },
+  "copy_agent_prompt_description": { "message": "一键复制安装和使用 Camora 规则技能的提示词，粘贴给你的 Agent 即可开始查询或修改规则。" },
+  "copy_agent_prompt": { "message": "复制提示词" },
+  "copy_agent_prompt_success": { "message": "已复制 Agent 提示词" },
+  "copy_agent_prompt_failed": { "message": "复制失败，请手动复制" },
+  "agent_prompt_intro": { "message": "请使用 Camora Agent 技能帮我查询和管理 Chrome 扩展 Camora 的规则。不要直接读取或修改 Chrome 配置文件，只通过 camora CLI 操作。" },
+  "agent_prompt_setup_title": { "message": "如果 camora 命令不可用，请先执行以下安装命令，然后提示我重启 Chrome，或在 chrome://extensions 中关闭再开启 Camora：" },
+  "agent_prompt_usage_title": { "message": "开始前请先读取当前状态和 revision：" },
+  "agent_prompt_safety": { "message": "写操作必须使用最新 revision；删除规则或分组前必须先向我确认；遇到 REVISION_CONFLICT 时重新读取状态后再判断，不要盲目重试。" },
   "source_map_source_placeholder": {
     "message": "例如 https://mycdn.com/path/to/file.js"
   },

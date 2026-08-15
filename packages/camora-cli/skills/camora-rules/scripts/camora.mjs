@@ -5,16 +5,20 @@ import os from 'node:os';
 import path from 'node:path';
 import process from 'node:process';
 import crypto from 'node:crypto';
+import { spawnSync } from 'node:child_process';
+import { fileURLToPath } from 'node:url';
 
 const argv = process.argv.slice(2);
 
 function usage(message) {
   if (message) console.error(message);
   console.error(`Usage:
+  camora install-native-host EXTENSION_ID
   camora app get|enable|disable [--revision N]
   camora group list|get|create|update|delete|enable|disable [ID] [options]
   camora rule list|get|validate|create|update|delete|enable|disable [ID] [options]
 
+Setup:          install-native-host installs the Chrome Native Messaging host and agent skill
 Write options: --revision N (required), --confirm (required for delete)
 Create rule:  --group ID --type redirect|sourceMap|cors --source VALUE [--target VALUE]
 Update rule:  --patch JSON
@@ -53,6 +57,15 @@ function number(value, name) {
 function json(value, name) {
   try { return JSON.parse(value); } catch { usage(`--${name} must contain valid JSON`); }
 }
+
+function runInstallerIfRequested() {
+  if (argv[0] !== 'install-native-host') return;
+  const installerPath = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../../native-host/install.mjs');
+  const result = spawnSync(process.execPath, [installerPath, ...argv.slice(1)], { stdio: 'inherit' });
+  process.exit(result.status ?? 1);
+}
+
+runInstallerIfRequested();
 
 function commandFromArgs() {
   const { positionals, options } = parse(argv);
@@ -131,7 +144,7 @@ socket.on('error', (error) => {
   console.error(JSON.stringify({
     error: {
       code: 'HOST_UNAVAILABLE',
-      message: `Camora native host is unavailable at ${socketPath}: ${error.message}. Install the host and reload Camora.`,
+      message: `Camora native host is unavailable at ${socketPath}: ${error.message}. Install camora-cli via npm (npm install -g camora-cli) and run: camora install-native-host <EXTENSION_ID>. Then restart Chrome, or toggle Camora off and on in chrome://extensions.`,
     },
   }, null, 2));
   process.exitCode = 1;

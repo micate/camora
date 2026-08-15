@@ -9,20 +9,24 @@
   .ant-modal-content {
     padding: 0 !important;
     overflow: hidden;
+    background: var(--ant-color-bg-container);
     border: 1px solid var(--ant-color-border-secondary);
-    border-radius: 14px;
+    border-radius: 12px;
     box-shadow: 0 18px 48px rgba(0, 0, 0, 0.2);
   }
 
   .ant-modal-close {
-    top: 14px;
-    right: 14px;
+    top: 12px;
+    right: 12px;
     z-index: 2;
     border-radius: 8px;
   }
 
   .ant-modal-body {
     height: 100%;
+    padding: 0 !important;
+    overflow: hidden;
+    border-radius: inherit;
   }
 }
 
@@ -31,12 +35,15 @@
   grid-template-columns: 164px minmax(0, 1fr);
   height: min(420px, calc(100vh - 48px));
   min-height: 360px;
+  overflow: hidden;
+  border-radius: inherit;
 }
 
 .app-setting-sidebar {
   padding: 18px 10px;
   background: color-mix(in srgb, var(--ant-color-fill-quaternary) 78%, var(--ant-color-bg-container));
   border-right: 1px solid var(--ant-color-split);
+  border-radius: 12px 0 0 12px;
 }
 
 .app-setting-nav-label {
@@ -97,6 +104,7 @@
   padding: 22px 24px;
   overflow-y: auto;
   background: var(--ant-color-bg-container);
+  border-radius: 0 12px 12px 0;
 }
 
 .app-setting-section {
@@ -161,6 +169,58 @@
   color: var(--ant-color-text-secondary);
   font-size: 10px;
   line-height: 1.4;
+}
+
+.app-setting-agent-card {
+  display: flex;
+  padding: 14px;
+  gap: 12px;
+}
+
+.app-setting-agent-icon {
+  display: grid;
+  width: 34px;
+  height: 34px;
+  flex: 0 0 34px;
+  place-items: center;
+  color: var(--ant-color-primary);
+  font-size: 16px;
+  background: var(--ant-color-primary-bg);
+  border-radius: 10px;
+}
+
+.app-setting-agent-content {
+  min-width: 0;
+  flex: 1;
+}
+
+.app-setting-agent-title {
+  color: var(--ant-color-text);
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.app-setting-agent-description {
+  margin-top: 3px;
+  color: var(--ant-color-text-secondary);
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.app-setting-agent-preview {
+  max-height: 130px;
+  margin: 10px 0 12px;
+  padding: 10px;
+  overflow: auto;
+  color: var(--ant-color-text-secondary);
+  font-size: 10px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  word-break: break-word;
+  background: var(--ant-color-fill-quaternary);
+  border: 1px solid var(--ant-color-border-secondary);
+  border-radius: 8px;
 }
 
 .app-setting-empty {

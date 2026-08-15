@@ -155,6 +155,16 @@
     "enable_backup_description": { "message": "ルールを Chrome の同期ストレージに自動バックアップします。" },
     "coming_soon": { "message": "近日公開" },
     "settings_advanced_empty": { "message": "高度な設定は準備中です。今後のリリースでより多くの項目が追加されます。" },
+    "agent_integration": { "message": "Agent 連携" },
+    "copy_agent_prompt_title": { "message": "Agent セットアッププロンプトをコピー" },
+    "copy_agent_prompt_description": { "message": "Camora ルールスキルのセットアップと安全ガイドを含むプロンプトをコピーし、Agent に貼り付けてください。" },
+    "copy_agent_prompt": { "message": "プロンプトをコピー" },
+    "copy_agent_prompt_success": { "message": "Agent プロンプトをコピーしました" },
+    "copy_agent_prompt_failed": { "message": "コピーに失敗しました。手動でコピーしてください。" },
+    "agent_prompt_intro": { "message": "Camora Agent スキルを使って、Chrome 拡張 Camora のルールを確認・管理してください。Chrome プロファイルのファイルを直接読み書きせず、camora CLI のみを使って操作してください。" },
+    "agent_prompt_setup_title": { "message": "camora コマンドが使えない場合は、まず次のセットアップコマンドを実行し、その後 Chrome を再起動するか、chrome://extensions で Camora をオフにしてからオンにするよう私に案内してください：" },
+    "agent_prompt_usage_title": { "message": "変更前に現在の状態と revision を読み取ってください：" },
+    "agent_prompt_safety": { "message": "書き込み操作では必ず最新の revision を使用してください。ルールやグループを削除する前に必ず確認を求めてください。REVISION_CONFLICT が発生したら状態を再読み込みして判断し、盲目的に再試行しないでください。" },
     "source_map_source_placeholder": {
       "message": "例：https://mycdn.com/path/to/file.js"
     },
