@@ -1,7 +1,8 @@
-import { ReactNode, useState } from 'react';
+import { useState } from 'react';
+import type { ReactNode } from 'react';
 import { Space, Input, Button, Switch, Popconfirm, Tooltip } from 'antd';
 import { SearchOutlined, CopyOutlined, DeleteOutlined, PlusSquareOutlined } from '@ant-design/icons';
-import { CorsRule } from '../../../types';
+import type { CorsRule } from '../../../types';
 import { determineFilterType } from '../../../utils/determineInputType';
 import {
   CREDENTIAL_CORS_ALLOW_HEADERS,

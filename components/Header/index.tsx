@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { Button, Space, Switch, AutoComplete, Badge, Tooltip } from "antd";
 import { PlusOutlined, QuestionCircleOutlined } from "@ant-design/icons";
 import Help from "../Help";
-import { RuleGroup } from "../../types";
+import type { RuleGroup } from "../../types";
 import "./index.less";
 
 interface IHeaderProps {

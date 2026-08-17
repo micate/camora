@@ -1,4 +1,5 @@
-import { CorsRule, RedirectRule, Rule, RuleGroup, RuleType, SourceMapRule } from "../types";
+import type { CorsRule, RedirectRule, Rule, RuleGroup, SourceMapRule } from "../types";
+import { RuleType } from "../types";
 
 function isCompleteRule(rule: Rule) {
   if (!rule.source) return false;

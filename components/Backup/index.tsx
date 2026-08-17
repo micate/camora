@@ -11,7 +11,7 @@ import {
   STORAGE_LIMIT,
 } from "../../utils/cloud";
 import { exportRules } from "../../utils/exportRules";
-import { RuleGroup } from "../../types";
+import type { RuleGroup } from "../../types";
 import './index.less';
 
 interface IBackupProps {

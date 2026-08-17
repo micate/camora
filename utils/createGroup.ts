@@ -1,4 +1,4 @@
-import { RuleGroup } from "../types";
+import type { RuleGroup } from "../types";
 import { createRule } from "./createRule";
 import { uniqueId } from "./uniqueId";
 

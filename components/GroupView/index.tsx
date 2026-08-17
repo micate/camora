@@ -1,15 +1,16 @@
 import { useEffect, useState } from 'react';
-import { App, Space, Empty, Dropdown, MenuProps, Button, Tooltip } from 'antd';
+import { App, Space, Empty, Dropdown, Button, Tooltip } from 'antd';
+import type { MenuProps } from 'antd';
 import { PlusOutlined, DownOutlined, SnippetsOutlined } from '@ant-design/icons';
 import {
   closestCenter,
   DndContext,
-  DragEndEvent,
   KeyboardSensor,
   PointerSensor,
   useSensor,
   useSensors,
 } from '@dnd-kit/core';
+import type { DragEndEvent } from '@dnd-kit/core';
 import {
   arrayMove,
   SortableContext,
@@ -21,7 +22,8 @@ import RedirectRuleView from '../RuleViews/RedirectRuleView';
 import SourceMapRuleView from '../RuleViews/SourceMapRuleView';
 import CorsRuleView from '../RuleViews/CorsRuleView';
 import SortableRule from '../SortableRule';
-import { CorsRule, RedirectRule, Rule, RuleGroup, RuleType, SourceMapRule } from '../../types';
+import type { CorsRule, RedirectRule, Rule, RuleGroup, SourceMapRule } from '../../types';
+import { RuleType } from '../../types';
 import { createRule } from '../../utils/createRule';
 import {
   copyRulesToClipboard,

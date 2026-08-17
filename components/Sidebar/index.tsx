@@ -15,7 +15,7 @@ import {
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import { restrictToVerticalAxis } from '@dnd-kit/modifiers';
-import { RuleGroup } from "@/types";
+import type { RuleGroup } from "@/types";
 import GroupItem from "../GroupItem";
 import { writeGroups } from '../../utils/writeGroups';
 import './index.less';

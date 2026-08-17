@@ -1,4 +1,4 @@
-import { Rule, RuleGroup } from "../types";
+import type { Rule, RuleGroup } from "../types";
 
 /**
  * Cleanup groups

@@ -1,10 +1,10 @@
-import {
+import type {
   CorsRule,
   RedirectRule,
   Rule,
-  RuleType,
   SourceMapRule,
 } from "../types";
+import { RuleType } from "../types";
 import { createRule } from "./createRule";
 import { determineFilterType, determineRedirectType } from "./determineInputType";
 

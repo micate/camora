@@ -1,5 +1,3 @@
-import { RuleGroup } from '../types';
-
 export function updateStatus(enabled: boolean, count?: number) {
   if (enabled && count !== undefined && count > 0) {
     chrome.action.setBadgeText({ text: count.toString() });

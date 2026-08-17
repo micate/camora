@@ -1,4 +1,4 @@
-import { Rule, RuleGroup } from "../types";
+import type { Rule, RuleGroup } from "../types";
 import { uniqueId } from "./uniqueId";
 
 // 遍历每个分组和每个分组下的规则

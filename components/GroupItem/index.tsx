@@ -1,10 +1,11 @@
 import { useState } from 'react';
 import classnames from 'classnames';
-import { App, Checkbox, Dropdown, Button, MenuProps } from 'antd';
+import { App, Checkbox, Dropdown, Button } from 'antd';
+import type { MenuProps } from 'antd';
 import { MenuOutlined } from '@ant-design/icons';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { RuleGroup } from '../../types';
+import type { RuleGroup } from '../../types';
 import './index.less';
 
 interface GroupItemProps {

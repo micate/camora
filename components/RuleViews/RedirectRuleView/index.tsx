@@ -1,7 +1,8 @@
-import { ReactNode, useState } from 'react';
+import { useState } from 'react';
+import type { ReactNode } from 'react';
 import { Space, Input, Button, Switch, Popconfirm, Tooltip } from 'antd';
 import { SearchOutlined, CopyOutlined, DeleteOutlined, EditOutlined, PlusSquareOutlined } from '@ant-design/icons';
-import { RedirectRule } from '../../../types';
+import type { RedirectRule } from '../../../types';
 import { determineFilterType, determineRedirectType } from '../../../utils/determineInputType';
 import './index.less';
 

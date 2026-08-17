@@ -1,5 +1,5 @@
 import { compressToBase64, decompressFromBase64 } from "lz-string";
-import { RuleGroup } from "../types";
+import type { RuleGroup } from "../types";
 import { cleanupGroups } from "./cleanupGroups";
 import { getRulesCount } from "./getRulesCount";
 import { getCurrentTime } from "./getCurrentTime";
