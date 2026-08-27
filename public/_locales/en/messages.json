@@ -1,6 +1,6 @@
 {
   "description": {
-    "message": "A frontend development tool that allows you to proxy/redirect/replace web resources based on user-defined rules."
+    "message": "A frontend tool for proxying, redirecting, or replacing web resources with custom rules and AI-assisted rule management."
   },
   "no_results": {
     "message": "No data"
