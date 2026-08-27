@@ -1,15 +1,14 @@
 import { useEffect, useState } from 'react';
-import { App, Space, Empty, Dropdown, MenuProps, Button, Tooltip } from 'antd';
+import { App, Space, Empty, Dropdown, Button, Tooltip } from 'antd';
+import type { MenuProps } from 'antd';
 import { PlusOutlined, DownOutlined, SnippetsOutlined } from '@ant-design/icons';
 import {
   closestCenter,
   DndContext,
-  DragEndEvent,
-  KeyboardSensor,
-  PointerSensor,
   useSensor,
   useSensors,
 } from '@dnd-kit/core';
+import type { DragEndEvent } from '@dnd-kit/core';
 import {
   arrayMove,
   SortableContext,
@@ -21,8 +20,13 @@ import RedirectRuleView from '../RuleViews/RedirectRuleView';
 import SourceMapRuleView from '../RuleViews/SourceMapRuleView';
 import CorsRuleView from '../RuleViews/CorsRuleView';
 import SortableRule from '../SortableRule';
-import { CorsRule, RedirectRule, Rule, RuleGroup, RuleType, SourceMapRule } from '../../types';
+import type { CorsRule, RedirectRule, Rule, RuleGroup, SourceMapRule } from '../../types';
+import { RuleType } from '../../types';
 import { createRule } from '../../utils/createRule';
+import {
+  MeaningfulResizeKeyboardSensor,
+  MeaningfulResizePointerSensor,
+} from '../../utils/MeaningfulResizePointerSensor';
 import {
   copyRulesToClipboard,
   getInternalClipboardRules,
@@ -51,10 +55,10 @@ export default function GroupView(props: IGroupViewProps) {
   const { message } = App.useApp();
   const pasteShortcut = navigator.userAgent.includes('Mac OS X') ? 'Cmd + V' : 'Ctrl + V';
   const sensors = useSensors(
-    useSensor(PointerSensor, {
+    useSensor(MeaningfulResizePointerSensor, {
       activationConstraint: { distance: 4 },
     }),
-    useSensor(KeyboardSensor, {
+    useSensor(MeaningfulResizeKeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
     }),
   );

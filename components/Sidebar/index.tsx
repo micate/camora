@@ -3,8 +3,6 @@ import { Layout, Empty } from 'antd';
 import {
   DndContext,
   closestCenter,
-  KeyboardSensor,
-  PointerSensor,
   useSensor,
   useSensors,
 } from '@dnd-kit/core';
@@ -15,8 +13,12 @@ import {
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import { restrictToVerticalAxis } from '@dnd-kit/modifiers';
-import { RuleGroup } from "@/types";
+import type { RuleGroup } from "@/types";
 import GroupItem from "../GroupItem";
+import {
+  MeaningfulResizeKeyboardSensor,
+  MeaningfulResizePointerSensor,
+} from '../../utils/MeaningfulResizePointerSensor';
 import { writeGroups } from '../../utils/writeGroups';
 import './index.less';
 
@@ -72,12 +74,12 @@ export default function Sidebar(props: ISidebarProps) {
   }, []);
 
   const sensors = useSensors(
-    useSensor(PointerSensor, {
+    useSensor(MeaningfulResizePointerSensor, {
       activationConstraint: {
         distance: 1,
       },
     }),
-    useSensor(KeyboardSensor, {
+    useSensor(MeaningfulResizeKeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
     })
   );

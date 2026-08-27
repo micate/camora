@@ -1,4 +1,5 @@
-import { CorsRule, Rule, RuleGroup, RuleType, RedirectRule, SourceMapRule } from '../types'
+import type { CorsRule, Rule, RuleGroup, RedirectRule, SourceMapRule } from '../types'
+import { RuleType } from '../types'
 import { getEnabledRules } from './getEnabledRules'
 import { updateCount } from './updateCount'
 import { updateStatus } from './updateStatus'

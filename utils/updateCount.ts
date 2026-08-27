@@ -1,4 +1,4 @@
-import { RuleGroup } from '../types';
+import type { RuleGroup } from '../types';
 import { updateStatus } from './updateStatus';
 
 let updateTimeout: NodeJS.Timeout | null = null;

@@ -1,12 +1,14 @@
-import { CSSProperties, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import type { CSSProperties } from "react";
 import { json } from "@codemirror/lang-json"
 import { App, Button, Modal, Spin } from "antd";
 import { LoadingOutlined } from '@ant-design/icons';
 import { exportRules } from "../../utils/exportRules";
 import { correctIds } from "../../utils/correctIds";
 import CodeView from "../CodeView";
-import Backup, { BackupRef } from "../Backup";
-import { RuleGroup } from "../../types";
+import Backup from "../Backup";
+import type { BackupRef } from "../Backup";
+import type { RuleGroup } from "../../types";
 import { writeGroups } from '../../utils/writeGroups';
 import './index.less';
 

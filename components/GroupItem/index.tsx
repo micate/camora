@@ -1,10 +1,11 @@
 import { useState } from 'react';
 import classnames from 'classnames';
-import { App, Checkbox, Dropdown, Button, MenuProps } from 'antd';
+import { App, Checkbox, Dropdown, Button } from 'antd';
+import type { MenuProps } from 'antd';
 import { MenuOutlined } from '@ant-design/icons';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { RuleGroup } from '../../types';
+import type { RuleGroup } from '../../types';
 import './index.less';
 
 interface GroupItemProps {
@@ -34,7 +35,10 @@ export default function GroupItem(props: GroupItemProps) {
   });
 
   const style = {
-    transform: CSS.Transform.toString(transform),
+    // Group rows can have different heights when their names wrap. Applying
+    // dnd-kit's scale values would stretch the entire active row to the height
+    // of the item currently under it, so only apply the sortable translation.
+    transform: CSS.Translate.toString(transform),
     transition,
   };
 

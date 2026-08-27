@@ -1,7 +1,8 @@
-import { ReactNode, useState } from 'react';
+import { useState } from 'react';
+import type { ReactNode } from 'react';
 import { Space, Input, Button, Switch, Popconfirm, Tooltip } from 'antd';
 import { SearchOutlined, CopyOutlined, DeleteOutlined, ReadOutlined, PlusSquareOutlined } from '@ant-design/icons';
-import { SourceMapRule } from '../../../types';
+import type { SourceMapRule } from '../../../types';
 import { determineFilterType } from '../../../utils/determineInputType';
 import './index.less';
 

@@ -1,4 +1,5 @@
-import { CorsRule, Rule, RuleType } from "../types";
+import type { CorsRule, Rule } from "../types";
+import { RuleType } from "../types";
 import {
   DEFAULT_CORS_ALLOW_HEADERS,
   DEFAULT_CORS_ALLOW_METHODS,

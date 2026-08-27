@@ -1,15 +1,13 @@
-import {
+import type {
   Rule,
   RuleGroup,
   RuleMutationResult,
   RedirectRule,
   RuleServiceCommand,
   RuleStoreSnapshot,
-  RuleType,
-  SourceType,
   SourceMapRule,
-  TargetType,
 } from '../types';
+import { RuleType, SourceType, TargetType } from '../types';
 import { createGroup } from './createGroup';
 import { createRule } from './createRule';
 import { uniqueId } from './uniqueId';
